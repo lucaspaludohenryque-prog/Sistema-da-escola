@@ -13,15 +13,56 @@ enum UserRole {
   PROFESSOR
 }
 
+enum Shift {
+  MANHA
+  TARDE
+  NOITE
+}
+
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      UserRole @default(PROFESSOR)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String      @id @default(cuid())
+  name       String
+  email      String      @unique
+  password   String
+  role       UserRole    @default(PROFESSOR)
+  classrooms Classroom[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   @@index([role])
   @@map("users")
+}
+
+model Classroom {
+  id        String    @id @default(cuid())
+  name      String
+  subject   String
+  year      Int
+  shift     Shift
+  teacherId String
+  teacher   User      @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  students  Student[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([teacherId])
+  @@index([year, shift])
+  @@map("classrooms")
+}
+
+model Student {
+  id            String    @id @default(cuid())
+  name          String
+  registration  String    @unique
+  guardianName  String
+  guardianPhone String
+  active        Boolean   @default(true)
+  classroomId   String
+  classroom     Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([classroomId, name])
+  @@index([active])
+  @@map("students")
 }

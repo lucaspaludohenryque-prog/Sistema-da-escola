@@ -91,7 +91,7 @@ export function SidebarNav({
       </nav>
 
       <div className="border-t border-slate-200/80 px-5 py-4">
-        <p className="font-mono text-[11px] text-slate-500">Fase 1 · Base RCO</p>
+        <p className="font-mono text-[11px] text-slate-500">RCO · Gestão Escolar</p>
         <p className="mt-0.5 text-xs text-slate-500">Ano letivo ativo</p>
       </div>
     </div>

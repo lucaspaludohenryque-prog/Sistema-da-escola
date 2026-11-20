@@ -1,23 +1,31 @@
 import type { Metadata } from "next";
-import { Users } from "lucide-react";
-import { ModulePlaceholder } from "@/features/dashboard";
+import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "@/features/auth";
+import {
+  canManageClassrooms,
+  listClassroomsForUser,
+} from "@/features/classrooms";
+import { ClassroomsView } from "@/features/classrooms/components/ClassroomsView";
 
 export const metadata: Metadata = {
   title: "Turmas",
+  description: "Gestão de turmas, disciplinas e estudantes matriculados.",
 };
 
-export default function TurmasPage(): React.JSX.Element {
+export default async function TurmasPage(): Promise<React.JSX.Element> {
+  const user = await getAuthenticatedUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const classrooms = await listClassroomsForUser(user);
+  const canManage = canManageClassrooms(user.role);
+
   return (
-    <ModulePlaceholder
-      title="Turmas"
-      description="Centralize o cadastro de turmas, grade de disciplinas, vínculo de professores e listagem de estudantes matriculados por ano letivo."
-      icon={Users}
-      plannedCapabilities={[
-        "Listagem de turmas por turno, série e ano letivo",
-        "Enturmação de estudantes e controle de transferências",
-        "Associação de professores e componentes curriculares",
-        "Consulta rápida da ficha resumida da turma",
-      ]}
+    <ClassroomsView
+      initialClassrooms={classrooms}
+      canManage={canManage}
     />
   );
 }
