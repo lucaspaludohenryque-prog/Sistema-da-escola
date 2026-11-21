@@ -3,6 +3,8 @@ import { getAuthenticatedUser } from "@/features/auth";
 import { DashboardShell } from "@/features/dashboard";
 import { getSchoolConfig } from "@/features/school-config";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: Readonly<{

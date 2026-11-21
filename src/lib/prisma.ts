@@ -5,8 +5,8 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 /**
- * Instancia singleton do PrismaClient para evitar exaustao de conexoes
- * durante o hot-reload em desenvolvimento no Next.js.
+ * Instancia singleton do PrismaClient reutilizada entre hot-reloads em
+ * desenvolvimento e invocacoes warm em ambientes serverless (Vercel).
  */
 export const prisma: PrismaClient =
   globalForPrisma.prisma ??
@@ -14,6 +14,4 @@ export const prisma: PrismaClient =
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
+globalForPrisma.prisma = prisma;

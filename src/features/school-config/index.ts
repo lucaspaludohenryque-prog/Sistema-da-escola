@@ -4,7 +4,7 @@ export {
   MAX_LOGO_BASE64_LENGTH,
   MAX_LOGO_UPLOAD_BYTES,
 } from "./constants";
-export { getSchoolConfig } from "./queries";
+export { getDefaultSchoolConfig, getSchoolConfig } from "./queries";
 export {
   updateSchoolConfigSchema,
   type UpdateSchoolConfigInput,

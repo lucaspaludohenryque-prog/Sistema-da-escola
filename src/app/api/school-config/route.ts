@@ -2,11 +2,14 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getAuthenticatedUser } from "@/features/auth";
 import type { ApiErrorPayload } from "@/features/classrooms";
 import {
+  getDefaultSchoolConfig,
   getSchoolConfig,
   updateSchoolConfigSchema,
   type SchoolConfigData,
 } from "@/features/school-config";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
 
@@ -14,9 +17,7 @@ const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
  * GET /api/school-config
  * Rota publica para carregar nome, ano letivo e logo da escola (inclusive na tela de /login).
  */
-export async function GET(): Promise<
-  NextResponse<{ config: SchoolConfigData } | ApiErrorPayload>
-> {
+export async function GET(): Promise<NextResponse<{ config: SchoolConfigData }>> {
   try {
     const config = await getSchoolConfig();
     return NextResponse.json(
@@ -30,9 +31,9 @@ export async function GET(): Promise<
       timestamp: new Date().toISOString(),
     });
 
-    return NextResponse.json<ApiErrorPayload>(
-      { error: "Não foi possível carregar a identidade da escola.", code: "INTERNAL_ERROR" },
-      { status: 500, headers: NO_STORE_HEADERS }
+    return NextResponse.json(
+      { config: getDefaultSchoolConfig() },
+      { status: 200, headers: NO_STORE_HEADERS }
     );
   }
 }
