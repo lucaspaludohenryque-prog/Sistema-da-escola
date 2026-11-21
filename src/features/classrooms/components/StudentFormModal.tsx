@@ -12,6 +12,9 @@ interface StudentFormModalProps {
   onSaved: (student: StudentRecord, mode: "create" | "edit") => void;
 }
 
+const INPUT_CLASS =
+  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50";
+
 export function StudentFormModal({
   isOpen,
   classroomId,
@@ -135,7 +138,7 @@ export function StudentFormModal({
       aria-labelledby="student-modal-title"
     >
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-[1px]"
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
         onClick={() => {
           if (!isSubmitting) {
             onClose();
@@ -144,16 +147,16 @@ export function StudentFormModal({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4">
+      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4 dark:border-slate-800">
           <div>
             <h2
               id="student-modal-title"
-              className="text-lg font-semibold tracking-tight text-slate-900"
+              className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100"
             >
               {isEditing ? "Editar Aluno" : "Adicionar Aluno"}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-600">
+            <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
               {isEditing
                 ? "Atualize os dados cadastrais e o vínculo do estudante na turma."
                 : "Informe os dados do estudante e do responsável legal."}
@@ -164,7 +167,7 @@ export function StudentFormModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Fechar formulário de aluno"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
@@ -174,9 +177,9 @@ export function StudentFormModal({
           {errorMessage ? (
             <div
               role="alert"
-              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200"
+              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
             >
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
               <span>{errorMessage}</span>
             </div>
           ) : null}
@@ -184,7 +187,7 @@ export function StudentFormModal({
           <div className="space-y-1.5">
             <label
               htmlFor="student-name"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Nome completo
             </label>
@@ -196,7 +199,7 @@ export function StudentFormModal({
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Ex: Mariana Oliveira Costa"
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className={INPUT_CLASS}
             />
           </div>
 
@@ -204,7 +207,7 @@ export function StudentFormModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="student-registration"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Matrícula / CGM
               </label>
@@ -216,14 +219,14 @@ export function StudentFormModal({
                 value={registration}
                 onChange={(event) => setRegistration(event.target.value)}
                 placeholder="Ex: 2026090107"
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 font-mono text-sm text-slate-900 placeholder:font-sans placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                className={`${INPUT_CLASS} font-mono placeholder:font-sans`}
               />
             </div>
 
             <div className="space-y-1.5">
               <label
                 htmlFor="student-phone"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Telefone do responsável
               </label>
@@ -235,7 +238,7 @@ export function StudentFormModal({
                 value={guardianPhone}
                 onChange={(event) => setGuardianPhone(event.target.value)}
                 placeholder="(41) 99999-0000"
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                className={INPUT_CLASS}
               />
             </div>
           </div>
@@ -243,7 +246,7 @@ export function StudentFormModal({
           <div className="space-y-1.5">
             <label
               htmlFor="student-guardian"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Nome do responsável
             </label>
@@ -255,20 +258,20 @@ export function StudentFormModal({
               value={guardianName}
               onChange={(event) => setGuardianName(event.target.value)}
               placeholder="Ex: Carla Regina Oliveira"
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className={INPUT_CLASS}
             />
           </div>
 
           {isEditing ? (
-            <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2.5 ring-1 ring-inset ring-slate-200/80">
+            <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2.5 ring-1 ring-inset ring-slate-200/80 dark:bg-slate-800/60 dark:ring-slate-700">
               <div>
                 <label
                   htmlFor="student-active"
-                  className="text-sm font-medium text-slate-800"
+                  className="text-sm font-medium text-slate-800 dark:text-slate-200"
                 >
                   Matrícula ativa
                 </label>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Desmarque caso o estudante esteja transferido ou inativo.
                 </p>
               </div>
@@ -278,24 +281,24 @@ export function StudentFormModal({
                 disabled={isSubmitting}
                 checked={active}
                 onChange={(event) => setActive(event.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 accent-[#1E40AF]"
+                className="h-4 w-4 rounded border-slate-300 accent-[var(--school-primary)]"
               />
             </div>
           ) : null}
 
-          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#1E3A8A] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>

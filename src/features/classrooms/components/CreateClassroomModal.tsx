@@ -19,6 +19,9 @@ interface CreateClassroomModalProps {
 
 const CURRENT_YEAR = new Date().getFullYear();
 
+const INPUT_CLASS =
+  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50";
+
 export function CreateClassroomModal({
   isOpen,
   onClose,
@@ -156,7 +159,7 @@ export function CreateClassroomModal({
       aria-labelledby="create-classroom-title"
     >
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-[1px]"
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
         onClick={() => {
           if (!isSubmitting) {
             onClose();
@@ -165,16 +168,16 @@ export function CreateClassroomModal({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4">
+      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4 dark:border-slate-800">
           <div>
             <h2
               id="create-classroom-title"
-              className="text-lg font-semibold tracking-tight text-slate-900"
+              className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100"
             >
               Nova Turma
             </h2>
-            <p className="mt-0.5 text-sm text-slate-600">
+            <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
               Cadastre a turma e associe o professor responsável pela disciplina.
             </p>
           </div>
@@ -183,7 +186,7 @@ export function CreateClassroomModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Fechar formulário de nova turma"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
@@ -193,9 +196,9 @@ export function CreateClassroomModal({
           {errorMessage ? (
             <div
               role="alert"
-              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200"
+              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
             >
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
               <span>{errorMessage}</span>
             </div>
           ) : null}
@@ -204,7 +207,7 @@ export function CreateClassroomModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="classroom-name"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Nome da turma
               </label>
@@ -216,14 +219,14 @@ export function CreateClassroomModal({
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Ex: 9º Ano A"
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                className={INPUT_CLASS}
               />
             </div>
 
             <div className="space-y-1.5">
               <label
                 htmlFor="classroom-subject"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Disciplina
               </label>
@@ -235,7 +238,7 @@ export function CreateClassroomModal({
                 value={subject}
                 onChange={(event) => setSubject(event.target.value)}
                 placeholder="Ex: Matemática"
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                className={INPUT_CLASS}
               />
             </div>
           </div>
@@ -244,7 +247,7 @@ export function CreateClassroomModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="classroom-year"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Ano letivo
               </label>
@@ -257,14 +260,14 @@ export function CreateClassroomModal({
                 disabled={isSubmitting}
                 value={year}
                 onChange={(event) => setYear(event.target.value)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                className={INPUT_CLASS}
               />
             </div>
 
             <div className="space-y-1.5">
               <label
                 htmlFor="classroom-shift"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Turno
               </label>
@@ -273,7 +276,7 @@ export function CreateClassroomModal({
                 disabled={isSubmitting}
                 value={shift}
                 onChange={(event) => setShift(event.target.value as ClassroomShift)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                className={INPUT_CLASS}
               >
                 {CLASSROOM_SHIFTS.map((option) => (
                   <option key={option} value={option}>
@@ -287,7 +290,7 @@ export function CreateClassroomModal({
           <div className="space-y-1.5">
             <label
               htmlFor="classroom-teacher"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Professor responsável
             </label>
@@ -297,7 +300,7 @@ export function CreateClassroomModal({
               disabled={isSubmitting || isLoadingTeachers || teachers.length === 0}
               value={teacherId}
               onChange={(event) => setTeacherId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
+              className={INPUT_CLASS}
             >
               {isLoadingTeachers ? (
                 <option value="">Carregando professores...</option>
@@ -313,19 +316,19 @@ export function CreateClassroomModal({
             </select>
           </div>
 
-          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting || isLoadingTeachers || teachers.length === 0}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#1E3A8A] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>

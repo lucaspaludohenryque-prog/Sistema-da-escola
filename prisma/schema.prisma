@@ -75,14 +75,15 @@ model User {
 }
 
 model SchoolConfig {
-  id         Int      @id @default(1)
-  name       String   @default("Sistema Escolar RCO")
-  city       String   @default("")
-  state      String   @default("PR")
-  phone      String   @default("")
-  schoolYear Int      @default(2026)
-  logoUrl    String?
-  updatedAt  DateTime @updatedAt
+  id           Int      @id @default(1)
+  name         String   @default("Sistema Escolar RCO")
+  city         String   @default("")
+  state        String   @default("PR")
+  phone        String   @default("")
+  schoolYear   Int      @default(2026)
+  logoUrl      String?
+  primaryColor String   @default("#1d4ed8")
+  updatedAt    DateTime @updatedAt
 
   @@map("school_config")
 }

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
-  CheckCircle2,
   FileSpreadsheet,
   GraduationCap,
   Loader2,
@@ -17,6 +16,9 @@ import { formatIsoDateBr } from "@/features/attendance/constants";
 import { DeleteConfirmModal } from "@/features/classrooms/components/DeleteConfirmModal";
 import { SHIFT_LABELS } from "@/features/classrooms/constants";
 import type { ApiErrorPayload, ClassroomSummary } from "@/features/classrooms/types";
+import { Avatar } from "@/shared/components/Avatar";
+import { TableSkeleton } from "@/shared/components/Skeleton";
+import { useToast } from "@/shared/components/ToastProvider";
 import { calculateWeightedTermAverage } from "../calculations";
 import {
   PASSING_GRADE_THRESHOLD,
@@ -52,6 +54,7 @@ function parseCellValue(raw: string): number | null | "INVALID" {
 }
 
 export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
+  const toast = useToast();
   const [selectedClassroomId, setSelectedClassroomId] = useState(
     () => classrooms[0]?.id ?? ""
   );
@@ -68,10 +71,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
-  const [feedback, setFeedback] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const hydrateSheet = useCallback((data: GradeSheetData) => {
     setSheet(data);
@@ -91,7 +91,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
       if (!classroomId) return;
       setIsLoading(true);
       setLoadError(null);
-      setFeedback(null);
+      setErrorMessage(null);
 
       try {
         const params = new URLSearchParams({
@@ -141,11 +141,12 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
       ...prev,
       [buildCellKey(studentId, assessmentId)]: value,
     }));
-    setFeedback(null);
+    setErrorMessage(null);
   }
 
-  function handleAssessmentCreated(): void {
+  function handleAssessmentCreated(created: AssessmentItem): void {
     setIsCreateModalOpen(false);
+    toast.success(`Avaliação "${created.title}" criada no ${TERM_LABELS[selectedTerm]}.`);
     void fetchGradeSheet(selectedClassroomId, selectedTerm);
   }
 
@@ -171,13 +172,18 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
           // Mantem mensagem padrao.
         }
         setDeleteError(message);
+        toast.error(message);
         return;
       }
 
+      const deletedTitle = assessmentToDelete.title;
       setAssessmentToDelete(null);
+      toast.success(`Avaliação "${deletedTitle}" excluída.`);
       await fetchGradeSheet(selectedClassroomId, selectedTerm);
     } catch {
-      setDeleteError("Falha de conexão com o servidor. Tente novamente.");
+      const msg = "Falha de conexão com o servidor. Tente novamente.";
+      setDeleteError(msg);
+      toast.error(msg);
     } finally {
       setIsDeleting(false);
     }
@@ -186,7 +192,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
   async function handleSaveGrades(): Promise<void> {
     if (!sheet || sheet.assessments.length === 0) return;
 
-    setFeedback(null);
+    setErrorMessage(null);
 
     const entries: Array<{
       assessmentId: string;
@@ -200,18 +206,16 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
         const parsed = parseCellValue(raw);
 
         if (parsed === "INVALID") {
-          setFeedback({
-            type: "error",
-            message: `Valor inválido na nota de ${student.name} em "${assessment.title}".`,
-          });
+          const msg = `Valor inválido na nota de ${student.name} em "${assessment.title}".`;
+          setErrorMessage(msg);
+          toast.warning(msg);
           return;
         }
 
         if (parsed !== null && (parsed < 0 || parsed > assessment.maxScore)) {
-          setFeedback({
-            type: "error",
-            message: `A nota de ${student.name} em "${assessment.title}" deve estar entre 0 e ${assessment.maxScore}.`,
-          });
+          const msg = `A nota de ${student.name} em "${assessment.title}" deve estar entre 0 e ${assessment.maxScore}.`;
+          setErrorMessage(msg);
+          toast.warning(msg);
           return;
         }
 
@@ -246,21 +250,21 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
         } catch {
           // Mantem mensagem padrao.
         }
-        setFeedback({ type: "error", message });
+        setErrorMessage(message);
+        toast.error(message);
         return;
       }
 
       const payload = (await response.json()) as { sheet: GradeSheetData };
       hydrateSheet(payload.sheet);
-      setFeedback({
-        type: "success",
-        message: `Notas do ${TERM_LABELS[selectedTerm]} salvas com sucesso.`,
-      });
+      toast.success(
+        `Notas do ${TERM_LABELS[selectedTerm]} salvas com sucesso.`,
+        "Planilha atualizada"
+      );
     } catch {
-      setFeedback({
-        type: "error",
-        message: "Falha de conexão com o servidor. Tente salvar novamente.",
-      });
+      const msg = "Falha de conexão com o servidor. Tente salvar novamente.";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSaving(false);
     }
@@ -268,20 +272,20 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
 
   if (classrooms.length === 0) {
     return (
-      <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06]">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+      <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
           <GraduationCap className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
         </div>
-        <h2 className="mt-4 text-base font-semibold text-slate-900">
+        <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
           Nenhuma turma disponível para lançamento de notas
         </h2>
-        <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600">
+        <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
           Cadastre ou vincule uma turma em Turmas para criar avaliações e lançar notas.
         </p>
         <div className="mt-5">
           <Link
             href="/dashboard/turmas"
-            className="inline-flex items-center rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1E3A8A]"
+            className="inline-flex items-center rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)]"
           >
             Ir para Turmas
           </Link>
@@ -292,13 +296,13 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6">
+      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-[1.5fr_1fr]">
             <div className="space-y-1.5">
               <label
                 htmlFor="grades-classroom"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Turma
               </label>
@@ -306,7 +310,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                 id="grades-classroom"
                 value={selectedClassroomId}
                 onChange={(event) => setSelectedClassroomId(event.target.value)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none"
+                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               >
                 {classrooms.map((classroom) => (
                   <option key={classroom.id} value={classroom.id}>
@@ -320,7 +324,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
             <div className="space-y-1.5">
               <label
                 htmlFor="grades-term"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Trimestre
               </label>
@@ -330,7 +334,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                 onChange={(event) =>
                   setSelectedTerm(Number(event.target.value) as AcademicTerm)
                 }
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none"
+                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
               >
                 {ACADEMIC_TERMS.map((term) => (
                   <option key={term} value={term}>
@@ -345,7 +349,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
             <button
               type="button"
               onClick={() => setIsCreateModalOpen(true)}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-[#1E40AF]"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               <span>Nova Avaliação</span>
@@ -361,7 +365,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                 sheet.assessments.length === 0 ||
                 sheet.students.length === 0
               }
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#1E3A8A] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSaving ? (
                 <>
@@ -379,72 +383,57 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
         </div>
       </section>
 
-      {feedback ? (
+      {errorMessage ? (
         <div
-          role={feedback.type === "error" ? "alert" : "status"}
-          className={`flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm font-medium ring-1 ring-inset ${
-            feedback.type === "success"
-              ? "bg-emerald-50 text-emerald-900 ring-emerald-200"
-              : "bg-red-50 text-red-800 ring-red-200"
-          }`}
+          role="alert"
+          className="flex items-start gap-2.5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
         >
-          {feedback.type === "success" ? (
-            <CheckCircle2
-              className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700"
-              strokeWidth={1.75}
-            />
-          ) : (
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
-          )}
-          <span>{feedback.message}</span>
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
+          <span>{errorMessage}</span>
         </div>
       ) : null}
 
       {loadError ? (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200"
+          className="flex items-start gap-2.5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
         >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
           <span>{loadError}</span>
         </div>
       ) : null}
 
-      <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06]">
+      <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
         {isLoading ? (
-          <div className="space-y-2 p-6">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <div key={item} className="h-12 animate-pulse rounded-lg bg-slate-100" />
-            ))}
-          </div>
+          <TableSkeleton rows={6} cols={3} />
         ) : !sheet || sheet.students.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
               <Users className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
             </div>
-            <h3 className="mt-4 text-base font-semibold text-slate-900">
+            <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
               Nenhum aluno ativo nesta turma
             </h3>
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
               Cadastre alunos na turma para habilitar o lançamento de notas.
             </p>
           </div>
         ) : sheet.assessments.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-[#1E40AF]">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-[var(--school-primary)] dark:bg-blue-500/15 dark:text-blue-300">
               <FileSpreadsheet className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
             </div>
-            <h3 className="mt-4 text-base font-semibold text-slate-900">
+            <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
               Nenhuma avaliação cadastrada no {TERM_LABELS[selectedTerm]}
             </h3>
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
               Crie provas, trabalhos ou atividades clicando em Nova Avaliação para liberar a
               planilha de notas.
             </p>
             <button
               type="button"
               onClick={() => setIsCreateModalOpen(true)}
-              className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1E3A8A]"
+              className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)]"
             >
               <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               <span>Criar primeira avaliação</span>
@@ -454,10 +443,10 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/90 text-xs font-semibold text-slate-700">
+                <tr className="border-b border-slate-200 bg-slate-50/90 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-300">
                   <th
                     scope="col"
-                    className="sticky left-0 z-10 min-w-[220px] border-r border-slate-200 bg-slate-50 py-3.5 pr-4 pl-5"
+                    className="sticky left-0 z-10 min-w-[235px] border-r border-slate-200 bg-slate-50 py-3.5 pr-4 pl-5 dark:border-slate-800 dark:bg-slate-800"
                   >
                     Estudante
                   </th>
@@ -465,17 +454,17 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                     <th
                       key={assessment.id}
                       scope="col"
-                      className="min-w-[145px] border-r border-slate-200/80 px-3 py-3 align-top"
+                      className="min-w-[145px] border-r border-slate-200/80 px-3 py-3 align-top dark:border-slate-800"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="truncate font-semibold text-slate-900">
+                          <p className="truncate font-semibold text-slate-900 dark:text-slate-100">
                             {assessment.title}
                           </p>
-                          <p className="mt-0.5 font-mono text-[11px] font-normal text-slate-500">
+                          <p className="mt-0.5 font-mono text-[11px] font-normal text-slate-500 dark:text-slate-400">
                             {formatIsoDateBr(assessment.date)}
                           </p>
-                          <p className="mt-0.5 font-mono text-[11px] font-normal text-slate-500">
+                          <p className="mt-0.5 font-mono text-[11px] font-normal text-slate-500 dark:text-slate-400">
                             Máx {assessment.maxScore} · Peso {assessment.weight}
                           </p>
                         </div>
@@ -487,7 +476,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                           }}
                           aria-label={`Excluir avaliação ${assessment.title}`}
                           title="Excluir avaliação"
-                          className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700"
+                          className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
                         >
                           <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                         </button>
@@ -496,13 +485,13 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                   ))}
                   <th
                     scope="col"
-                    className="min-w-[120px] bg-slate-100/90 px-4 py-3.5 text-center font-semibold text-slate-900"
+                    className="min-w-[120px] bg-slate-100/90 px-4 py-3.5 text-center font-semibold text-slate-900 dark:bg-slate-800 dark:text-slate-100"
                   >
                     Média ({selectedTerm}º Trim.)
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
                 {sheet.students.map((student, index) => {
                   const liveAverage = calculateWeightedTermAverage(
                     sheet.assessments.map((assessment) => {
@@ -525,26 +514,30 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
 
                   const averageClass =
                     liveAverage === null
-                      ? "bg-slate-100 text-slate-600"
+                      ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                       : liveAverage >= PASSING_GRADE_THRESHOLD
-                        ? "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200"
-                        : "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200";
+                        ? "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
+                        : "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30";
 
                   return (
-                    <tr key={student.studentId} className="hover:bg-slate-50/70">
-                      <td className="sticky left-0 z-10 border-r border-slate-200 bg-white py-3 pr-4 pl-5">
-                        <div className="flex items-start gap-2.5">
-                          <span className="mt-0.5 font-mono text-[11px] text-slate-400">
+                    <tr
+                      key={student.studentId}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
+                    >
+                      <td className="sticky left-0 z-10 border-r border-slate-200 bg-white py-3 pr-4 pl-5 dark:border-slate-800 dark:bg-slate-900">
+                        <div className="flex items-center gap-2.5">
+                          <span className="font-mono text-[11px] text-slate-400 dark:text-slate-500">
                             {String(index + 1).padStart(2, "0")}
                           </span>
+                          <Avatar name={student.name} size="xs" />
                           <div className="min-w-0">
                             <Link
                               href={`/dashboard/alunos/${student.studentId}/ficha`}
-                              className="block truncate font-medium text-slate-900 hover:text-[#1E40AF] hover:underline"
+                              className="block truncate font-medium text-slate-900 hover:text-[var(--school-primary)] hover:underline dark:text-slate-100 dark:hover:text-blue-400"
                             >
                               {student.name}
                             </Link>
-                            <p className="font-mono text-[11px] text-slate-500">
+                            <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
                               {student.registration}
                             </p>
                           </div>
@@ -563,7 +556,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                         return (
                           <td
                             key={assessment.id}
-                            className="border-r border-slate-100 px-3 py-2.5"
+                            className="border-r border-slate-100 px-3 py-2.5 dark:border-slate-800"
                           >
                             <input
                               type="number"
@@ -582,17 +575,17 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                                 )
                               }
                               placeholder="-"
-                              className={`block w-full rounded-lg border px-2.5 py-2 text-center font-mono text-sm transition-colors focus:ring-2 focus:outline-none disabled:bg-slate-50 ${
+                              className={`block w-full rounded-lg border px-2.5 py-2 text-center font-mono text-sm transition-colors focus:ring-2 focus:outline-none disabled:bg-slate-50 dark:disabled:bg-slate-800/50 ${
                                 isOutOfRange
-                                  ? "border-red-400 bg-red-50/60 text-red-900 focus:border-red-600 focus:ring-red-200"
-                                  : "border-slate-300 bg-white text-slate-900 focus:border-blue-800 focus:ring-blue-800/15"
+                                  ? "border-red-400 bg-red-50/60 text-red-900 focus:border-red-600 focus:ring-red-200 dark:border-red-500 dark:bg-red-500/15 dark:text-red-200"
+                                  : "border-slate-300 bg-white text-slate-900 focus:border-[var(--school-primary)] focus:ring-[var(--school-primary-ring)] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                               }`}
                             />
                           </td>
                         );
                       })}
 
-                      <td className="bg-slate-50/60 px-4 py-2.5 text-center">
+                      <td className="bg-slate-50/60 px-4 py-2.5 text-center dark:bg-slate-800/40">
                         <span
                           className={`inline-flex min-w-[54px] items-center justify-center rounded-md px-2.5 py-1 font-mono text-xs font-bold ${averageClass}`}
                         >

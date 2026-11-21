@@ -51,7 +51,7 @@ export function DeleteConfirmModal({
       aria-labelledby="delete-modal-title"
     >
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-[1px]"
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
         onClick={() => {
           if (!isDeleting) {
             onCancel();
@@ -60,20 +60,22 @@ export function DeleteConfirmModal({
         aria-hidden="true"
       />
 
-      <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10">
+      <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-700 ring-1 ring-inset ring-red-200">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30">
               <AlertTriangle className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
             <div className="space-y-1">
               <h2
                 id="delete-modal-title"
-                className="text-base font-semibold text-slate-900"
+                className="text-base font-semibold text-slate-900 dark:text-slate-100"
               >
                 {title}
               </h2>
-              <p className="text-sm leading-relaxed text-slate-600">{description}</p>
+              <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                {description}
+              </p>
             </div>
           </div>
 
@@ -82,7 +84,7 @@ export function DeleteConfirmModal({
             onClick={onCancel}
             disabled={isDeleting}
             aria-label="Fechar janela de confirmação"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
@@ -91,7 +93,7 @@ export function DeleteConfirmModal({
         {errorMessage ? (
           <div
             role="alert"
-            className="mt-4 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200"
+            className="mt-4 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
           >
             {errorMessage}
           </div>
@@ -102,7 +104,7 @@ export function DeleteConfirmModal({
             type="button"
             onClick={onCancel}
             disabled={isDeleting}
-            className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Cancelar
           </button>

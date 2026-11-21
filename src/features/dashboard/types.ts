@@ -1,4 +1,4 @@
-import type { OccurrenceItem } from "@/features/occurrences/types";
+import type { OccurrenceItem, OccurrenceType } from "@/features/occurrences/types";
 
 export type AlertReason = "LOW_ATTENDANCE" | "LOW_GRADE";
 
@@ -21,8 +21,25 @@ export interface StudentAlertItem {
   reasons: AlertReason[];
 }
 
+export interface ClassroomAttendanceChartItem {
+  classroomId: string;
+  classroomName: string;
+  subject: string;
+  shortLabel: string;
+  attendanceRate: number;
+  totalRecords: number;
+}
+
+export interface OccurrenceTypeChartItem {
+  type: OccurrenceType;
+  label: string;
+  count: number;
+}
+
 export interface DashboardOverviewData {
   counters: DashboardCounters;
   alertStudents: StudentAlertItem[];
   recentOccurrences: OccurrenceItem[];
+  attendanceByClassroom: ClassroomAttendanceChartItem[];
+  occurrencesByType: OccurrenceTypeChartItem[];
 }

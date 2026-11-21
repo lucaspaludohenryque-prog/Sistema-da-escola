@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element -- Exibe brasao/logo da escola em Base64 ou URL configuravel. */
 
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { BookOpenCheck, ShieldCheck } from "lucide-react";
 import { LoginForm } from "@/features/auth/components/LoginForm";
-import { getSchoolConfig } from "@/features/school-config";
+import { buildSchoolThemeStyle, getSchoolConfig } from "@/features/school-config";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,8 @@ const SYSTEM_PILLARS = [
   },
   {
     title: "Sessão protegida por perfil",
-    description: "Controle de acesso separado para Professores, Coordenação e Administração.",
+    description:
+      "Controle de acesso separado para Professores, Coordenação, Administração e Família.",
   },
 ];
 
@@ -39,8 +41,15 @@ export default async function LoginPage({
     .filter((part) => part.trim().length > 0)
     .join(" - ");
 
+  const themeStyle = buildSchoolThemeStyle(
+    schoolConfig.primaryColor
+  ) as CSSProperties;
+
   return (
-    <div className="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-[1.08fr_1fr]">
+    <div
+      style={themeStyle}
+      className="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-[1.08fr_1fr]"
+    >
       <aside className="rco-grid-pattern relative hidden flex-col justify-between bg-[#0F172A] px-12 py-12 text-slate-100 lg:flex">
         <div className="flex items-center gap-3.5">
           {schoolConfig.logoUrl ? (
@@ -52,7 +61,7 @@ export default async function LoginPage({
               />
             </div>
           ) : (
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white ring-1 ring-white/15">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--school-primary)] text-white ring-1 ring-white/15">
               <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
           )}
@@ -69,7 +78,10 @@ export default async function LoginPage({
 
         <div className="max-w-lg space-y-8">
           <div className="space-y-4">
-            <div className="h-1 w-12 rounded-full bg-blue-500" aria-hidden="true" />
+            <div
+              className="h-1 w-12 rounded-full bg-[var(--school-primary)]"
+              aria-hidden="true"
+            />
             <h1 className="text-3xl font-semibold tracking-tight text-white xl:text-4xl xl:leading-[1.15]">
               Gestão acadêmica clara, estável e pronta para a rotina escolar.
             </h1>
@@ -97,11 +109,11 @@ export default async function LoginPage({
         </div>
       </aside>
 
-      <main className="flex flex-col justify-center bg-[#F6F8FA] px-4 py-10 sm:px-8 lg:px-14">
+      <main className="flex flex-col justify-center bg-[#F6F8FA] px-4 py-10 sm:px-8 lg:px-14 dark:bg-slate-950">
         <div className="mx-auto w-full max-w-[420px]">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
             {schoolConfig.logoUrl ? (
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-slate-200">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-slate-200 dark:ring-slate-700">
                 <img
                   src={schoolConfig.logoUrl}
                   alt={`Logo ${schoolConfig.name}`}
@@ -109,15 +121,15 @@ export default async function LoginPage({
                 />
               </div>
             ) : (
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--school-primary)] text-white">
                 <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
               </div>
             )}
             <div className="min-w-0">
-              <p className="truncate text-base font-semibold tracking-tight text-slate-900">
+              <p className="truncate text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                 {schoolConfig.name}
               </p>
-              <p className="truncate text-xs text-slate-600">
+              <p className="truncate text-xs text-slate-600 dark:text-slate-400">
                 Registro de Classe Online
                 {locationLine ? ` · ${locationLine}` : ""}
               </p>
@@ -126,16 +138,16 @@ export default async function LoginPage({
 
           <section
             aria-labelledby="login-heading"
-            className="rounded-2xl bg-white p-6 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-8"
+            className="rounded-2xl bg-white p-6 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-8 dark:bg-slate-900 dark:ring-slate-800"
           >
             <div className="mb-6 space-y-1.5">
               <h2
                 id="login-heading"
-                className="text-2xl font-semibold tracking-tight text-slate-900"
+                className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100"
               >
                 Acessar conta
               </h2>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 Informe seu e-mail institucional e senha para continuar.
               </p>
             </div>
@@ -143,7 +155,7 @@ export default async function LoginPage({
             <LoginForm redirectTo={params.next} />
           </section>
 
-          <p className="mt-6 text-center text-xs text-slate-500">
+          <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
             Em caso de dificuldade no acesso, contate a secretaria ou coordenação da unidade.
           </p>
         </div>

@@ -4,6 +4,7 @@ import type { ApiErrorPayload } from "@/features/classrooms";
 import {
   getDefaultSchoolConfig,
   getSchoolConfig,
+  normalizeHexColor,
   updateSchoolConfigSchema,
   type SchoolConfigData,
 } from "@/features/school-config";
@@ -15,7 +16,7 @@ const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
 
 /**
  * GET /api/school-config
- * Rota publica para carregar nome, ano letivo e logo da escola (inclusive na tela de /login).
+ * Rota publica para carregar nome, ano letivo, logo e cor principal da escola.
  */
 export async function GET(): Promise<NextResponse<{ config: SchoolConfigData }>> {
   try {
@@ -83,7 +84,7 @@ export async function PUT(
     );
   }
 
-  const { name, city, state, phone, schoolYear, logoUrl } = parsed.data;
+  const { name, city, state, phone, schoolYear, logoUrl, primaryColor } = parsed.data;
 
   try {
     const updated = await prisma.schoolConfig.upsert({
@@ -95,6 +96,7 @@ export async function PUT(
         phone,
         schoolYear,
         logoUrl,
+        primaryColor,
       },
       create: {
         id: 1,
@@ -104,6 +106,7 @@ export async function PUT(
         phone,
         schoolYear,
         logoUrl,
+        primaryColor,
       },
       select: {
         id: true,
@@ -113,12 +116,14 @@ export async function PUT(
         phone: true,
         schoolYear: true,
         logoUrl: true,
+        primaryColor: true,
         updatedAt: true,
       },
     });
 
     const config: SchoolConfigData = {
       ...updated,
+      primaryColor: normalizeHexColor(updated.primaryColor),
       updatedAt: updated.updatedAt.toISOString(),
     };
 

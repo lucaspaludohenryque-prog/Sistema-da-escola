@@ -15,6 +15,9 @@ interface UserFormModalProps {
   onSaved: (user: ManagedUser, mode: "create" | "edit") => void;
 }
 
+const INPUT_CLASS =
+  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50";
+
 export function UserFormModal({
   isOpen,
   userToEdit,
@@ -151,26 +154,26 @@ export function UserFormModal({
       aria-labelledby="user-modal-title"
     >
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-[1px]"
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
         onClick={() => {
           if (!isSubmitting) onClose();
         }}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4">
+      <div className="relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4 dark:border-slate-800">
           <div>
             <h2
               id="user-modal-title"
-              className="text-lg font-semibold tracking-tight text-slate-900"
+              className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100"
             >
               {isEditing ? "Editar Usuário / Redefinir Senha" : "Novo Usuário"}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-600">
+            <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
               {isEditing
                 ? "Atualize os dados da conta ou informe uma nova senha para redefinição."
-                : "Cadastre um professor, coordenador ou administrador no sistema."}
+                : "Cadastre um professor, coordenador, administrador, responsável ou aluno."}
             </p>
           </div>
           <button
@@ -178,7 +181,7 @@ export function UserFormModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Fechar janela de usuário"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
@@ -188,9 +191,9 @@ export function UserFormModal({
           {errorMessage ? (
             <div
               role="alert"
-              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200"
+              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
             >
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
               <span>{errorMessage}</span>
             </div>
           ) : null}
@@ -198,7 +201,7 @@ export function UserFormModal({
           <div className="space-y-1.5">
             <label
               htmlFor="user-name"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Nome completo
             </label>
@@ -210,14 +213,14 @@ export function UserFormModal({
               value={name}
               onChange={(event) => setName(event.target.value)}
               placeholder="Ex: Prof. Juliana Ribeiro"
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className={INPUT_CLASS}
             />
           </div>
 
           <div className="space-y-1.5">
             <label
               htmlFor="user-email"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               E-mail institucional
             </label>
@@ -229,7 +232,7 @@ export function UserFormModal({
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="usuario@escola.com"
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className={INPUT_CLASS}
             />
           </div>
 
@@ -237,7 +240,7 @@ export function UserFormModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="user-role"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Perfil de acesso
               </label>
@@ -246,7 +249,7 @@ export function UserFormModal({
                 disabled={isSubmitting || isSelf}
                 value={role}
                 onChange={(event) => setRole(event.target.value as UserRole)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500"
+                className={`${INPUT_CLASS} disabled:cursor-not-allowed`}
               >
                 {USER_ROLES.map((option) => (
                   <option key={option} value={option}>
@@ -255,7 +258,7 @@ export function UserFormModal({
                 ))}
               </select>
               {isSelf ? (
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Você não pode alterar seu próprio perfil de Administrador.
                 </p>
               ) : null}
@@ -264,7 +267,7 @@ export function UserFormModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="user-password"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 {isEditing ? "Nova senha (opcional)" : "Senha inicial"}
               </label>
@@ -277,14 +280,14 @@ export function UserFormModal({
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder={isEditing ? "Deixe em branco para manter" : "Mínimo 6 caracteres"}
-                  className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-10 pl-3.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+                  className={`${INPUT_CLASS} pr-10`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
                   disabled={isSubmitting}
                   aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                  className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                  className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
                 >
                   {showPassword ? (
                     <EyeOff className="h-4 w-4" strokeWidth={1.75} />
@@ -297,12 +300,15 @@ export function UserFormModal({
           </div>
 
           {isEditing ? (
-            <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2.5 ring-1 ring-inset ring-slate-200/80">
+            <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2.5 ring-1 ring-inset ring-slate-200/80 dark:bg-slate-800/60 dark:ring-slate-700">
               <div>
-                <label htmlFor="user-active" className="text-sm font-medium text-slate-800">
+                <label
+                  htmlFor="user-active"
+                  className="text-sm font-medium text-slate-800 dark:text-slate-200"
+                >
                   Conta ativa
                 </label>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {isSelf
                     ? "Não é possível desativar a conta atualmente autenticada."
                     : "Contas inativas têm o login bloqueado preservando todo o histórico."}
@@ -314,24 +320,24 @@ export function UserFormModal({
                 disabled={isSubmitting || isSelf}
                 checked={active}
                 onChange={(event) => setActive(event.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 accent-[#1E40AF] disabled:cursor-not-allowed"
+                className="h-4 w-4 rounded border-slate-300 accent-[var(--school-primary)] disabled:cursor-not-allowed"
               />
             </div>
           ) : null}
 
-          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#1E3A8A] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>

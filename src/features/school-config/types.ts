@@ -6,5 +6,6 @@ export interface SchoolConfigData {
   phone: string;
   schoolYear: number;
   logoUrl: string | null;
+  primaryColor: string;
   updatedAt: string;
 }

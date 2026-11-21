@@ -26,7 +26,9 @@ function resolveSafeNextPath(nextPath: string | undefined, role: UserRole): stri
     if (
       nextPath.startsWith("/dashboard/avisos") ||
       nextPath.startsWith("/dashboard/alunos/") ||
-      (role === "RESPONSAVEL" && nextPath.startsWith("/dashboard/familia") && !nextPath.startsWith("/dashboard/familia-vinculos")) ||
+      (role === "RESPONSAVEL" &&
+        nextPath.startsWith("/dashboard/familia") &&
+        !nextPath.startsWith("/dashboard/familia-vinculos")) ||
       (role === "ALUNO" && nextPath.startsWith("/dashboard/aluno"))
     ) {
       return nextPath;
@@ -92,7 +94,9 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
       router.refresh();
     } catch {
       setStatus("error");
-      setErrorMessage("Falha de conexão com o servidor. Verifique sua rede e tente novamente.");
+      setErrorMessage(
+        "Falha de conexão com o servidor. Verifique sua rede e tente novamente."
+      );
     }
   }
 
@@ -102,9 +106,9 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
         <div
           role="alert"
           aria-live="assertive"
-          className="flex items-start gap-3 rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-200"
+          className="flex items-start gap-3 rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
         >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
           <p className="leading-snug font-medium">{errorMessage}</p>
         </div>
       ) : null}
@@ -112,13 +116,13 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
       <div className="space-y-1.5">
         <label
           htmlFor="login-email"
-          className="block text-sm font-medium text-slate-800"
+          className="block text-sm font-medium text-slate-800 dark:text-slate-200"
         >
           E-mail institucional
         </label>
         <div className="relative">
           <Mail
-            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-500"
+            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
             strokeWidth={1.75}
             aria-hidden="true"
           />
@@ -138,7 +142,7 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
               }
             }}
             placeholder="nome@escola.com"
-            className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-3.5 pl-10 text-sm text-slate-900 placeholder:text-slate-500 transition-[border-color,box-shadow] duration-150 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500"
+            className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-3.5 pl-10 text-sm text-slate-900 placeholder:text-slate-500 transition-[border-color,box-shadow] duration-150 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50"
           />
         </div>
       </div>
@@ -146,13 +150,13 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
       <div className="space-y-1.5">
         <label
           htmlFor="login-password"
-          className="block text-sm font-medium text-slate-800"
+          className="block text-sm font-medium text-slate-800 dark:text-slate-200"
         >
           Senha
         </label>
         <div className="relative">
           <Lock
-            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-500"
+            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
             strokeWidth={1.75}
             aria-hidden="true"
           />
@@ -172,14 +176,14 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
               }
             }}
             placeholder="Digite sua senha"
-            className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-11 pl-10 text-sm text-slate-900 placeholder:text-slate-500 transition-[border-color,box-shadow] duration-150 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500"
+            className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-11 pl-10 text-sm text-slate-900 placeholder:text-slate-500 transition-[border-color,box-shadow] duration-150 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             disabled={isSubmitting}
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-            className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:pointer-events-none disabled:opacity-50"
+            className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:pointer-events-none disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
           >
             {showPassword ? (
               <EyeOff className="h-4 w-4" strokeWidth={1.75} />
@@ -193,7 +197,7 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#1E3A8A] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-blue-800/70"
+        className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
       >
         {isSubmitting ? (
           <>

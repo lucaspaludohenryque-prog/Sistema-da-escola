@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import {
+  DEFAULT_SCHOOL_PRIMARY_COLOR,
+  normalizeHexColor,
+} from "./constants";
 import type { SchoolConfigData } from "./types";
 
 const SINGLETON_ID = 1;
@@ -12,6 +16,7 @@ export function getDefaultSchoolConfig(): SchoolConfigData {
     phone: "",
     schoolYear: new Date().getFullYear(),
     logoUrl: null,
+    primaryColor: DEFAULT_SCHOOL_PRIMARY_COLOR,
     updatedAt: new Date(0).toISOString(),
   };
 }
@@ -36,12 +41,14 @@ export async function getSchoolConfig(): Promise<SchoolConfigData> {
         phone: true,
         schoolYear: true,
         logoUrl: true,
+        primaryColor: true,
         updatedAt: true,
       },
     });
 
     return {
       ...config,
+      primaryColor: normalizeHexColor(config.primaryColor),
       updatedAt: config.updatedAt.toISOString(),
     };
   } catch (error: unknown) {

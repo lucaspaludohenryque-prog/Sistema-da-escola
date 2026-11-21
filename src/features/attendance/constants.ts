@@ -20,14 +20,14 @@ export const ATTENDANCE_STATUS_META: Record<
     activeClass:
       "bg-emerald-600 text-white ring-1 ring-inset ring-emerald-700 shadow-xs",
     idleClass:
-      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-emerald-50 hover:text-emerald-800 hover:ring-emerald-300",
+      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-emerald-50 hover:text-emerald-800 hover:ring-emerald-300 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-emerald-500/15 dark:hover:text-emerald-300 dark:hover:ring-emerald-500/40",
   },
   FALTA: {
     shortLabel: "F",
     label: "Falta",
     activeClass: "bg-red-600 text-white ring-1 ring-inset ring-red-700 shadow-xs",
     idleClass:
-      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-red-50 hover:text-red-800 hover:ring-red-300",
+      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-red-50 hover:text-red-800 hover:ring-red-300 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-red-500/15 dark:hover:text-red-300 dark:hover:ring-red-500/40",
   },
   JUSTIFICADA: {
     shortLabel: "FJ",
@@ -35,7 +35,7 @@ export const ATTENDANCE_STATUS_META: Record<
     activeClass:
       "bg-amber-500 text-slate-950 ring-1 ring-inset ring-amber-600 shadow-xs",
     idleClass:
-      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-amber-50 hover:text-amber-900 hover:ring-amber-300",
+      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-amber-50 hover:text-amber-900 hover:ring-amber-300 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-amber-500/15 dark:hover:text-amber-300 dark:hover:ring-amber-500/40",
   },
 };
 

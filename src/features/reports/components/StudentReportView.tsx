@@ -14,13 +14,14 @@ import {
   formatScoreBr,
 } from "@/features/grades/constants";
 import {
-  OCCURRENCE_PRAISE_STYLE,
   OCCURRENCE_SEVERITY_LABELS,
-  OCCURRENCE_SEVERITY_STYLES,
   OCCURRENCE_STATUS_LABELS,
-  OCCURRENCE_STATUS_STYLES,
   OCCURRENCE_TYPE_LABELS,
 } from "@/features/occurrences/constants";
+import type {
+  OccurrenceSeverity,
+  OccurrenceStatus,
+} from "@/features/occurrences/types";
 import type { StudentReportData } from "../types";
 
 interface StudentReportViewProps {
@@ -28,6 +29,21 @@ interface StudentReportViewProps {
   backHref?: string;
   backLabel?: string;
 }
+
+/**
+ * Badges dedicadas para documento A4 imprimivel: mantem sempre fundo claro e texto escuro
+ * mesmo quando o usuario estiver utilizando o Modo Escuro na tela.
+ */
+const PRINT_SEVERITY_STYLES: Record<OccurrenceSeverity, string> = {
+  LEVE: "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200",
+  MEDIA: "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200",
+  GRAVE: "bg-red-50 text-red-800 ring-1 ring-inset ring-red-200",
+};
+
+const PRINT_STATUS_STYLES: Record<OccurrenceStatus, string> = {
+  PENDENTE: "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200",
+  RESOLVIDO: "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200",
+};
 
 function formatDateTimeBr(isoTimestamp: string): string {
   const date = new Date(isoTimestamp);
@@ -67,7 +83,7 @@ export function StudentReportView({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <Link
           href={backHref ?? `/dashboard/turmas/${classroom.id}`}
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-[#1E40AF]"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-[var(--school-primary)] dark:text-slate-300 dark:hover:text-blue-400"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           <span>{backLabel ?? `Voltar para ${classroom.name}`}</span>
@@ -76,15 +92,15 @@ export function StudentReportView({
         <button
           type="button"
           onClick={() => window.print()}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#1E3A8A] active:scale-[0.98]"
+          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
         >
           <Printer className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           <span>Imprimir / Salvar PDF</span>
         </button>
       </div>
 
-      {/* Documento A4 imprimivel */}
-      <article className="mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.08] sm:p-10 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0">
+      {/* Documento A4 imprimivel (sempre folha branca e tinta escura para fidelidade de impressao/PDF) */}
+      <article className="rco-print-sheet mx-auto max-w-4xl rounded-2xl bg-white p-6 text-slate-900 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.08] sm:p-10 dark:ring-slate-700 print:max-w-none print:rounded-none print:bg-white print:p-0 print:text-slate-900 print:shadow-none print:ring-0">
         {/* Cabecalho institucional formal */}
         <header className="flex flex-col gap-4 border-b-2 border-slate-900 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3.5">
@@ -97,12 +113,12 @@ export function StudentReportView({
                 />
               </div>
             ) : (
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white print:border print:border-blue-900">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--school-primary)] text-white print:border print:border-slate-900">
                 <BookOpenCheck className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
               </div>
             )}
             <div>
-              <p className="text-xs font-bold tracking-wide text-[#1E40AF] uppercase">
+              <p className="text-xs font-bold tracking-wide text-[var(--school-primary)] uppercase">
                 {school.name}
               </p>
               <h1 className="mt-0.5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
@@ -352,7 +368,7 @@ export function StudentReportView({
                         <span
                           className={`inline-flex items-center rounded px-2 py-0.5 font-semibold ${
                             isPraise
-                              ? OCCURRENCE_PRAISE_STYLE
+                              ? "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200"
                               : "bg-slate-100 text-slate-800 ring-1 ring-inset ring-slate-200"
                           }`}
                         >
@@ -360,13 +376,13 @@ export function StudentReportView({
                         </span>
                         {!isPraise ? (
                           <span
-                            className={`inline-flex items-center rounded px-2 py-0.5 font-semibold ${OCCURRENCE_SEVERITY_STYLES[item.severity]}`}
+                            className={`inline-flex items-center rounded px-2 py-0.5 font-semibold ${PRINT_SEVERITY_STYLES[item.severity]}`}
                           >
                             {OCCURRENCE_SEVERITY_LABELS[item.severity]}
                           </span>
                         ) : null}
                         <span
-                          className={`inline-flex items-center rounded px-2 py-0.5 font-medium ${OCCURRENCE_STATUS_STYLES[item.status]}`}
+                          className={`inline-flex items-center rounded px-2 py-0.5 font-medium ${PRINT_STATUS_STYLES[item.status]}`}
                         >
                           {OCCURRENCE_STATUS_LABELS[item.status]}
                         </span>

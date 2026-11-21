@@ -30,6 +30,9 @@ interface CreateOccurrenceModalProps {
   onCreated: (occurrence: OccurrenceItem) => void;
 }
 
+const INPUT_CLASS =
+  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50";
+
 export function CreateOccurrenceModal({
   isOpen,
   classrooms,
@@ -183,23 +186,23 @@ export function CreateOccurrenceModal({
       aria-labelledby="create-occurrence-title"
     >
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-[1px]"
+        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
         onClick={() => {
           if (!isSubmitting) onClose();
         }}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10">
-        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4">
+      <div className="relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
+        <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 pb-4 dark:border-slate-800">
           <div>
             <h2
               id="create-occurrence-title"
-              className="text-lg font-semibold tracking-tight text-slate-900"
+              className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100"
             >
               Nova Ocorrência
             </h2>
-            <p className="mt-0.5 text-sm text-slate-600">
+            <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-400">
               Registre um acompanhamento disciplinar, pedagógico ou elogio do estudante.
             </p>
           </div>
@@ -208,7 +211,7 @@ export function CreateOccurrenceModal({
             onClick={onClose}
             disabled={isSubmitting}
             aria-label="Fechar janela de nova ocorrência"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
@@ -218,9 +221,9 @@ export function CreateOccurrenceModal({
           {errorMessage ? (
             <div
               role="alert"
-              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200"
+              className="flex items-start gap-2.5 rounded-lg bg-red-50 px-3.5 py-2.5 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
             >
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
               <span>{errorMessage}</span>
             </div>
           ) : null}
@@ -228,7 +231,7 @@ export function CreateOccurrenceModal({
           <div className="space-y-1.5">
             <label
               htmlFor="occurrence-classroom"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Turma
             </label>
@@ -238,7 +241,7 @@ export function CreateOccurrenceModal({
               disabled={isSubmitting}
               value={classroomId}
               onChange={(event) => setClassroomId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className={INPUT_CLASS}
             >
               {classrooms.map((classroom) => (
                 <option key={classroom.id} value={classroom.id}>
@@ -251,7 +254,7 @@ export function CreateOccurrenceModal({
           <div className="space-y-1.5">
             <label
               htmlFor="occurrence-student"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Aluno
             </label>
@@ -261,7 +264,7 @@ export function CreateOccurrenceModal({
               disabled={isSubmitting || isLoadingStudents || students.length === 0}
               value={studentId}
               onChange={(event) => setStudentId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
+              className={INPUT_CLASS}
             >
               {isLoadingStudents ? (
                 <option value="">Carregando alunos da turma...</option>
@@ -281,7 +284,7 @@ export function CreateOccurrenceModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="occurrence-type"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Tipo
               </label>
@@ -290,7 +293,7 @@ export function CreateOccurrenceModal({
                 disabled={isSubmitting}
                 value={type}
                 onChange={(event) => setType(event.target.value as OccurrenceType)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none"
+                className={INPUT_CLASS}
               >
                 {OCCURRENCE_TYPES.map((option) => (
                   <option key={option} value={option}>
@@ -303,7 +306,7 @@ export function CreateOccurrenceModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="occurrence-severity"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Gravidade
               </label>
@@ -312,7 +315,7 @@ export function CreateOccurrenceModal({
                 disabled={isSubmitting}
                 value={severity}
                 onChange={(event) => setSeverity(event.target.value as OccurrenceSeverity)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none"
+                className={INPUT_CLASS}
               >
                 {OCCURRENCE_SEVERITIES.map((option) => (
                   <option key={option} value={option}>
@@ -325,7 +328,7 @@ export function CreateOccurrenceModal({
             <div className="space-y-1.5">
               <label
                 htmlFor="occurrence-date"
-                className="block text-sm font-medium text-slate-800"
+                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
               >
                 Data
               </label>
@@ -336,7 +339,7 @@ export function CreateOccurrenceModal({
                 disabled={isSubmitting}
                 value={date}
                 onChange={(event) => setDate(event.target.value)}
-                className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none"
+                className={INPUT_CLASS}
               />
             </div>
           </div>
@@ -344,7 +347,7 @@ export function CreateOccurrenceModal({
           <div className="space-y-1.5">
             <label
               htmlFor="occurrence-description"
-              className="block text-sm font-medium text-slate-800"
+              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
             >
               Descrição detalhada
             </label>
@@ -356,23 +359,23 @@ export function CreateOccurrenceModal({
               value={description}
               onChange={(event) => setDescription(event.target.value)}
               placeholder="Descreva objetivamente o fato ocorrido, contexto e eventuais orientações dadas em sala..."
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className={INPUT_CLASS}
             />
           </div>
 
-          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-2.5 border-t border-slate-200/80 pt-4 sm:flex-row sm:justify-end dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting || isLoadingStudents || students.length === 0}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#1E3A8A] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSubmitting ? (
                 <>

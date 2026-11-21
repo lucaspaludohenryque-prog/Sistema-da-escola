@@ -28,15 +28,15 @@ export function SidebarNav({
   const homeHref = getDefaultDashboardPath(userRole);
 
   return (
-    <div className="flex h-full flex-col bg-white">
-      <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-4">
+    <div className="flex h-full flex-col bg-white dark:bg-slate-900">
+      <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-4 dark:border-slate-800">
         <Link
           href={homeHref}
           onClick={onNavigate}
           className="flex min-w-0 items-center gap-3 rounded-lg py-1 focus-visible:outline-none"
         >
           {schoolConfig.logoUrl ? (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-50 p-1 ring-1 ring-slate-200">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-50 p-1 ring-1 ring-slate-200 dark:bg-white dark:ring-slate-700">
               <img
                 src={schoolConfig.logoUrl}
                 alt={`Logo ${schoolConfig.name}`}
@@ -44,15 +44,15 @@ export function SidebarNav({
               />
             </div>
           ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1E40AF] text-white">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--school-primary)] text-white shadow-xs">
               <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
           )}
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold tracking-tight text-slate-900">
+            <p className="truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">
               {schoolConfig.name}
             </p>
-            <p className="truncate text-xs text-slate-500">
+            <p className="truncate text-xs text-slate-500 dark:text-slate-400">
               {userRole === "RESPONSAVEL"
                 ? "Portal da Família"
                 : userRole === "ALUNO"
@@ -67,7 +67,7 @@ export function SidebarNav({
             type="button"
             onClick={onCloseMobile}
             aria-label="Fechar menu de navegação"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <X className="h-5 w-5" strokeWidth={1.75} />
           </button>
@@ -91,17 +91,22 @@ export function SidebarNav({
                   href={item.href}
                   onClick={onNavigate}
                   aria-current={isActive ? "page" : undefined}
+                  style={
+                    isActive
+                      ? { backgroundColor: "var(--school-primary-soft)" }
+                      : undefined
+                  }
                   className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150 ${
                     isActive
-                      ? "bg-blue-50 text-[#1E40AF]"
-                      : "text-slate-700 hover:bg-slate-100/80 hover:text-slate-900"
+                      ? "text-[var(--school-primary)] dark:text-blue-300"
+                      : "text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-white"
                   }`}
                 >
                   <Icon
                     className={`h-[18px] w-[18px] shrink-0 transition-colors ${
                       isActive
-                        ? "text-[#1E40AF]"
-                        : "text-slate-500 group-hover:text-slate-700"
+                        ? "text-[var(--school-primary)] dark:text-blue-300"
+                        : "text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200"
                     }`}
                     strokeWidth={1.75}
                     aria-hidden="true"
@@ -113,7 +118,7 @@ export function SidebarNav({
                     </span>
                   ) : isActive ? (
                     <span
-                      className="ml-auto h-1.5 w-1.5 rounded-full bg-[#1E40AF]"
+                      className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--school-primary)] dark:bg-blue-400"
                       aria-hidden="true"
                     />
                   ) : null}
@@ -124,17 +129,19 @@ export function SidebarNav({
         </ul>
       </nav>
 
-      <div className="border-t border-slate-200/80 px-5 py-4">
-        <p className="font-mono text-[11px] text-slate-500">
+      <div className="border-t border-slate-200/80 px-5 py-4 dark:border-slate-800">
+        <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
           Ano letivo {schoolConfig.schoolYear}
         </p>
         {schoolConfig.city ? (
-          <p className="mt-0.5 truncate text-xs text-slate-500">
+          <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
             {schoolConfig.city}
             {schoolConfig.state ? ` - ${schoolConfig.state}` : ""}
           </p>
         ) : (
-          <p className="mt-0.5 text-xs text-slate-500">RCO · Gestão Escolar</p>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+            RCO · Gestão Escolar
+          </p>
         )}
       </div>
     </div>

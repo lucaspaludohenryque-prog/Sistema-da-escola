@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { BRAZILIAN_STATES, MAX_LOGO_BASE64_LENGTH } from "./constants";
+import {
+  BRAZILIAN_STATES,
+  DEFAULT_SCHOOL_PRIMARY_COLOR,
+  HEX_COLOR_REGEX,
+  MAX_LOGO_BASE64_LENGTH,
+} from "./constants";
 
 const DATA_IMAGE_REGEX = /^data:image\/(png|jpeg|jpg|webp);base64,[A-Za-z0-9+/=]+$/i;
 const HTTP_URL_REGEX = /^https?:\/\/[^\s/$.?#].[^\s]*$/i;
@@ -51,6 +56,15 @@ export const updateSchoolConfigSchema = z.object({
     .refine((value) => value === null || isValidLogoUrl(value), {
       message:
         "Logo inválido ou acima do limite de 1MB. Use uma imagem PNG, JPG ou WEBP.",
+    }),
+  primaryColor: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .optional()
+    .default(DEFAULT_SCHOOL_PRIMARY_COLOR)
+    .refine((value) => HEX_COLOR_REGEX.test(value), {
+      message: "Selecione uma cor principal válida no formato hexadecimal (#RRGGBB).",
     }),
 });
 

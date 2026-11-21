@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
-  CheckCircle2,
   GraduationCap,
   HeartHandshake,
   Link2,
@@ -12,6 +11,8 @@ import {
   Unlink,
 } from "lucide-react";
 import type { ApiErrorPayload } from "@/features/classrooms/types";
+import { Avatar } from "@/shared/components/Avatar";
+import { useToast } from "@/shared/components/ToastProvider";
 import type { AdminFamilyLinksPayload } from "../types";
 
 interface FamilyLinksAdminViewProps {
@@ -23,9 +24,9 @@ const RELATIONSHIP_PRESETS = ["Mãe", "Pai", "Responsável", "Avó/Avô", "Tutor
 export function FamilyLinksAdminView({
   initialData,
 }: FamilyLinksAdminViewProps): React.JSX.Element {
+  const toast = useToast();
   const [data, setData] = useState<AdminFamilyLinksPayload>(initialData);
 
-  // Formulario GuardianStudent
   const [guardianId, setGuardianId] = useState(
     () => initialData.availableGuardians[0]?.id ?? ""
   );
@@ -35,7 +36,6 @@ export function FamilyLinksAdminView({
   const [relationship, setRelationship] = useState("Mãe");
   const [isSavingGuardian, setIsSavingGuardian] = useState(false);
 
-  // Formulario StudentAccount
   const [studentAccountUserId, setStudentAccountUserId] = useState(
     () => initialData.studentAccounts.find((a) => !a.linkedStudent)?.userId ?? ""
   );
@@ -45,20 +45,16 @@ export function FamilyLinksAdminView({
   const [isSavingStudentLink, setIsSavingStudentLink] = useState(false);
 
   const [removingKey, setRemovingKey] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleLinkGuardian(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    setFeedback(null);
+    setErrorMessage(null);
 
     if (!guardianId || !guardianStudentId) {
-      setFeedback({
-        type: "error",
-        message: "Selecione um responsável e um estudante para vincular.",
-      });
+      const msg = "Selecione um responsável e um estudante para vincular.";
+      setErrorMessage(msg);
+      toast.warning(msg);
       return;
     }
 
@@ -84,21 +80,18 @@ export function FamilyLinksAdminView({
         } catch {
           // Mantem mensagem padrao.
         }
-        setFeedback({ type: "error", message });
+        setErrorMessage(message);
+        toast.error(message);
         return;
       }
 
       const updated = (await response.json()) as AdminFamilyLinksPayload;
       setData(updated);
-      setFeedback({
-        type: "success",
-        message: "Vínculo entre responsável e estudante criado com sucesso.",
-      });
+      toast.success("Vínculo entre responsável e estudante criado com sucesso.");
     } catch {
-      setFeedback({
-        type: "error",
-        message: "Falha de conexão com o servidor.",
-      });
+      const msg = "Falha de conexão com o servidor.";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSavingGuardian(false);
     }
@@ -108,13 +101,12 @@ export function FamilyLinksAdminView({
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
-    setFeedback(null);
+    setErrorMessage(null);
 
     if (!studentAccountUserId || !studentAccountTargetId) {
-      setFeedback({
-        type: "error",
-        message: "Selecione uma conta de aluno e a matrícula correspondente.",
-      });
+      const msg = "Selecione uma conta de aluno e a matrícula correspondente.";
+      setErrorMessage(msg);
+      toast.warning(msg);
       return;
     }
 
@@ -139,7 +131,8 @@ export function FamilyLinksAdminView({
         } catch {
           // Mantem mensagem padrao.
         }
-        setFeedback({ type: "error", message });
+        setErrorMessage(message);
+        toast.error(message);
         return;
       }
 
@@ -151,15 +144,11 @@ export function FamilyLinksAdminView({
       setStudentAccountTargetId(
         updated.availableStudents.find((s) => !s.userId)?.id ?? ""
       );
-      setFeedback({
-        type: "success",
-        message: "Conta de acesso vinculada ao estudante com sucesso.",
-      });
+      toast.success("Conta de acesso vinculada ao estudante com sucesso.");
     } catch {
-      setFeedback({
-        type: "error",
-        message: "Falha de conexão com o servidor.",
-      });
+      const msg = "Falha de conexão com o servidor.";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSavingStudentLink(false);
     }
@@ -167,7 +156,7 @@ export function FamilyLinksAdminView({
 
   async function handleRemoveGuardianLink(linkId: string): Promise<void> {
     setRemovingKey(`g:${linkId}`);
-    setFeedback(null);
+    setErrorMessage(null);
 
     try {
       const response = await fetch(`/api/admin/family-links/${linkId}`, {
@@ -175,10 +164,9 @@ export function FamilyLinksAdminView({
       });
 
       if (!response.ok) {
-        setFeedback({
-          type: "error",
-          message: "Não foi possível remover o vínculo.",
-        });
+        const msg = "Não foi possível remover o vínculo.";
+        setErrorMessage(msg);
+        toast.error(msg);
         return;
       }
 
@@ -186,15 +174,11 @@ export function FamilyLinksAdminView({
         ...prev,
         guardianLinks: prev.guardianLinks.filter((item) => item.id !== linkId),
       }));
-      setFeedback({
-        type: "success",
-        message: "Vínculo de responsável removido.",
-      });
+      toast.success("Vínculo de responsável removido.");
     } catch {
-      setFeedback({
-        type: "error",
-        message: "Falha de conexão com o servidor.",
-      });
+      const msg = "Falha de conexão com o servidor.";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setRemovingKey(null);
     }
@@ -202,7 +186,7 @@ export function FamilyLinksAdminView({
 
   async function handleUnlinkStudentAccount(studentId: string): Promise<void> {
     setRemovingKey(`s:${studentId}`);
-    setFeedback(null);
+    setErrorMessage(null);
 
     try {
       const response = await fetch(
@@ -211,10 +195,9 @@ export function FamilyLinksAdminView({
       );
 
       if (!response.ok) {
-        setFeedback({
-          type: "error",
-          message: "Não foi possível desvincular a conta do aluno.",
-        });
+        const msg = "Não foi possível desvincular a conta do aluno.";
+        setErrorMessage(msg);
+        toast.error(msg);
         return;
       }
 
@@ -225,15 +208,11 @@ export function FamilyLinksAdminView({
         const refreshed = (await refreshedRes.json()) as AdminFamilyLinksPayload;
         setData(refreshed);
       }
-      setFeedback({
-        type: "success",
-        message: "Conta de acesso desvinculada do estudante.",
-      });
+      toast.success("Conta de acesso desvinculada do estudante.");
     } catch {
-      setFeedback({
-        type: "error",
-        message: "Falha de conexão com o servidor.",
-      });
+      const msg = "Falha de conexão com o servidor.";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setRemovingKey(null);
     }
@@ -241,49 +220,45 @@ export function FamilyLinksAdminView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6">
+      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
               Vínculos de Responsáveis e Contas de Alunos
             </h2>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Associe contas com perfil Responsável ou Aluno às matrículas escolares para habilitar
               os portais e avisos automáticos.
             </p>
           </div>
           <Link
             href="/dashboard/usuarios"
-            className="inline-flex w-fit shrink-0 items-center rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50"
+            className="inline-flex w-fit shrink-0 items-center rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             Cadastrar contas em Usuários
           </Link>
         </div>
       </section>
 
-      {feedback ? (
+      {errorMessage ? (
         <div
-          role={feedback.type === "error" ? "alert" : "status"}
-          className={`flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm font-medium ring-1 ring-inset ${
-            feedback.type === "success"
-              ? "bg-emerald-50 text-emerald-900 ring-emerald-200"
-              : "bg-red-50 text-red-800 ring-red-200"
-          }`}
+          role="alert"
+          className="flex items-start gap-2.5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
         >
-          {feedback.type === "success" ? (
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" strokeWidth={1.75} />
-          ) : (
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" strokeWidth={1.75} />
-          )}
-          <span>{feedback.message}</span>
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
+          <span>{errorMessage}</span>
         </div>
       ) : null}
 
       {/* Secao 1: Vinculos de Responsaveis */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6">
-        <div className="mb-4 flex items-center gap-2 border-b border-slate-200/80 pb-3">
-          <HeartHandshake className="h-5 w-5 text-[#1E40AF]" strokeWidth={1.75} aria-hidden="true" />
-          <h3 className="text-base font-semibold text-slate-900">
+      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+        <div className="mb-4 flex items-center gap-2 border-b border-slate-200/80 pb-3 dark:border-slate-800">
+          <HeartHandshake
+            className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
             Responsáveis vinculados a Estudantes ({data.guardianLinks.length})
           </h3>
         </div>
@@ -293,7 +268,10 @@ export function FamilyLinksAdminView({
           className="grid grid-cols-1 gap-3 md:grid-cols-[1.2fr_1.3fr_0.8fr_auto] md:items-end"
         >
           <div className="space-y-1">
-            <label htmlFor="link-guardian" className="block text-xs font-medium text-slate-700">
+            <label
+              htmlFor="link-guardian"
+              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
+            >
               Responsável (conta)
             </label>
             <select
@@ -301,7 +279,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingGuardian || data.availableGuardians.length === 0}
               value={guardianId}
               onChange={(event) => setGuardianId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:disabled:bg-slate-800/50"
             >
               {data.availableGuardians.length === 0 ? (
                 <option value="">Nenhuma conta RESPONSAVEL ativa</option>
@@ -318,7 +296,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-guardian-student"
-              className="block text-xs font-medium text-slate-700"
+              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
             >
               Estudante
             </label>
@@ -327,7 +305,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingGuardian || data.availableStudents.length === 0}
               value={guardianStudentId}
               onChange={(event) => setGuardianStudentId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             >
               {data.availableStudents.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -340,7 +318,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-relationship"
-              className="block text-xs font-medium text-slate-700"
+              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
             >
               Parentesco
             </label>
@@ -349,7 +327,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingGuardian}
               value={relationship}
               onChange={(event) => setRelationship(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none"
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             >
               {RELATIONSHIP_PRESETS.map((preset) => (
                 <option key={preset} value={preset}>
@@ -366,7 +344,7 @@ export function FamilyLinksAdminView({
               data.availableGuardians.length === 0 ||
               data.availableStudents.length === 0
             }
-            className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1E3A8A] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSavingGuardian ? (
               <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
@@ -377,9 +355,9 @@ export function FamilyLinksAdminView({
           </button>
         </form>
 
-        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-200/80">
+        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-200/80 dark:divide-slate-800 dark:border-slate-800">
           {data.guardianLinks.length === 0 ? (
-            <p className="py-6 text-center text-sm text-slate-500">
+            <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
               Nenhum vínculo de responsável cadastrado ainda.
             </p>
           ) : (
@@ -388,28 +366,31 @@ export function FamilyLinksAdminView({
                 key={link.id}
                 className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="min-w-0 text-sm">
-                  <p className="font-semibold text-slate-900">
-                    {link.guardian.name}{" "}
-                    <span className="rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-inset ring-emerald-200">
-                      {link.relationship}
-                    </span>
-                  </p>
-                  <p className="mt-0.5 text-xs text-slate-600">
-                    {link.guardian.email} →{" "}
-                    <strong className="font-medium text-slate-900">
-                      {link.student.name}
-                    </strong>{" "}
-                    ({link.student.classroom.name} ·{" "}
-                    <span className="font-mono">{link.student.registration}</span>)
-                  </p>
+                <div className="flex min-w-0 items-center gap-3 text-sm">
+                  <Avatar name={link.guardian.name} size="sm" />
+                  <div className="min-w-0">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
+                      {link.guardian.name}{" "}
+                      <span className="rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30">
+                        {link.relationship}
+                      </span>
+                    </p>
+                    <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
+                      {link.guardian.email} →{" "}
+                      <strong className="font-medium text-slate-900 dark:text-slate-100">
+                        {link.student.name}
+                      </strong>{" "}
+                      ({link.student.classroom.name} ·{" "}
+                      <span className="font-mono">{link.student.registration}</span>)
+                    </p>
+                  </div>
                 </div>
 
                 <button
                   type="button"
                   disabled={removingKey === `g:${link.id}`}
                   onClick={() => handleRemoveGuardianLink(link.id)}
-                  className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+                  className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-red-300 dark:hover:bg-red-500/15"
                 >
                   <Unlink className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                   <span>Desvincular</span>
@@ -421,10 +402,14 @@ export function FamilyLinksAdminView({
       </section>
 
       {/* Secao 2: Contas de Alunos */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6">
-        <div className="mb-4 flex items-center gap-2 border-b border-slate-200/80 pb-3">
-          <GraduationCap className="h-5 w-5 text-[#1E40AF]" strokeWidth={1.75} aria-hidden="true" />
-          <h3 className="text-base font-semibold text-slate-900">
+      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+        <div className="mb-4 flex items-center gap-2 border-b border-slate-200/80 pb-3 dark:border-slate-800">
+          <GraduationCap
+            className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
             Contas de Acesso de Estudantes ({data.studentAccounts.length})
           </h3>
         </div>
@@ -436,7 +421,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-student-user"
-              className="block text-xs font-medium text-slate-700"
+              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
             >
               Conta com perfil Aluno
             </label>
@@ -445,7 +430,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingStudentLink || data.studentAccounts.length === 0}
               value={studentAccountUserId}
               onChange={(event) => setStudentAccountUserId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             >
               <option value="">Selecione uma conta...</option>
               {data.studentAccounts.map((acc) => (
@@ -460,7 +445,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-student-record"
-              className="block text-xs font-medium text-slate-700"
+              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
             >
               Matrícula do Estudante
             </label>
@@ -469,7 +454,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingStudentLink || data.availableStudents.length === 0}
               value={studentAccountTargetId}
               onChange={(event) => setStudentAccountTargetId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-800 focus:ring-2 focus:ring-blue-800/15 focus:outline-none disabled:bg-slate-50"
+              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             >
               <option value="">Selecione o aluno...</option>
               {data.availableStudents.map((s) => (
@@ -486,7 +471,7 @@ export function FamilyLinksAdminView({
             disabled={
               isSavingStudentLink || !studentAccountUserId || !studentAccountTargetId
             }
-            className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[#1E40AF] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1E3A8A] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSavingStudentLink ? (
               <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
@@ -497,9 +482,9 @@ export function FamilyLinksAdminView({
           </button>
         </form>
 
-        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-200/80">
+        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-200/80 dark:divide-slate-800 dark:border-slate-800">
           {data.studentAccounts.length === 0 ? (
-            <p className="py-6 text-center text-sm text-slate-500">
+            <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
               Nenhuma conta com perfil ALUNO cadastrada.
             </p>
           ) : (
@@ -508,20 +493,27 @@ export function FamilyLinksAdminView({
                 key={acc.userId}
                 className="flex flex-col gap-3 py-3.5 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="min-w-0 text-sm">
-                  <p className="font-semibold text-slate-900">{acc.userName}</p>
-                  <p className="text-xs text-slate-500">{acc.userEmail}</p>
-                  {acc.linkedStudent ? (
-                    <p className="mt-1 text-xs text-emerald-800">
-                      Vinculada a <strong>{acc.linkedStudent.name}</strong> (
-                      {acc.linkedStudent.classroomName} ·{" "}
-                      <span className="font-mono">{acc.linkedStudent.registration}</span>)
+                <div className="flex min-w-0 items-center gap-3 text-sm">
+                  <Avatar name={acc.userName} size="sm" />
+                  <div className="min-w-0">
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">
+                      {acc.userName}
                     </p>
-                  ) : (
-                    <p className="mt-1 text-xs text-amber-800">
-                      Sem matrícula associada
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {acc.userEmail}
                     </p>
-                  )}
+                    {acc.linkedStudent ? (
+                      <p className="mt-1 text-xs text-emerald-800 dark:text-emerald-300">
+                        Vinculada a <strong>{acc.linkedStudent.name}</strong> (
+                        {acc.linkedStudent.classroomName} ·{" "}
+                        <span className="font-mono">{acc.linkedStudent.registration}</span>)
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-xs text-amber-800 dark:text-amber-300">
+                        Sem matrícula associada
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {acc.linkedStudent ? (
@@ -532,7 +524,7 @@ export function FamilyLinksAdminView({
                       acc.linkedStudent &&
                       handleUnlinkStudentAccount(acc.linkedStudent.id)
                     }
-                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-red-300 dark:hover:bg-red-500/15"
                   >
                     <Unlink className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                     <span>Desvincular</span>
