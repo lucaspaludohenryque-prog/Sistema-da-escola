@@ -32,7 +32,13 @@ export async function getStudentReportForUser(
       guardianName: true,
       guardianPhone: true,
       active: true,
+      userId: true,
       createdAt: true,
+      guardianLinks: {
+        select: {
+          guardianId: true,
+        },
+      },
       classroom: {
         select: {
           id: true,
@@ -95,10 +101,14 @@ export async function getStudentReportForUser(
     return { status: "not_found" };
   }
 
-  if (
-    !canManageClassrooms(user.role) &&
-    student.classroom.teacherId !== user.id
-  ) {
+  const isAuthorized =
+    canManageClassrooms(user.role) ||
+    (user.role === "PROFESSOR" && student.classroom.teacherId === user.id) ||
+    (user.role === "RESPONSAVEL" &&
+      student.guardianLinks.some((link) => link.guardianId === user.id)) ||
+    (user.role === "ALUNO" && student.userId === user.id);
+
+  if (!isAuthorized) {
     return { status: "forbidden" };
   }
 

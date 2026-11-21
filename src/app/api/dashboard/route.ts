@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedUser } from "@/features/auth";
+import { getAuthenticatedUser, isStaffRole } from "@/features/auth";
 import type { ApiErrorPayload } from "@/features/classrooms";
 import { getDashboardOverviewForUser } from "@/features/dashboard/queries";
 import type { DashboardOverviewData } from "@/features/dashboard/types";
@@ -19,6 +19,13 @@ export async function GET(): Promise<
     return NextResponse.json<ApiErrorPayload>(
       { error: "Sessão ausente ou expirada.", code: "UNAUTHORIZED" },
       { status: 401, headers: NO_STORE_HEADERS }
+    );
+  }
+
+  if (!isStaffRole(user.role)) {
+    return NextResponse.json<ApiErrorPayload>(
+      { error: "Acesso restrito à equipe escolar.", code: "FORBIDDEN" },
+      { status: 403, headers: NO_STORE_HEADERS }
     );
   }
 

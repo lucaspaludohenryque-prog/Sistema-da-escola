@@ -20,6 +20,17 @@ export const OCCURRENCE_STATUSES = ["PENDENTE", "RESOLVIDO"] as const;
 
 export type OccurrenceStatus = (typeof OCCURRENCE_STATUSES)[number];
 
+export type FamilyAcknowledgementStatus =
+  | "ACKNOWLEDGED"
+  | "PENDING"
+  | "NO_GUARDIAN";
+
+export interface OccurrenceFamilyReceipt {
+  status: FamilyAcknowledgementStatus;
+  acknowledgedAt: string | null;
+  acknowledgedByName: string | null;
+}
+
 export interface OccurrenceItem {
   id: string;
   studentId: string;
@@ -33,6 +44,7 @@ export interface OccurrenceItem {
   date: string;
   createdAt: string;
   canDelete: boolean;
+  familyReceipt: OccurrenceFamilyReceipt;
   student: {
     id: string;
     name: string;

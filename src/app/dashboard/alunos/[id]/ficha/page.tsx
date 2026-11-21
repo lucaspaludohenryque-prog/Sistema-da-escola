@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { getAuthenticatedUser } from "@/features/auth";
+import { getAuthenticatedUser, getDefaultDashboardPath } from "@/features/auth";
 import { getStudentReportForUser } from "@/features/reports";
 import { StudentReportView } from "@/features/reports/components/StudentReportView";
 
@@ -30,8 +30,28 @@ export default async function StudentReportPage({
   }
 
   if (result.status === "forbidden") {
-    redirect("/dashboard/turmas");
+    redirect(getDefaultDashboardPath(user.role));
   }
 
-  return <StudentReportView report={result.report} />;
+  const backHref =
+    user.role === "RESPONSAVEL"
+      ? "/dashboard/familia"
+      : user.role === "ALUNO"
+        ? "/dashboard/aluno"
+        : `/dashboard/turmas/${result.report.classroom.id}`;
+
+  const backLabel =
+    user.role === "RESPONSAVEL"
+      ? "Voltar para Painel da Família"
+      : user.role === "ALUNO"
+        ? "Voltar para Meu Painel"
+        : `Voltar para ${result.report.classroom.name}`;
+
+  return (
+    <StudentReportView
+      report={result.report}
+      backHref={backHref}
+      backLabel={backLabel}
+    />
+  );
 }

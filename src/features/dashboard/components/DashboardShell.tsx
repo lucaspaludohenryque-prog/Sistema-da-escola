@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Loader2, LogOut, Menu } from "lucide-react";
+import { Bell, Loader2, LogOut, Menu } from "lucide-react";
 import { ROLE_BADGE_STYLES, ROLE_LABELS } from "@/features/auth/constants";
 import type { PublicUser } from "@/features/auth/types";
+import { NOTIFICATIONS_UPDATED_EVENT } from "@/features/notifications/constants";
 import type { SchoolConfigData } from "@/features/school-config/types";
 import { resolveDashboardSectionTitle } from "../constants";
 import { SidebarNav } from "./SidebarNav";
@@ -12,22 +14,53 @@ import { SidebarNav } from "./SidebarNav";
 interface DashboardShellProps {
   user: PublicUser;
   schoolConfig: SchoolConfigData;
+  initialUnacknowledgedCount: number;
   children: React.ReactNode;
 }
 
 export function DashboardShell({
   user,
   schoolConfig,
+  initialUnacknowledgedCount,
   children,
 }: DashboardShellProps): React.JSX.Element {
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [unacknowledgedCount, setUnacknowledgedCount] = useState(
+    initialUnacknowledgedCount
+  );
 
   const sectionTitle = resolveDashboardSectionTitle(pathname);
   const roleLabel = ROLE_LABELS[user.role];
   const roleBadgeClass = ROLE_BADGE_STYLES[user.role];
+  const showNotificationBell =
+    user.role === "RESPONSAVEL" || user.role === "ALUNO";
+
+  useEffect(() => {
+    setUnacknowledgedCount(initialUnacknowledgedCount);
+  }, [initialUnacknowledgedCount]);
+
+  useEffect(() => {
+    if (!showNotificationBell) {
+      return;
+    }
+
+    function handleNotificationsUpdated(event: Event): void {
+      const customEvent = event as CustomEvent<{ unacknowledgedCount: number }>;
+      if (typeof customEvent.detail?.unacknowledgedCount === "number") {
+        setUnacknowledgedCount(customEvent.detail.unacknowledgedCount);
+      }
+    }
+
+    window.addEventListener(NOTIFICATIONS_UPDATED_EVENT, handleNotificationsUpdated);
+    return () =>
+      window.removeEventListener(
+        NOTIFICATIONS_UPDATED_EVENT,
+        handleNotificationsUpdated
+      );
+  }, [showNotificationBell]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) {
@@ -72,7 +105,11 @@ export function DashboardShell({
 
       {/* Sidebar fixa no desktop */}
       <aside className="hidden w-64 shrink-0 border-r border-slate-200/80 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:block print:hidden">
-        <SidebarNav userRole={user.role} schoolConfig={schoolConfig} />
+        <SidebarNav
+          userRole={user.role}
+          schoolConfig={schoolConfig}
+          unacknowledgedCount={unacknowledgedCount}
+        />
       </aside>
 
       {/* Drawer lateral responsivo no mobile */}
@@ -92,6 +129,7 @@ export function DashboardShell({
             <SidebarNav
               userRole={user.role}
               schoolConfig={schoolConfig}
+              unacknowledgedCount={unacknowledgedCount}
               onNavigate={() => setIsMobileMenuOpen(false)}
               onCloseMobile={() => setIsMobileMenuOpen(false)}
             />
@@ -117,6 +155,25 @@ export function DashboardShell({
           </div>
 
           <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+            {showNotificationBell ? (
+              <Link
+                href="/dashboard/avisos"
+                aria-label={
+                  unacknowledgedCount > 0
+                    ? `Avisos (${unacknowledgedCount} aguardando confirmação)`
+                    : "Avisos"
+                }
+                className="relative flex h-10 w-10 items-center justify-center rounded-lg text-slate-700 transition-colors hover:bg-slate-100 hover:text-[#1E40AF]"
+              >
+                <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+                {unacknowledgedCount > 0 ? (
+                  <span className="absolute top-1 right-1 inline-flex min-w-[18px] items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[10px] font-bold text-white ring-2 ring-white">
+                    {unacknowledgedCount > 99 ? "99+" : unacknowledgedCount}
+                  </span>
+                ) : null}
+              </Link>
+            ) : null}
+
             <div className="hidden text-right sm:block">
               <p className="max-w-[200px] truncate text-sm font-medium text-slate-900">
                 {user.name}

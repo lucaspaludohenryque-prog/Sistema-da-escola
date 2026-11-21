@@ -1,4 +1,10 @@
-export const USER_ROLES = ["ADMIN", "COORDENACAO", "PROFESSOR"] as const;
+export const USER_ROLES = [
+  "ADMIN",
+  "COORDENACAO",
+  "PROFESSOR",
+  "RESPONSAVEL",
+  "ALUNO",
+] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
 
@@ -32,4 +38,18 @@ export interface AuthErrorResponse {
     | "ACCOUNT_DISABLED"
     | "UNAUTHORIZED"
     | "INTERNAL_ERROR";
+}
+
+export function isStaffRole(role: UserRole): boolean {
+  return role === "ADMIN" || role === "COORDENACAO" || role === "PROFESSOR";
+}
+
+export function getDefaultDashboardPath(role: UserRole): string {
+  if (role === "RESPONSAVEL") {
+    return "/dashboard/familia";
+  }
+  if (role === "ALUNO") {
+    return "/dashboard/aluno";
+  }
+  return "/dashboard";
 }

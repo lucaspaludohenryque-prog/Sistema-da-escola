@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Calendar,
+  CheckCheck,
   CheckCircle2,
+  Clock,
   FileWarning,
   Plus,
   Search,
@@ -13,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { formatIsoDateBr } from "@/features/attendance/constants";
+import { formatShortDateTimeBr } from "@/features/notifications/constants";
 import { DeleteConfirmModal } from "@/features/classrooms/components/DeleteConfirmModal";
 import type { ApiErrorPayload, ClassroomSummary } from "@/features/classrooms/types";
 import {
@@ -371,6 +374,26 @@ export function OccurrencesView({
                       >
                         {OCCURRENCE_STATUS_LABELS[item.status]}
                       </span>
+
+                      {item.familyReceipt.status === "ACKNOWLEDGED" &&
+                      item.familyReceipt.acknowledgedAt ? (
+                        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-inset ring-emerald-200">
+                          <CheckCheck className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                          <span>
+                            Responsável ciente em{" "}
+                            {formatShortDateTimeBr(item.familyReceipt.acknowledgedAt)}
+                          </span>
+                        </span>
+                      ) : item.familyReceipt.status === "PENDING" ? (
+                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-inset ring-amber-200">
+                          <Clock className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                          <span>Aguardando ciência do responsável</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+                          Sem responsável vinculado
+                        </span>
+                      )}
                     </div>
 
                     <div>

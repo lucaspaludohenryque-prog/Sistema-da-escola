@@ -12,6 +12,8 @@ enum UserRole {
   ADMIN
   COORDENACAO
   PROFESSOR
+  RESPONSAVEL
+  ALUNO
 }
 
 enum Shift {
@@ -46,17 +48,26 @@ enum OccurrenceStatus {
   RESOLVIDO
 }
 
+enum NotificationType {
+  FALTA
+  OCORRENCIA
+  COMUNICADO
+}
+
 model User {
-  id          String       @id @default(cuid())
-  name        String
-  email       String       @unique
-  password    String
-  role        UserRole     @default(PROFESSOR)
-  active      Boolean      @default(true)
-  classrooms  Classroom[]
-  occurrences Occurrence[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id             String            @id @default(cuid())
+  name           String
+  email          String            @unique
+  password       String
+  role           UserRole          @default(PROFESSOR)
+  active         Boolean           @default(true)
+  classrooms     Classroom[]
+  occurrences    Occurrence[]
+  guardianLinks  GuardianStudent[]
+  studentProfile Student?
+  notifications  Notification[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@index([role])
   @@index([active])
@@ -97,23 +108,62 @@ model Classroom {
 }
 
 model Student {
-  id            String       @id @default(cuid())
+  id            String            @id @default(cuid())
   name          String
-  registration  String       @unique
+  registration  String            @unique
   guardianName  String
   guardianPhone String
-  active        Boolean      @default(true)
+  active        Boolean           @default(true)
   classroomId   String
-  classroom     Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroom     Classroom         @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  userId        String?           @unique
+  user          User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
   attendances   Attendance[]
   occurrences   Occurrence[]
   grades        Grade[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  guardianLinks GuardianStudent[]
+  notifications Notification[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
 
   @@index([classroomId, name])
   @@index([active])
   @@map("students")
+}
+
+model GuardianStudent {
+  id           String   @id @default(cuid())
+  guardianId   String
+  guardian     User     @relation(fields: [guardianId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  relationship String   @default("Responsável")
+  createdAt    DateTime @default(now())
+
+  @@unique([guardianId, studentId])
+  @@index([guardianId])
+  @@index([studentId])
+  @@map("guardian_students")
+}
+
+model Notification {
+  id             String           @id @default(cuid())
+  recipientId    String
+  recipient      User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  studentId      String
+  student        Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type           NotificationType
+  title          String
+  message        String
+  referenceKey   String?
+  readAt         DateTime?
+  acknowledgedAt DateTime?
+  createdAt      DateTime         @default(now())
+
+  @@unique([recipientId, referenceKey])
+  @@index([recipientId, createdAt])
+  @@index([studentId, referenceKey])
+  @@map("notifications")
 }
 
 model Lesson {

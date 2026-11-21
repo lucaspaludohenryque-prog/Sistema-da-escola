@@ -3,7 +3,12 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
-import type { AuthErrorResponse } from "../types";
+import {
+  getDefaultDashboardPath,
+  type AuthErrorResponse,
+  type AuthUserResponse,
+  type UserRole,
+} from "../types";
 
 interface LoginFormProps {
   redirectTo?: string;
@@ -11,11 +16,25 @@ interface LoginFormProps {
 
 type FormStatus = "idle" | "submitting" | "error";
 
-function resolveSafeNextPath(nextPath?: string): string {
-  if (nextPath && nextPath.startsWith("/dashboard") && !nextPath.startsWith("//")) {
-    return nextPath;
+function resolveSafeNextPath(nextPath: string | undefined, role: UserRole): string {
+  const defaultPath = getDefaultDashboardPath(role);
+  if (!nextPath || !nextPath.startsWith("/dashboard") || nextPath.startsWith("//")) {
+    return defaultPath;
   }
-  return "/dashboard";
+
+  if (role === "RESPONSAVEL" || role === "ALUNO") {
+    if (
+      nextPath.startsWith("/dashboard/avisos") ||
+      nextPath.startsWith("/dashboard/alunos/") ||
+      (role === "RESPONSAVEL" && nextPath.startsWith("/dashboard/familia") && !nextPath.startsWith("/dashboard/familia-vinculos")) ||
+      (role === "ALUNO" && nextPath.startsWith("/dashboard/aluno"))
+    ) {
+      return nextPath;
+    }
+    return defaultPath;
+  }
+
+  return nextPath;
 }
 
 export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
@@ -67,7 +86,8 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
         return;
       }
 
-      const targetPath = resolveSafeNextPath(redirectTo);
+      const payload = (await response.json()) as AuthUserResponse;
+      const targetPath = resolveSafeNextPath(redirectTo, payload.user.role);
       router.replace(targetPath);
       router.refresh();
     } catch {

@@ -40,7 +40,21 @@ const DEFAULT_USERS: SeedUser[] = [
     password: process.env.SEED_ADMIN_PASSWORD ?? "123456",
     role: UserRole.ADMIN,
   },
+  {
+    name: "Patrícia Helena Barbosa",
+    email: "mae@escola.com",
+    password: process.env.SEED_GUARDIAN_PASSWORD ?? "123456",
+    role: UserRole.RESPONSAVEL,
+  },
+  {
+    name: "Eduarda Cristina Barbosa",
+    email: "aluno@escola.com",
+    password: process.env.SEED_STUDENT_PASSWORD ?? "123456",
+    role: UserRole.ALUNO,
+  },
 ];
+
+const LINKED_STUDENT_REGISTRATION = "2026090103";
 
 const DEFAULT_CLASSROOMS: SeedClassroom[] = [
   {
@@ -147,12 +161,14 @@ async function main(): Promise<void> {
         name: user.name,
         password: passwordHash,
         role: user.role,
+        active: true,
       },
       create: {
         name: user.name,
         email: user.email,
         password: passwordHash,
         role: user.role,
+        active: true,
       },
       select: { id: true, email: true },
     });
@@ -161,11 +177,15 @@ async function main(): Promise<void> {
   }
 
   const professorId = usersByEmail.get("professor@escola.com");
-  if (!professorId) {
-    throw new Error("Usuario professor@escola.com nao encontrado apos upsert.");
+  const guardianUserId = usersByEmail.get("mae@escola.com");
+  const studentUserId = usersByEmail.get("aluno@escola.com");
+
+  if (!professorId || !guardianUserId || !studentUserId) {
+    throw new Error("Usuarios padrao obrigatorios nao encontrados apos upsert.");
   }
 
   let totalStudents = 0;
+  let linkedStudentId: string | null = null;
 
   for (const classroom of DEFAULT_CLASSROOMS) {
     await prisma.classroom.upsert({
@@ -188,7 +208,8 @@ async function main(): Promise<void> {
     });
 
     for (const student of classroom.students) {
-      await prisma.student.upsert({
+      const isLinkedStudent = student.registration === LINKED_STUDENT_REGISTRATION;
+      const savedStudent = await prisma.student.upsert({
         where: { registration: student.registration },
         update: {
           name: student.name,
@@ -196,6 +217,7 @@ async function main(): Promise<void> {
           guardianPhone: student.guardianPhone,
           active: true,
           classroomId: classroom.id,
+          ...(isLinkedStudent ? { userId: studentUserId } : {}),
         },
         create: {
           name: student.name,
@@ -204,14 +226,39 @@ async function main(): Promise<void> {
           guardianPhone: student.guardianPhone,
           active: true,
           classroomId: classroom.id,
+          ...(isLinkedStudent ? { userId: studentUserId } : {}),
         },
+        select: { id: true },
       });
+
+      if (isLinkedStudent) {
+        linkedStudentId = savedStudent.id;
+      }
       totalStudents += 1;
     }
   }
 
+  if (linkedStudentId) {
+    await prisma.guardianStudent.upsert({
+      where: {
+        guardianId_studentId: {
+          guardianId: guardianUserId,
+          studentId: linkedStudentId,
+        },
+      },
+      update: {
+        relationship: "Mãe",
+      },
+      create: {
+        guardianId: guardianUserId,
+        studentId: linkedStudentId,
+        relationship: "Mãe",
+      },
+    });
+  }
+
   console.info(
-    `Seed concluido com sucesso: ${DEFAULT_USERS.length} usuarios, ${DEFAULT_CLASSROOMS.length} turmas e ${totalStudents} alunos.`
+    `Seed concluido com sucesso: ${DEFAULT_USERS.length} usuarios, ${DEFAULT_CLASSROOMS.length} turmas, ${totalStudents} alunos e vinculo familiar configurado.`
   );
 }
 

@@ -5,6 +5,7 @@ import {
   type ApiErrorPayload,
 } from "@/features/classrooms";
 import {
+  buildOccurrenceFamilyReceipts,
   updateOccurrenceSchema,
   type OccurrenceItem,
 } from "@/features/occurrences";
@@ -137,10 +138,19 @@ export async function PATCH(
       },
     });
 
+    const receiptMap = await buildOccurrenceFamilyReceipts([
+      { id: updated.id, studentId: updated.studentId },
+    ]);
+
     const occurrence: OccurrenceItem = {
       ...updated,
       createdAt: updated.createdAt.toISOString(),
       canDelete: isManager || updated.authorId === user.id,
+      familyReceipt: receiptMap.get(updated.id) ?? {
+        status: "NO_GUARDIAN",
+        acknowledgedAt: null,
+        acknowledgedByName: null,
+      },
     };
 
     return NextResponse.json(
@@ -211,7 +221,15 @@ export async function DELETE(
       );
     }
 
-    await prisma.occurrence.delete({ where: { id } });
+    await prisma.$transaction([
+      prisma.notification.deleteMany({
+        where: {
+          referenceKey: `OCC_${id}`,
+          acknowledgedAt: null,
+        },
+      }),
+      prisma.occurrence.delete({ where: { id } }),
+    ]);
 
     return NextResponse.json(
       { success: true },

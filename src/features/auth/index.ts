@@ -12,6 +12,8 @@ export { getAuthenticatedUser } from "./session";
 export { loginSchema, type ValidatedLoginInput } from "./validation";
 export {
   USER_ROLES,
+  getDefaultDashboardPath,
+  isStaffRole,
   type AuthErrorResponse,
   type AuthUserResponse,
   type LoginInput,

@@ -13,7 +13,13 @@ import {
   Users,
 } from "lucide-react";
 import { formatIsoDateBr } from "@/features/attendance/constants";
-import { ROLE_BADGE_STYLES, ROLE_LABELS, getAuthenticatedUser } from "@/features/auth";
+import {
+  ROLE_BADGE_STYLES,
+  ROLE_LABELS,
+  getAuthenticatedUser,
+  getDefaultDashboardPath,
+  isStaffRole,
+} from "@/features/auth";
 import { getDashboardOverviewForUser } from "@/features/dashboard/queries";
 import { formatScoreBr } from "@/features/grades/constants";
 import {
@@ -56,6 +62,10 @@ export default async function DashboardHomePage(): Promise<React.JSX.Element> {
 
   if (!user) {
     redirect("/login");
+  }
+
+  if (!isStaffRole(user.role)) {
+    redirect(getDefaultDashboardPath(user.role));
   }
 
   const overview = await getDashboardOverviewForUser(user);

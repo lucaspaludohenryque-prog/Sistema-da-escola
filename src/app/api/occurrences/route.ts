@@ -1,12 +1,16 @@
+import { NotificationType } from "@prisma/client";
 import { NextResponse, type NextRequest } from "next/server";
-import { getAuthenticatedUser } from "@/features/auth";
+import { formatIsoDateBr } from "@/features/attendance/constants";
+import { getAuthenticatedUser, isStaffRole } from "@/features/auth";
 import {
   canManageClassrooms,
   type ApiErrorPayload,
 } from "@/features/classrooms";
 import {
   OCCURRENCE_SEVERITIES,
+  OCCURRENCE_SEVERITY_LABELS,
   OCCURRENCE_STATUSES,
+  OCCURRENCE_TYPE_LABELS,
   createOccurrenceSchema,
   listOccurrencesForUser,
   type OccurrenceItem,
@@ -47,6 +51,13 @@ export async function GET(
     );
   }
 
+  if (!isStaffRole(user.role)) {
+    return NextResponse.json<ApiErrorPayload>(
+      { error: "Acesso restrito à equipe escolar.", code: "FORBIDDEN" },
+      { status: 403, headers: NO_STORE_HEADERS }
+    );
+  }
+
   const params = request.nextUrl.searchParams;
   const classroomId = params.get("classroomId")?.trim() || undefined;
   const severity = parseSeverity(params.get("severity"));
@@ -82,7 +93,8 @@ export async function GET(
 
 /**
  * POST /api/occurrences
- * Registra nova ocorrencia usando o usuario autenticado como authorId.
+ * Registra nova ocorrencia usando o usuario autenticado como authorId e
+ * dispara notificacao automatica para todos os responsaveis vinculados ao aluno.
  */
 export async function POST(
   request: NextRequest
@@ -92,6 +104,13 @@ export async function POST(
     return NextResponse.json<ApiErrorPayload>(
       { error: "Sessão ausente ou expirada.", code: "UNAUTHORIZED" },
       { status: 401, headers: NO_STORE_HEADERS }
+    );
+  }
+
+  if (!isStaffRole(user.role)) {
+    return NextResponse.json<ApiErrorPayload>(
+      { error: "Acesso restrito à equipe escolar.", code: "FORBIDDEN" },
+      { status: 403, headers: NO_STORE_HEADERS }
     );
   }
 
@@ -144,7 +163,12 @@ export async function POST(
         id: studentId,
         classroomId: classroom.id,
       },
-      select: { id: true },
+      select: {
+        id: true,
+        guardianLinks: {
+          select: { guardianId: true },
+        },
+      },
     });
 
     if (!student) {
@@ -157,57 +181,95 @@ export async function POST(
       );
     }
 
-    const created = await prisma.occurrence.create({
-      data: {
-        classroomId: classroom.id,
-        studentId: student.id,
-        authorId: user.id,
-        type,
-        severity,
-        date,
-        description,
-      },
-      select: {
-        id: true,
-        studentId: true,
-        classroomId: true,
-        authorId: true,
-        type: true,
-        severity: true,
-        description: true,
-        status: true,
-        resolutionNote: true,
-        date: true,
-        createdAt: true,
-        student: {
-          select: {
-            id: true,
-            name: true,
-            registration: true,
+    const created = await prisma.$transaction(async (tx) => {
+      const record = await tx.occurrence.create({
+        data: {
+          classroomId: classroom.id,
+          studentId: student.id,
+          authorId: user.id,
+          type,
+          severity,
+          date,
+          description,
+        },
+        select: {
+          id: true,
+          studentId: true,
+          classroomId: true,
+          authorId: true,
+          type: true,
+          severity: true,
+          description: true,
+          status: true,
+          resolutionNote: true,
+          date: true,
+          createdAt: true,
+          student: {
+            select: {
+              id: true,
+              name: true,
+              registration: true,
+            },
+          },
+          classroom: {
+            select: {
+              id: true,
+              name: true,
+              subject: true,
+              shift: true,
+            },
+          },
+          author: {
+            select: {
+              id: true,
+              name: true,
+              role: true,
+            },
           },
         },
-        classroom: {
-          select: {
-            id: true,
-            name: true,
-            subject: true,
-            shift: true,
+      });
+
+      const typeLabel = OCCURRENCE_TYPE_LABELS[record.type];
+      const severityLabel = OCCURRENCE_SEVERITY_LABELS[record.severity];
+      const title =
+        record.type === "ELOGIO"
+          ? `Elogio registrado - ${record.student.name}`
+          : `${typeLabel} (${severityLabel}) - ${record.student.name}`;
+      const message = `Registrado por ${record.author.name} em ${formatIsoDateBr(record.date)} (${record.classroom.name} - ${record.classroom.subject}): ${record.description}`;
+      const referenceKey = `OCC_${record.id}`;
+
+      for (const link of student.guardianLinks) {
+        await tx.notification.upsert({
+          where: {
+            recipientId_referenceKey: {
+              recipientId: link.guardianId,
+              referenceKey,
+            },
           },
-        },
-        author: {
-          select: {
-            id: true,
-            name: true,
-            role: true,
+          update: { title, message },
+          create: {
+            recipientId: link.guardianId,
+            studentId: record.studentId,
+            type: NotificationType.OCORRENCIA,
+            title,
+            message,
+            referenceKey,
           },
-        },
-      },
+        });
+      }
+
+      return record;
     });
 
     const occurrence: OccurrenceItem = {
       ...created,
       createdAt: created.createdAt.toISOString(),
       canDelete: true,
+      familyReceipt: {
+        status: student.guardianLinks.length > 0 ? "PENDING" : "NO_GUARDIAN",
+        acknowledgedAt: null,
+        acknowledgedByName: null,
+      },
     };
 
     return NextResponse.json(

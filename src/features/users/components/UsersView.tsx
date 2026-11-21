@@ -220,7 +220,9 @@ export function UsersView({
             role="group"
             aria-label="Filtrar por perfil"
           >
-            {(["ALL", "PROFESSOR", "COORDENACAO", "ADMIN"] as const).map((option) => {
+            {(
+              ["ALL", "PROFESSOR", "COORDENACAO", "ADMIN", "RESPONSAVEL", "ALUNO"] as const
+            ).map((option) => {
               const isSelected = roleFilter === option;
               const label = option === "ALL" ? "Todos" : ROLE_LABELS[option];
 

@@ -7,6 +7,7 @@ export {
   OCCURRENCE_TYPE_LABELS,
 } from "./constants";
 export {
+  buildOccurrenceFamilyReceipts,
   listOccurrencesForUser,
   type OccurrenceListFilters,
 } from "./queries";

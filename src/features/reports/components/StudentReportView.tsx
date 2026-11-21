@@ -25,6 +25,8 @@ import type { StudentReportData } from "../types";
 
 interface StudentReportViewProps {
   report: StudentReportData;
+  backHref?: string;
+  backLabel?: string;
 }
 
 function formatDateTimeBr(isoTimestamp: string): string {
@@ -37,6 +39,8 @@ function formatDateTimeBr(isoTimestamp: string): string {
 
 export function StudentReportView({
   report,
+  backHref,
+  backLabel,
 }: StudentReportViewProps): React.JSX.Element {
   const { school, student, classroom, attendance, terms, annualAverage, occurrences } =
     report;
@@ -62,11 +66,11 @@ export function StudentReportView({
       {/* Barra de acoes oculta na impressao */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
         <Link
-          href={`/dashboard/turmas/${classroom.id}`}
+          href={backHref ?? `/dashboard/turmas/${classroom.id}`}
           className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-[#1E40AF]"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-          <span>Voltar para {classroom.name}</span>
+          <span>{backLabel ?? `Voltar para ${classroom.name}`}</span>
         </Link>
 
         <button

@@ -4,13 +4,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpenCheck, X } from "lucide-react";
-import type { UserRole } from "@/features/auth/types";
+import { getDefaultDashboardPath, type UserRole } from "@/features/auth/types";
 import type { SchoolConfigData } from "@/features/school-config/types";
-import { DASHBOARD_NAV_ITEMS } from "../constants";
+import { getDashboardNavItems } from "../constants";
 
 interface SidebarNavProps {
   userRole: UserRole;
   schoolConfig: SchoolConfigData;
+  unacknowledgedCount: number;
   onNavigate?: () => void;
   onCloseMobile?: () => void;
 }
@@ -18,19 +19,19 @@ interface SidebarNavProps {
 export function SidebarNav({
   userRole,
   schoolConfig,
+  unacknowledgedCount,
   onNavigate,
   onCloseMobile,
 }: SidebarNavProps): React.JSX.Element {
   const pathname = usePathname();
-  const visibleItems = DASHBOARD_NAV_ITEMS.filter(
-    (item) => !item.adminOnly || userRole === "ADMIN"
-  );
+  const visibleItems = getDashboardNavItems(userRole);
+  const homeHref = getDefaultDashboardPath(userRole);
 
   return (
     <div className="flex h-full flex-col bg-white">
       <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-4">
         <Link
-          href="/dashboard"
+          href={homeHref}
           onClick={onNavigate}
           className="flex min-w-0 items-center gap-3 rounded-lg py-1 focus-visible:outline-none"
         >
@@ -51,7 +52,13 @@ export function SidebarNav({
             <p className="truncate text-sm font-semibold tracking-tight text-slate-900">
               {schoolConfig.name}
             </p>
-            <p className="truncate text-xs text-slate-500">Registro de Classe</p>
+            <p className="truncate text-xs text-slate-500">
+              {userRole === "RESPONSAVEL"
+                ? "Portal da Família"
+                : userRole === "ALUNO"
+                  ? "Portal do Aluno"
+                  : "Registro de Classe"}
+            </p>
           </div>
         </Link>
 
@@ -71,9 +78,12 @@ export function SidebarNav({
         <ul className="space-y-1">
           {visibleItems.map((item) => {
             const Icon = item.icon;
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
+            const hasHash = item.href.includes("#");
+            const isActive = hasHash
+              ? false
+              : item.exact
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
 
             return (
               <li key={item.href}>
@@ -97,7 +107,11 @@ export function SidebarNav({
                     aria-hidden="true"
                   />
                   <span className="truncate">{item.label}</span>
-                  {isActive ? (
+                  {item.showNotificationBadge && unacknowledgedCount > 0 ? (
+                    <span className="ml-auto inline-flex min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1.5 py-0.5 font-mono text-[11px] font-bold text-white">
+                      {unacknowledgedCount > 99 ? "99+" : unacknowledgedCount}
+                    </span>
+                  ) : isActive ? (
                     <span
                       className="ml-auto h-1.5 w-1.5 rounded-full bg-[#1E40AF]"
                       aria-hidden="true"

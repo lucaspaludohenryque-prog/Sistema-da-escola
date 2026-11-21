@@ -1,7 +1,9 @@
+import { NotificationType } from "@prisma/client";
 import { NextResponse, type NextRequest } from "next/server";
 import { getAuthenticatedUser } from "@/features/auth";
 import {
   attendanceQuerySchema,
+  formatIsoDateBr,
   getAttendanceSheetForUser,
   saveAttendanceSchema,
   type AttendanceSheetData,
@@ -90,7 +92,8 @@ export async function GET(
 /**
  * POST /api/attendance
  * Salva ou atualiza em transacao unica (prisma.$transaction) o diario da aula
- * (Lesson) e os registros de frequencia (Attendance) de todos os alunos.
+ * (Lesson), os registros de frequencia (Attendance) e dispara/remove avisos
+ * automaticos de FALTA para responsaveis vinculados.
  */
 export async function POST(
   request: NextRequest
@@ -130,9 +133,19 @@ export async function POST(
       where: { id: classroomId },
       select: {
         id: true,
+        name: true,
+        subject: true,
         teacherId: true,
         students: {
-          select: { id: true },
+          select: {
+            id: true,
+            name: true,
+            guardianLinks: {
+              select: {
+                guardianId: true,
+              },
+            },
+          },
         },
       },
     });
@@ -154,9 +167,12 @@ export async function POST(
       );
     }
 
-    const validStudentIds = new Set(classroom.students.map((student) => student.id));
+    const studentsById = new Map(
+      classroom.students.map((student) => [student.id, student])
+    );
+
     for (const record of records) {
-      if (!validStudentIds.has(record.studentId)) {
+      if (!studentsById.has(record.studentId)) {
         return NextResponse.json<ApiErrorPayload>(
           {
             error: "Um ou mais alunos informados não pertencem à turma selecionada.",
@@ -166,6 +182,8 @@ export async function POST(
         );
       }
     }
+
+    const formattedDate = formatIsoDateBr(date);
 
     await prisma.$transaction(async (tx) => {
       const lesson = await tx.lesson.upsert({
@@ -207,6 +225,44 @@ export async function POST(
             status: record.status,
           },
         });
+
+        const student = studentsById.get(record.studentId);
+        if (!student) continue;
+
+        const referenceKey = `FALTA_${lesson.id}_${record.studentId}`;
+
+        if (record.status === "FALTA") {
+          for (const link of student.guardianLinks) {
+            await tx.notification.upsert({
+              where: {
+                recipientId_referenceKey: {
+                  recipientId: link.guardianId,
+                  referenceKey,
+                },
+              },
+              update: {
+                title: `Falta registrada - ${student.name}`,
+                message: `${student.name} recebeu falta na ${lessonNumber}ª aula de ${classroom.subject} (${classroom.name}) em ${formattedDate}.`,
+              },
+              create: {
+                recipientId: link.guardianId,
+                studentId: student.id,
+                type: NotificationType.FALTA,
+                title: `Falta registrada - ${student.name}`,
+                message: `${student.name} recebeu falta na ${lessonNumber}ª aula de ${classroom.subject} (${classroom.name}) em ${formattedDate}.`,
+                referenceKey,
+              },
+            });
+          }
+        } else {
+          await tx.notification.deleteMany({
+            where: {
+              studentId: student.id,
+              referenceKey,
+              acknowledgedAt: null,
+            },
+          });
+        }
       }
     });
 

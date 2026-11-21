@@ -18,10 +18,14 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   ADMIN: "Administrador",
   COORDENACAO: "Coordenação",
   PROFESSOR: "Professor",
+  RESPONSAVEL: "Responsável",
+  ALUNO: "Aluno",
 };
 
 export const ROLE_BADGE_STYLES: Record<UserRole, string> = {
   ADMIN: "bg-slate-900 text-white",
   COORDENACAO: "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200",
   PROFESSOR: "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200",
+  RESPONSAVEL: "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200",
+  ALUNO: "bg-sky-50 text-sky-800 ring-1 ring-inset ring-sky-200",
 };

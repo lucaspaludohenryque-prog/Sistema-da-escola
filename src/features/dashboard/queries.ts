@@ -7,6 +7,7 @@ import {
   calculateWeightedTermAverage,
 } from "@/features/grades/calculations";
 import { PASSING_GRADE_THRESHOLD } from "@/features/grades/constants";
+import { buildOccurrenceFamilyReceipts } from "@/features/occurrences/queries";
 import type { OccurrenceItem } from "@/features/occurrences/types";
 import { prisma } from "@/lib/prisma";
 import type {
@@ -227,10 +228,19 @@ export async function getDashboardOverviewForUser(
     });
   }
 
+  const receiptMap = await buildOccurrenceFamilyReceipts(
+    recentOccurrenceRows.map((row) => ({ id: row.id, studentId: row.studentId }))
+  );
+
   const recentOccurrences: OccurrenceItem[] = recentOccurrenceRows.map((row) => ({
     ...row,
     createdAt: row.createdAt.toISOString(),
     canDelete: isManager || row.authorId === user.id,
+    familyReceipt: receiptMap.get(row.id) ?? {
+      status: "NO_GUARDIAN",
+      acknowledgedAt: null,
+      acknowledgedByName: null,
+    },
   }));
 
   return {
