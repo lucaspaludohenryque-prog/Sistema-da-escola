@@ -2,34 +2,61 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --color-brand-primary: #1d4ed8;
   --color-brand-hover: #1e3a8a;
-  --color-surface-canvas: #f6f8fa;
+  --color-surface-canvas: #f7f7f8;
   --color-surface-card: #ffffff;
-  --shadow-ambient: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 28px -8px rgba(15, 23, 42, 0.07);
+  --color-surface-subtle: #f4f4f5;
+  --color-border-subtle: #e5e7eb;
+  --shadow-ambient: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-popover: 0 8px 24px -6px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
 :root {
   --school-primary: #1d4ed8;
   --school-primary-hover: #1e3a8a;
-  --school-primary-soft: rgba(29, 78, 216, 0.1);
-  --school-primary-soft-border: rgba(29, 78, 216, 0.24);
-  --school-primary-ring: rgba(29, 78, 216, 0.22);
+  --school-primary-soft: rgba(29, 78, 216, 0.08);
+  --school-primary-soft-border: rgba(29, 78, 216, 0.22);
+  --school-primary-ring: rgba(29, 78, 216, 0.2);
+  --surface-canvas: #f7f7f8;
+  --surface-card: #ffffff;
+  --surface-subtle: #f4f4f5;
+  --border-hairline: rgba(228, 228, 231, 0.85);
 }
 
 .dark {
-  --shadow-ambient: 0 1px 2px rgba(2, 6, 23, 0.4), 0 14px 30px -10px rgba(2, 6, 23, 0.55);
+  --surface-canvas: #0c0d0f;
+  --surface-card: #131518;
+  --surface-subtle: #1a1d21;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --shadow-ambient: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow-popover: 0 12px 32px -8px rgba(0, 0, 0, 0.55), 0 2px 8px -2px rgba(0, 0, 0, 0.35);
 }
 
 @layer base {
   html {
     color-scheme: light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   html.dark {
     color-scheme: dark;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
+  table,
+  th,
+  td,
+  time {
+    font-variant-numeric: tabular-nums;
   }
 
   :focus-visible {
@@ -38,16 +65,120 @@
   }
 }
 
+@layer components {
+  .rco-card {
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-hairline);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .rco-popover {
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-hairline);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-popover);
+  }
+
+  .rco-btn-primary {
+    display: inline-flex;
+    height: 2.25rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--school-primary);
+    padding-inline: 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #ffffff;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+
+  .rco-btn-primary:hover {
+    background-color: var(--school-primary-hover);
+  }
+
+  .rco-btn-primary:disabled {
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  .rco-btn-secondary {
+    display: inline-flex;
+    height: 2.25rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-hairline);
+    background-color: var(--surface-card);
+    padding-inline: 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #3f3f46;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+
+  .rco-btn-secondary:hover {
+    background-color: var(--surface-subtle);
+    color: #18181b;
+  }
+
+  .dark .rco-btn-secondary {
+    background-color: #1a1d21;
+    color: #e4e4e7;
+  }
+
+  .dark .rco-btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.07);
+    color: #f4f4f5;
+  }
+
+  .rco-input {
+    height: 2.25rem;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-hairline);
+    background-color: var(--surface-card);
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    color: #18181b;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .rco-input::placeholder {
+    color: #a1a1aa;
+  }
+
+  .rco-input:focus {
+    outline: none;
+    border-color: var(--school-primary);
+    box-shadow: 0 0 0 2px var(--school-primary-ring);
+  }
+
+  .dark .rco-input {
+    background-color: #1a1d21;
+    color: #f4f4f5;
+  }
+
+  .dark .rco-input::placeholder {
+    color: #71717a;
+  }
+}
+
 .rco-grid-pattern {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 .rco-thin-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+  scrollbar-color: rgba(161, 161, 170, 0.4) transparent;
 }
 
 .rco-thin-scrollbar::-webkit-scrollbar {
@@ -60,22 +191,22 @@
 }
 
 .rco-thin-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(148, 163, 184, 0.45);
+  background-color: rgba(161, 161, 170, 0.4);
   border-radius: 9999px;
 }
 
 .dark .rco-thin-scrollbar {
-  scrollbar-color: rgba(71, 85, 105, 0.65) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
 }
 
 .dark .rco-thin-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(71, 85, 105, 0.65);
+  background-color: rgba(255, 255, 255, 0.14);
 }
 
 @keyframes rco-toast-enter {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.97);
+    transform: translateY(8px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -84,7 +215,7 @@
 }
 
 .rco-toast-enter {
-  animation: rco-toast-enter 200ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  animation: rco-toast-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -108,7 +239,7 @@
   html.dark,
   body {
     background: #ffffff !important;
-    color: #0f172a !important;
+    color: #111827 !important;
     color-scheme: light !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -116,7 +247,7 @@
 
   .rco-print-sheet {
     background: #ffffff !important;
-    color: #0f172a !important;
+    color: #111827 !important;
   }
 
   .print-avoid-break {

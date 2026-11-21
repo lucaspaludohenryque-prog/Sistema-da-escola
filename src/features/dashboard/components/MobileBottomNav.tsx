@@ -25,9 +25,9 @@ export function MobileBottomNav({
   return (
     <nav
       aria-label="Atalhos rápidos mobile"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/85 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden dark:border-slate-800/90 dark:bg-slate-900/90 print:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-zinc-200/80 bg-white/95 pb-[env(safe-area-inset-bottom)] md:hidden dark:border-white/[0.08] dark:bg-[#131518]/95 print:hidden"
     >
-      <div className="grid h-16 grid-cols-5 items-center px-1">
+      <div className="grid h-14 grid-cols-5 items-center px-1">
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = item.exact
@@ -41,22 +41,22 @@ export function MobileBottomNav({
               key={item.href}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={`relative flex flex-col items-center justify-center gap-1 rounded-xl py-1.5 text-[11px] font-medium transition-colors ${
+              className={`relative flex flex-col items-center justify-center gap-1 rounded-lg py-1 text-[10px] font-medium transition-colors ${
                 isActive
-                  ? "text-[var(--school-primary)] dark:text-blue-400"
-                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                  ? "text-[var(--school-primary)]"
+                  : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               }`}
             >
               {isActive ? (
                 <span
                   aria-hidden="true"
-                  className="absolute top-0 h-0.5 w-7 rounded-full bg-[var(--school-primary)] dark:bg-blue-400"
+                  className="absolute top-0 h-0.5 w-6 rounded-full bg-[var(--school-primary)]"
                 />
               ) : null}
               <span className="relative">
-                <Icon className="h-5 w-5" strokeWidth={isActive ? 2.1 : 1.75} aria-hidden="true" />
+                <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
                 {showBadge ? (
-                  <span className="absolute -top-1.5 -right-2 inline-flex min-w-[16px] items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[9px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
+                  <span className="absolute -top-1 -right-2 inline-flex min-w-[15px] items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-semibold tabular-nums text-white ring-2 ring-white dark:ring-[#131518]">
                     {unacknowledgedCount > 9 ? "9+" : unacknowledgedCount}
                   </span>
                 ) : null}
@@ -72,12 +72,12 @@ export function MobileBottomNav({
           type="button"
           onClick={onOpenMenu}
           aria-label="Abrir menu completo"
-          className="relative flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-1.5 text-[11px] font-medium text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+          className="relative flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg py-1 text-[10px] font-medium text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
         >
           <span className="relative">
             <Menu className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             {pendingJustificationsCount > 0 ? (
-              <span className="absolute -top-1 -right-1.5 inline-flex h-2.5 w-2.5 rounded-full bg-red-600 ring-2 ring-white dark:ring-slate-900" />
+              <span className="absolute -top-0.5 -right-1 inline-flex h-2 w-2 rounded-full bg-red-600 ring-2 ring-white dark:ring-[#131518]" />
             ) : null}
           </span>
           <span className="leading-none">Menu</span>

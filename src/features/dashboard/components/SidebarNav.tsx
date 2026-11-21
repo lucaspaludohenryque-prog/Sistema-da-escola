@@ -53,11 +53,11 @@ export function SidebarNav({
   }
 
   return (
-    <div className="flex h-full flex-col bg-white dark:bg-slate-900">
-      {/* Topo da sidebar com brasao e botao de recolher */}
+    <div className="flex h-full flex-col bg-white dark:bg-[#131518]">
+      {/* Topo da sidebar alinhado com a altura compacta do header */}
       <div
-        className={`flex h-16 shrink-0 items-center border-b border-slate-200/80 dark:border-slate-800 ${
-          collapsed ? "justify-center px-2" : "justify-between px-4"
+        className={`flex h-14 shrink-0 items-center border-b border-zinc-200/80 dark:border-white/[0.08] ${
+          collapsed ? "justify-center px-2" : "justify-between px-3.5"
         }`}
       >
         <Link
@@ -65,11 +65,11 @@ export function SidebarNav({
           onClick={onNavigate}
           title={collapsed ? schoolConfig.name : undefined}
           className={`flex min-w-0 items-center rounded-lg py-1 focus-visible:outline-none ${
-            collapsed ? "justify-center" : "gap-3"
+            collapsed ? "justify-center" : "gap-2.5"
           }`}
         >
           {schoolConfig.logoUrl ? (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-50 p-1 ring-1 ring-slate-200 dark:bg-white dark:ring-slate-700">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-zinc-100 p-1 ring-1 ring-zinc-200/80 dark:bg-[#1A1D21] dark:ring-white/[0.08]">
               <img
                 src={schoolConfig.logoUrl}
                 alt={`Logo ${schoolConfig.name}`}
@@ -77,16 +77,16 @@ export function SidebarNav({
               />
             </div>
           ) : (
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--school-primary)] text-white shadow-xs">
-              <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--school-primary)] text-white">
+              <BookOpenCheck className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             </div>
           )}
           {!collapsed ? (
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              <p className="truncate text-sm font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-100">
                 {schoolConfig.name}
               </p>
-              <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+              <p className="truncate text-[11px] text-zinc-500 dark:text-zinc-400">
                 {userRole === "RESPONSAVEL"
                   ? "Portal da Família"
                   : userRole === "ALUNO"
@@ -102,9 +102,9 @@ export function SidebarNav({
             type="button"
             onClick={onCloseMobile}
             aria-label="Fechar menu de navegação"
-            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 lg:hidden dark:text-zinc-400 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
           >
-            <X className="h-5 w-5" strokeWidth={1.75} />
+            <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
         ) : onToggleCollapse && !collapsed ? (
           <button
@@ -112,18 +112,18 @@ export function SidebarNav({
             onClick={onToggleCollapse}
             aria-label="Recolher barra lateral"
             title="Recolher menu"
-            className="hidden h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 lg:flex dark:hover:bg-slate-800 dark:hover:text-slate-200"
+            className="hidden h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 lg:flex dark:text-zinc-500 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-200"
           >
             <PanelLeftClose className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           </button>
         ) : null}
       </div>
 
-      {/* Lista de secoes com rolagem vertical suave */}
+      {/* Lista de secoes com rolagem vertical discreta */}
       <nav
         aria-label="Navegação principal"
-        className={`rco-thin-scrollbar flex-1 overflow-y-auto py-4 ${
-          collapsed ? "px-2" : "px-3"
+        className={`rco-thin-scrollbar flex-1 overflow-y-auto py-3 ${
+          collapsed ? "px-2" : "px-2.5"
         }`}
       >
         <div className="space-y-4">
@@ -136,7 +136,7 @@ export function SidebarNav({
                 {collapsed ? (
                   groupIndex > 0 ? (
                     <div
-                      className="mx-auto my-2.5 h-px w-8 bg-slate-200/80 dark:bg-slate-800"
+                      className="mx-auto my-2.5 h-px w-7 bg-zinc-200/80 dark:bg-white/[0.08]"
                       aria-hidden="true"
                     />
                   ) : null
@@ -145,14 +145,14 @@ export function SidebarNav({
                     type="button"
                     onClick={() => toggleSection(group.section)}
                     aria-expanded={!isSectionCollapsed}
-                    className="mb-1.5 flex w-full cursor-pointer items-center justify-between px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-slate-400 uppercase transition-colors hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+                    className="mb-1 flex w-full cursor-pointer items-center justify-between px-2.5 py-1 text-[11px] font-medium tracking-wider text-zinc-400 uppercase transition-colors hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
                   >
                     <span>{group.section}</span>
                     <ChevronDown
                       className={`h-3 w-3 transition-transform duration-150 ${
                         isSectionCollapsed ? "-rotate-90" : ""
                       }`}
-                      strokeWidth={2}
+                      strokeWidth={1.75}
                       aria-hidden="true"
                     />
                   </button>
@@ -186,26 +186,28 @@ export function SidebarNav({
                             onClick={onNavigate}
                             aria-current={isActive ? "page" : undefined}
                             title={collapsed ? item.label : undefined}
-                            style={
-                              isActive
-                                ? { backgroundColor: "var(--school-primary-soft)" }
-                                : undefined
-                            }
-                            className={`group relative flex items-center rounded-xl text-sm font-medium transition-colors duration-150 ${
+                            className={`group relative flex items-center rounded-lg text-[13px] transition-colors duration-150 ${
                               collapsed
-                                ? "mx-auto h-10 w-10 justify-center p-0"
-                                : "gap-3 px-3 py-2"
+                                ? "mx-auto h-9 w-9 justify-center p-0"
+                                : "gap-2.5 px-2.5 py-2"
                             } ${
                               isActive
-                                ? "text-[var(--school-primary)] dark:text-blue-300"
-                                : "text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-white"
+                                ? "bg-zinc-100 font-medium text-zinc-900 dark:bg-white/[0.07] dark:text-zinc-100"
+                                : "font-normal text-zinc-600 hover:bg-zinc-100/70 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
                             }`}
                           >
+                            {isActive && !collapsed ? (
+                              <span
+                                aria-hidden="true"
+                                className="absolute top-1.5 bottom-1.5 left-0 w-[2.5px] rounded-full bg-[var(--school-primary)]"
+                              />
+                            ) : null}
+
                             <Icon
-                              className={`h-[18px] w-[18px] shrink-0 transition-colors ${
+                              className={`h-4 w-4 shrink-0 transition-colors ${
                                 isActive
-                                  ? "text-[var(--school-primary)] dark:text-blue-300"
-                                  : "text-slate-500 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200"
+                                  ? "text-[var(--school-primary)]"
+                                  : "text-zinc-400 group-hover:text-zinc-600 dark:text-zinc-500 dark:group-hover:text-zinc-300"
                               }`}
                               strokeWidth={1.75}
                               aria-hidden="true"
@@ -215,20 +217,15 @@ export function SidebarNav({
                               <>
                                 <span className="truncate">{item.label}</span>
                                 {badgeValue > 0 ? (
-                                  <span className="ml-auto inline-flex min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1.5 py-0.5 font-mono text-[11px] font-bold text-white">
+                                  <span className="ml-auto inline-flex min-w-[18px] items-center justify-center rounded-full bg-red-600 px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-white">
                                     {badgeValue > 99 ? "99+" : badgeValue}
                                   </span>
-                                ) : isActive ? (
-                                  <span
-                                    className="ml-auto h-1.5 w-1.5 rounded-full bg-[var(--school-primary)] dark:bg-blue-400"
-                                    aria-hidden="true"
-                                  />
                                 ) : null}
                               </>
                             ) : badgeValue > 0 ? (
                               <span
                                 aria-label={`${badgeValue} pendentes`}
-                                className="absolute -top-0.5 -right-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[9px] font-bold text-white ring-2 ring-white dark:ring-slate-900"
+                                className="absolute -top-0.5 -right-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-semibold tabular-nums text-white ring-2 ring-white dark:ring-[#131518]"
                               >
                                 {badgeValue > 9 ? "9+" : badgeValue}
                               </span>
@@ -245,10 +242,10 @@ export function SidebarNav({
         </div>
       </nav>
 
-      {/* Rodape da sidebar / botao expandir quando compacta */}
+      {/* Rodape discreto da sidebar / botao expandir quando compacta */}
       <div
-        className={`shrink-0 border-t border-slate-200/80 dark:border-slate-800 ${
-          collapsed ? "flex justify-center p-2.5" : "px-5 py-3.5"
+        className={`shrink-0 border-t border-zinc-200/80 dark:border-white/[0.08] ${
+          collapsed ? "flex justify-center p-2" : "px-4 py-3"
         }`}
       >
         {collapsed && onToggleCollapse ? (
@@ -257,22 +254,22 @@ export function SidebarNav({
             onClick={onToggleCollapse}
             aria-label="Expandir barra lateral"
             title="Expandir menu"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
           >
             <PanelLeftOpen className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           </button>
         ) : (
           <div>
-            <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            <p className="text-[11px] font-medium tabular-nums text-zinc-500 dark:text-zinc-400">
               Ano letivo {schoolConfig.schoolYear}
             </p>
             {schoolConfig.city ? (
-              <p className="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-0.5 truncate text-[11px] text-zinc-400 dark:text-zinc-500">
                 {schoolConfig.city}
                 {schoolConfig.state ? ` - ${schoolConfig.state}` : ""}
               </p>
             ) : (
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500">
                 RCO · Gestão Escolar
               </p>
             )}

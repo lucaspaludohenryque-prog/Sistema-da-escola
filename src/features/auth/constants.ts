@@ -24,13 +24,13 @@ export const ROLE_LABELS: Record<UserRole, string> = {
 
 export const ROLE_BADGE_STYLES: Record<UserRole, string> = {
   ADMIN:
-    "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900",
+    "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900",
   COORDENACAO:
-    "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/30",
+    "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200/80 dark:bg-blue-500/12 dark:text-blue-300 dark:ring-blue-400/25",
   PROFESSOR:
-    "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700",
+    "bg-zinc-100 text-zinc-700 ring-1 ring-inset ring-zinc-200/80 dark:bg-white/[0.07] dark:text-zinc-200 dark:ring-white/[0.1]",
   RESPONSAVEL:
-    "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30",
+    "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200/80 dark:bg-emerald-500/12 dark:text-emerald-300 dark:ring-emerald-400/25",
   ALUNO:
-    "bg-sky-50 text-sky-800 ring-1 ring-inset ring-sky-200 dark:bg-sky-500/15 dark:text-sky-300 dark:ring-sky-400/30",
+    "bg-sky-50 text-sky-800 ring-1 ring-inset ring-sky-200/80 dark:bg-sky-500/12 dark:text-sky-300 dark:ring-sky-400/25",
 };

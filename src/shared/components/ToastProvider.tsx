@@ -42,35 +42,29 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 const VARIANT_STYLES: Record<
   ToastVariant,
   {
-    container: string;
-    iconWrap: string;
+    dot: string;
+    iconClass: string;
     icon: typeof CheckCircle2;
   }
 > = {
   success: {
-    container:
-      "border-emerald-200/90 bg-white text-slate-900 dark:border-emerald-500/30 dark:bg-slate-900 dark:text-slate-100",
-    iconWrap:
-      "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
+    dot: "bg-emerald-500",
+    iconClass: "text-emerald-600 dark:text-emerald-400",
     icon: CheckCircle2,
   },
   error: {
-    container:
-      "border-red-200/90 bg-white text-slate-900 dark:border-red-500/30 dark:bg-slate-900 dark:text-slate-100",
-    iconWrap: "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-300",
+    dot: "bg-red-500",
+    iconClass: "text-red-600 dark:text-red-400",
     icon: AlertCircle,
   },
   warning: {
-    container:
-      "border-amber-200/90 bg-white text-slate-900 dark:border-amber-500/30 dark:bg-slate-900 dark:text-slate-100",
-    iconWrap:
-      "bg-amber-50 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300",
+    dot: "bg-amber-500",
+    iconClass: "text-amber-600 dark:text-amber-400",
     icon: AlertTriangle,
   },
   info: {
-    container:
-      "border-blue-200/90 bg-white text-slate-900 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-100",
-    iconWrap: "bg-blue-50 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300",
+    dot: "bg-blue-500",
+    iconClass: "text-blue-600 dark:text-blue-400",
     icon: Info,
   },
 };
@@ -147,21 +141,33 @@ export function ToastProvider({
             <div
               key={entry.id}
               role={entry.variant === "error" ? "alert" : "status"}
-              className={`rco-toast-enter pointer-events-auto flex items-start gap-3 rounded-xl border p-3.5 shadow-lg ring-1 ring-slate-900/5 dark:ring-white/10 ${style.container}`}
+              className="rco-toast-enter pointer-events-auto flex items-start gap-3 rounded-xl border border-zinc-200/90 bg-white p-3.5 text-zinc-900 shadow-[var(--shadow-popover)] dark:border-white/10 dark:bg-[#1A1D21] dark:text-zinc-100"
             >
-              <div
-                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${style.iconWrap}`}
-              >
-                <Icon className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+              <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center">
+                <Icon
+                  className={`h-4 w-4 ${style.iconClass}`}
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
               </div>
 
-              <div className="min-w-0 flex-1 pt-0.5">
+              <div className="min-w-0 flex-1">
                 {entry.title ? (
-                  <p className="text-xs font-semibold tracking-tight">
-                    {entry.title}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      aria-hidden="true"
+                      className={`h-1.5 w-1.5 shrink-0 rounded-full ${style.dot}`}
+                    />
+                    <p className="text-xs font-semibold tracking-[-0.01em] text-zinc-900 dark:text-zinc-100">
+                      {entry.title}
+                    </p>
+                  </div>
                 ) : null}
-                <p className="text-sm leading-snug text-slate-700 dark:text-slate-200">
+                <p
+                  className={`text-sm leading-snug text-zinc-600 dark:text-zinc-300 ${
+                    entry.title ? "mt-0.5" : ""
+                  }`}
+                >
                   {entry.message}
                 </p>
               </div>
@@ -170,9 +176,9 @@ export function ToastProvider({
                 type="button"
                 onClick={() => dismiss(entry.id)}
                 aria-label="Fechar notificação"
-                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-white/[0.08] dark:hover:text-zinc-200"
               >
-                <X className="h-4 w-4" strokeWidth={1.75} />
+                <X className="h-3.5 w-3.5" strokeWidth={1.75} />
               </button>
             </div>
           );

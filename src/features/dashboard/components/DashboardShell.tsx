@@ -250,19 +250,19 @@ export function DashboardShell({
   return (
     <div
       style={themeStyle}
-      className="flex min-h-[100dvh] bg-[#F6F8FA] text-slate-900 transition-colors duration-200 dark:bg-slate-950 dark:text-slate-100 print:block print:min-h-0 print:bg-white print:text-slate-900"
+      className="flex min-h-[100dvh] bg-[#F7F7F8] text-zinc-900 transition-colors duration-150 dark:bg-[#0C0D0F] dark:text-zinc-100 print:block print:min-h-0 print:bg-white print:text-zinc-900"
     >
       <a
         href="#conteudo-principal"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[var(--school-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white print:hidden"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[var(--school-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white print:hidden"
       >
         Ir para o conteúdo principal
       </a>
 
       {/* Sidebar fixa e colapsavel no desktop */}
       <aside
-        className={`hidden shrink-0 border-r border-slate-200/80 bg-white transition-[width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] lg:fixed lg:inset-y-0 lg:left-0 lg:block dark:border-slate-800 dark:bg-slate-900 print:hidden ${
-          isSidebarCollapsed ? "lg:w-20" : "lg:w-64"
+        className={`hidden shrink-0 border-r border-zinc-200/80 bg-white transition-[width] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] lg:fixed lg:inset-y-0 lg:left-0 lg:block dark:border-white/[0.08] dark:bg-[#131518] print:hidden ${
+          isSidebarCollapsed ? "lg:w-16" : "lg:w-60"
         }`}
       >
         <SidebarNav
@@ -285,11 +285,11 @@ export function DashboardShell({
           aria-label="Menu de navegação"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px] transition-opacity"
+            className="fixed inset-0 bg-black/50 transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
             aria-hidden="true"
           />
-          <aside className="fixed inset-y-0 left-0 z-50 w-72 max-w-[84vw] border-r border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+          <aside className="fixed inset-y-0 left-0 z-50 w-72 max-w-[84vw] border-r border-zinc-200/80 bg-white shadow-xl dark:border-white/[0.08] dark:bg-[#131518]">
             <SidebarNav
               userRole={user.role}
               schoolConfig={schoolConfig}
@@ -305,53 +305,56 @@ export function DashboardShell({
 
       <div
         className={`flex min-w-0 flex-1 flex-col transition-[padding-left] duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] print:pl-0 ${
-          isSidebarCollapsed ? "lg:pl-20" : "lg:pl-64"
+          isSidebarCollapsed ? "lg:pl-16" : "lg:pl-60"
         }`}
       >
-        {/* Cabecalho Sticky com Glassmorphism */}
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-3 border-b border-slate-200/80 bg-white/80 px-4 backdrop-blur-md sm:px-6 lg:px-8 dark:border-slate-800/90 dark:bg-slate-900/80 print:hidden">
-          <div className="flex min-w-0 items-center gap-3">
+        {/* Cabecalho compacto e limpo */}
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-3 border-b border-zinc-200/80 bg-white/95 px-4 sm:px-6 lg:px-8 dark:border-white/[0.08] dark:bg-[#131518]/95 print:hidden">
+          <div className="flex min-w-0 items-center gap-2.5">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Abrir menu de navegação"
               aria-expanded={isMobileMenuOpen}
-              className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+              className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 lg:hidden dark:text-zinc-400 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
             >
-              <Menu className="h-5 w-5" strokeWidth={1.75} />
+              <Menu className="h-4 w-4" strokeWidth={1.75} />
             </button>
 
-            <div className="min-w-0">
-              <div className="hidden items-center gap-1 text-[11px] font-medium text-slate-400 sm:flex dark:text-slate-500">
-                <Link
-                  href={homeHref}
-                  className="truncate transition-colors hover:text-slate-700 dark:hover:text-slate-300"
-                >
-                  {breadcrumb.parent}
-                </Link>
-                <ChevronRight className="h-3 w-3 shrink-0" strokeWidth={2} aria-hidden="true" />
-                <span className="truncate text-slate-500 dark:text-slate-400">
-                  {breadcrumb.current}
-                </span>
-              </div>
-              <h1 className="truncate text-base font-semibold tracking-tight text-slate-900 sm:text-lg dark:text-slate-100">
+            <div className="flex min-w-0 items-center gap-1.5">
+              {breadcrumb.parent !== sectionTitle ? (
+                <>
+                  <Link
+                    href={homeHref}
+                    className="hidden truncate text-xs font-medium text-zinc-400 transition-colors hover:text-zinc-700 sm:inline dark:text-zinc-500 dark:hover:text-zinc-300"
+                  >
+                    {breadcrumb.parent}
+                  </Link>
+                  <ChevronRight
+                    className="hidden h-3.5 w-3.5 shrink-0 text-zinc-300 sm:inline dark:text-zinc-600"
+                    strokeWidth={1.75}
+                    aria-hidden="true"
+                  />
+                </>
+              ) : null}
+              <h1 className="truncate text-sm font-semibold tracking-[-0.02em] text-zinc-900 sm:text-[15px] dark:text-zinc-100">
                 {sectionTitle}
               </h1>
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             {/* Busca Global Ctrl+K */}
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
               aria-label="Abrir busca rápida (Ctrl+K)"
-              className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-slate-200/90 bg-slate-50/90 px-2.5 text-xs font-medium text-slate-500 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800 sm:px-3 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              className="inline-flex h-8 cursor-pointer items-center gap-2 rounded-lg border border-zinc-200/90 bg-zinc-50 px-2.5 text-xs font-medium text-zinc-500 transition-colors hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-800 dark:border-white/[0.08] dark:bg-[#1A1D21] dark:text-zinc-400 dark:hover:border-white/[0.14] dark:hover:text-zinc-200"
             >
-              <Search className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-              <span className="hidden md:inline">Busca rápida...</span>
-              <kbd className="hidden rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] font-semibold text-slate-500 sm:inline-block dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
-                Ctrl + K
+              <Search className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+              <span className="hidden md:inline">Buscar...</span>
+              <kbd className="hidden rounded border border-zinc-200/90 bg-white px-1.5 py-0.5 font-mono text-[10px] font-medium text-zinc-500 sm:inline-block dark:border-white/[0.08] dark:bg-[#131518] dark:text-zinc-400">
+                Ctrl K
               </kbd>
             </button>
 
@@ -361,7 +364,7 @@ export function DashboardShell({
               onClick={toggleTheme}
               aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
               title={isDark ? "Modo Claro" : "Modo Escuro"}
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-slate-200/90 bg-white/90 text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/90 dark:text-amber-300 dark:hover:bg-slate-700"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-zinc-200/90 bg-white text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:border-white/[0.08] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:bg-white/[0.08] dark:hover:text-zinc-100"
             >
               {isDark ? (
                 <Sun className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
@@ -379,11 +382,11 @@ export function DashboardShell({
                     ? `Avisos (${unacknowledgedCount} aguardando confirmação)`
                     : "Avisos"
                 }
-                className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200/90 bg-white/90 text-slate-700 transition-colors hover:bg-slate-100 hover:text-[var(--school-primary)] dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-200 dark:hover:bg-slate-700"
+                className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200/90 bg-white text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:border-white/[0.08] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:bg-white/[0.08] dark:hover:text-zinc-100"
               >
                 <Bell className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
                 {unacknowledgedCount > 0 ? (
-                  <span className="absolute -top-1 -right-1 inline-flex min-w-[18px] items-center justify-center rounded-full bg-red-600 px-1 font-mono text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-900">
+                  <span className="absolute -top-1 -right-1 inline-flex min-w-[16px] items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-semibold tabular-nums text-white ring-2 ring-white dark:ring-[#131518]">
                     {unacknowledgedCount > 99 ? "99+" : unacknowledgedCount}
                   </span>
                 ) : null}
@@ -398,22 +401,17 @@ export function DashboardShell({
                 aria-expanded={isUserMenuOpen}
                 aria-haspopup="menu"
                 aria-label="Menu da conta do usuário"
-                className="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200/80 bg-white/90 py-1 pr-2 pl-1.5 transition-colors hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/90 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                className="flex h-8 cursor-pointer items-center gap-2 rounded-lg border border-zinc-200/90 bg-white pr-2 pl-1 transition-colors hover:bg-zinc-50 dark:border-white/[0.08] dark:bg-[#1A1D21] dark:hover:bg-white/[0.07]"
               >
-                <Avatar name={user.name} size="sm" />
-                <div className="hidden text-left sm:block">
-                  <p className="max-w-[140px] truncate text-xs font-semibold leading-tight text-slate-900 dark:text-slate-100">
-                    {user.name}
-                  </p>
-                  <p className="text-[10px] font-medium leading-tight text-slate-500 dark:text-slate-400">
-                    {roleLabel}
-                  </p>
-                </div>
+                <Avatar name={user.name} size="xs" />
+                <span className="hidden max-w-[128px] truncate text-xs font-medium text-zinc-800 sm:inline dark:text-zinc-200">
+                  {user.name}
+                </span>
                 <ChevronDown
-                  className={`hidden h-3.5 w-3.5 text-slate-400 transition-transform duration-150 sm:block ${
+                  className={`hidden h-3.5 w-3.5 text-zinc-400 transition-transform duration-150 sm:block dark:text-zinc-500 ${
                     isUserMenuOpen ? "rotate-180" : ""
                   }`}
-                  strokeWidth={2}
+                  strokeWidth={1.75}
                   aria-hidden="true"
                 />
               </button>
@@ -422,16 +420,16 @@ export function DashboardShell({
                 <div
                   role="menu"
                   aria-label="Opções do usuário"
-                  className="absolute right-0 mt-2 w-64 origin-top-right overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xl ring-1 ring-slate-900/[0.04] dark:border-slate-700 dark:bg-slate-900"
+                  className="absolute right-0 mt-2 w-60 origin-top-right overflow-hidden rounded-xl border border-zinc-200/90 bg-white shadow-[var(--shadow-popover)] dark:border-white/10 dark:bg-[#131518]"
                 >
-                  <div className="border-b border-slate-100 px-4 py-3.5 dark:border-slate-800">
+                  <div className="border-b border-zinc-100 px-3.5 py-3 dark:border-white/[0.06]">
                     <div className="flex items-center gap-2.5">
-                      <Avatar name={user.name} size="md" />
+                      <Avatar name={user.name} size="sm" />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                        <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                           {user.name}
                         </p>
-                        <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
                           {user.email}
                         </p>
                       </div>
@@ -443,14 +441,14 @@ export function DashboardShell({
                     </span>
                   </div>
 
-                  <div className="p-1.5">
+                  <div className="p-1">
                     <Link
                       href={homeHref}
                       role="menuitem"
                       onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
                     >
-                      <UserIcon className="h-4 w-4 text-slate-400" strokeWidth={1.75} aria-hidden="true" />
+                      <UserIcon className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
                       <span>Meu Painel</span>
                     </Link>
 
@@ -459,9 +457,9 @@ export function DashboardShell({
                         href="/dashboard/configuracoes"
                         role="menuitem"
                         onClick={() => setIsUserMenuOpen(false)}
-                        className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"
+                        className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
                       >
-                        <Settings className="h-4 w-4 text-slate-400" strokeWidth={1.75} aria-hidden="true" />
+                        <Settings className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
                         <span>Configurações da Escola</span>
                       </Link>
                     ) : null}
@@ -473,24 +471,24 @@ export function DashboardShell({
                         toggleTheme();
                         setIsUserMenuOpen(false);
                       }}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
                     >
                       {isDark ? (
-                        <Sun className="h-4 w-4 text-amber-400" strokeWidth={1.75} aria-hidden="true" />
+                        <Sun className="h-4 w-4 text-zinc-400 dark:text-zinc-400" strokeWidth={1.75} aria-hidden="true" />
                       ) : (
-                        <Moon className="h-4 w-4 text-slate-400" strokeWidth={1.75} aria-hidden="true" />
+                        <Moon className="h-4 w-4 text-zinc-400" strokeWidth={1.75} aria-hidden="true" />
                       )}
                       <span>{isDark ? "Alternar para Modo Claro" : "Alternar para Modo Escuro"}</span>
                     </button>
                   </div>
 
-                  <div className="border-t border-slate-100 p-1.5 dark:border-slate-800">
+                  <div className="border-t border-zinc-100 p-1 dark:border-white/[0.06]">
                     <button
                       type="button"
                       role="menuitem"
                       onClick={handleLogout}
                       disabled={isLoggingOut}
-                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-xs font-semibold text-red-700 transition-colors hover:bg-red-50 disabled:opacity-60 dark:text-red-400 dark:hover:bg-red-500/15"
+                      className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-60 dark:text-red-400 dark:hover:bg-red-500/10"
                     >
                       {isLoggingOut ? (
                         <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} aria-hidden="true" />
@@ -508,7 +506,7 @@ export function DashboardShell({
 
         <main
           id="conteudo-principal"
-          className="mx-auto w-full max-w-7xl flex-1 px-4 pt-6 pb-24 sm:px-6 md:pb-8 lg:px-8 lg:pt-8 print:max-w-none print:p-0"
+          className="mx-auto w-full max-w-7xl flex-1 px-4 pt-6 pb-20 sm:px-6 md:pb-8 lg:px-8 lg:pt-7 print:max-w-none print:p-0"
         >
           <InstallAppBanner />
           {children}

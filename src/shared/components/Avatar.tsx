@@ -17,14 +17,14 @@ const SIZE_CLASSES: Record<AvatarSize, string> = {
 };
 
 const PALETTES = [
-  "bg-blue-100 text-blue-800 ring-blue-200/80 dark:bg-blue-500/20 dark:text-blue-200 dark:ring-blue-400/30",
-  "bg-emerald-100 text-emerald-800 ring-emerald-200/80 dark:bg-emerald-500/20 dark:text-emerald-200 dark:ring-emerald-400/30",
-  "bg-indigo-100 text-indigo-800 ring-indigo-200/80 dark:bg-indigo-500/20 dark:text-indigo-200 dark:ring-indigo-400/30",
-  "bg-amber-100 text-amber-900 ring-amber-200/80 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/30",
-  "bg-rose-100 text-rose-800 ring-rose-200/80 dark:bg-rose-500/20 dark:text-rose-200 dark:ring-rose-400/30",
-  "bg-teal-100 text-teal-800 ring-teal-200/80 dark:bg-teal-500/20 dark:text-teal-200 dark:ring-teal-400/30",
-  "bg-sky-100 text-sky-800 ring-sky-200/80 dark:bg-sky-500/20 dark:text-sky-200 dark:ring-sky-400/30",
-  "bg-slate-200 text-slate-800 ring-slate-300/80 dark:bg-slate-700 dark:text-slate-100 dark:ring-slate-600",
+  "bg-blue-50 text-blue-700 ring-blue-200/70 dark:bg-blue-500/15 dark:text-blue-200 dark:ring-blue-400/20",
+  "bg-emerald-50 text-emerald-700 ring-emerald-200/70 dark:bg-emerald-500/15 dark:text-emerald-200 dark:ring-emerald-400/20",
+  "bg-indigo-50 text-indigo-700 ring-indigo-200/70 dark:bg-indigo-500/15 dark:text-indigo-200 dark:ring-indigo-400/20",
+  "bg-amber-50 text-amber-800 ring-amber-200/70 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-400/20",
+  "bg-rose-50 text-rose-700 ring-rose-200/70 dark:bg-rose-500/15 dark:text-rose-200 dark:ring-rose-400/20",
+  "bg-teal-50 text-teal-700 ring-teal-200/70 dark:bg-teal-500/15 dark:text-teal-200 dark:ring-teal-400/20",
+  "bg-sky-50 text-sky-700 ring-sky-200/70 dark:bg-sky-500/15 dark:text-sky-200 dark:ring-sky-400/20",
+  "bg-zinc-100 text-zinc-700 ring-zinc-200/80 dark:bg-white/[0.08] dark:text-zinc-200 dark:ring-white/[0.12]",
 ] as const;
 
 function extractInitials(name: string): string {
@@ -66,7 +66,7 @@ export function Avatar({
   if (imageUrl) {
     return (
       <span
-        className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-slate-200 dark:ring-slate-700 ${sizeClass} ${className}`}
+        className={`inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-inset ring-zinc-200/80 dark:ring-white/10 ${sizeClass} ${className}`}
       >
         <img
           src={imageUrl}

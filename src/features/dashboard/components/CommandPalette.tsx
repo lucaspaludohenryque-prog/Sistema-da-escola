@@ -429,16 +429,16 @@ export function CommandPalette({
       aria-label="Busca rápida global"
     >
       <div
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+        className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      <div className="relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700/80 dark:bg-slate-900">
+      <div className="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-zinc-200/90 bg-white shadow-[var(--shadow-popover)] dark:border-white/10 dark:bg-[#131518]">
         {/* Campo de busca */}
-        <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-3.5 dark:border-slate-800">
+        <div className="flex items-center gap-3 border-b border-zinc-200/80 px-4 py-3 dark:border-white/[0.08]">
           <Search
-            className="h-5 w-5 shrink-0 text-slate-400 dark:text-slate-500"
+            className="h-4 w-4 shrink-0 text-zinc-400 dark:text-zinc-500"
             strokeWidth={1.75}
             aria-hidden="true"
           />
@@ -452,14 +452,14 @@ export function CommandPalette({
                 ? "Buscar em avisos, ocorrências ou estudante..."
                 : "Buscar aluno, matrícula, turma ou ocorrência..."
             }
-            className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="w-full bg-transparent text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery("")}
               aria-label="Limpar busca"
-              className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-200"
             >
               <X className="h-4 w-4" strokeWidth={1.75} />
             </button>
@@ -467,17 +467,17 @@ export function CommandPalette({
           <button
             type="button"
             onClick={onClose}
-            className="hidden shrink-0 cursor-pointer rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 font-mono text-[11px] font-medium text-slate-500 hover:bg-slate-100 sm:inline-flex dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+            className="hidden shrink-0 cursor-pointer rounded-md border border-zinc-200/90 bg-zinc-50 px-1.5 py-0.5 font-mono text-[10px] font-medium text-zinc-500 hover:bg-zinc-100 sm:inline-flex dark:border-white/[0.08] dark:bg-[#1A1D21] dark:text-zinc-400 dark:hover:bg-white/[0.08]"
           >
             ESC
           </button>
         </div>
 
         {/* Corpo de resultados */}
-        <div className="max-h-[60dvh] overflow-y-auto p-2.5">
+        <div className="rco-thin-scrollbar max-h-[60dvh] overflow-y-auto p-2">
           {!isSearchMode ? (
-            <div className="space-y-1">
-              <p className="px-2.5 py-1.5 text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+            <div className="space-y-0.5">
+              <p className="px-2.5 py-1.5 text-[11px] font-medium tracking-wider text-zinc-400 uppercase dark:text-zinc-500">
                 Atalhos rápidos
               </p>
               {shortcuts.map((shortcut, index) => {
@@ -489,31 +489,31 @@ export function CommandPalette({
                     type="button"
                     onMouseEnter={() => setActiveIndex(index)}
                     onClick={() => navigateTo(shortcut.href)}
-                    className={`flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                    className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors ${
                       isActive
-                        ? "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white"
-                        : "text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60"
+                        ? "bg-zinc-100 text-zinc-900 dark:bg-white/[0.07] dark:text-zinc-100"
+                        : "text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-[#1A1D21]"
                     }`}
                   >
                     <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
-                      style={{
-                        backgroundColor: "var(--school-primary-soft)",
-                        color: "var(--school-primary)",
-                      }}
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                        isActive
+                          ? "bg-white text-[var(--school-primary)] ring-1 ring-zinc-200/80 dark:bg-[#1A1D21] dark:ring-white/[0.08]"
+                          : "bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400"
+                      }`}
                     >
                       <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
+                      <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                         {shortcut.label}
                       </p>
-                      <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                      <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
                         {shortcut.description}
                       </p>
                     </div>
                     <ArrowRight
-                      className="h-4 w-4 shrink-0 text-slate-400"
+                      className="h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500"
                       strokeWidth={1.75}
                       aria-hidden="true"
                     />
@@ -525,7 +525,7 @@ export function CommandPalette({
             <div className="space-y-2 p-2">
               {[1, 2, 3].map((row) => (
                 <div key={row} className="flex items-center gap-3 p-2">
-                  <Skeleton className="h-9 w-9 rounded-full" />
+                  <Skeleton className="h-8 w-8 rounded-full" />
                   <div className="flex-1 space-y-1.5">
                     <Skeleton className="h-3.5 w-44" />
                     <Skeleton className="h-3 w-64" />
@@ -535,21 +535,21 @@ export function CommandPalette({
             </div>
           ) : groupedResults.length === 0 ? (
             <div className="px-4 py-10 text-center">
-              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                <Search className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
+                <Search className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
               </div>
-              <p className="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <p className="mt-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 Nenhum resultado para &ldquo;{trimmedQuery}&rdquo;
               </p>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                 Tente buscar por outro nome, matrícula, disciplina ou palavra-chave.
               </p>
             </div>
           ) : (
             <div className="space-y-3">
               {groupedResults.map((group) => (
-                <div key={group.category} className="space-y-1">
-                  <p className="px-2.5 py-1 text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                <div key={group.category} className="space-y-0.5">
+                  <p className="px-2.5 py-1 text-[11px] font-medium tracking-wider text-zinc-400 uppercase dark:text-zinc-500">
                     {CATEGORY_LABELS[group.category]}
                   </p>
                   {group.items.map(({ item, flatIndex }) => {
@@ -560,16 +560,16 @@ export function CommandPalette({
                         type="button"
                         onMouseEnter={() => setActiveIndex(flatIndex)}
                         onClick={() => navigateTo(item.href)}
-                        className={`flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                        className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors ${
                           isActive
-                            ? "bg-slate-100 dark:bg-slate-800"
-                            : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                            ? "bg-zinc-100 dark:bg-white/[0.07]"
+                            : "hover:bg-zinc-50 dark:hover:bg-[#1A1D21]"
                         }`}
                       >
                         {item.category === "STUDENT" ? (
                           <Avatar name={item.title} size="sm" />
                         ) : (
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 dark:bg-[#1A1D21] dark:text-zinc-300">
                             {item.category === "CLASSROOM" ? (
                               <BookOpen className="h-4 w-4" strokeWidth={1.75} />
                             ) : item.category === "NOTIFICATION" ? (
@@ -582,16 +582,16 @@ export function CommandPalette({
 
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between gap-2">
-                            <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+                            <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
                               {item.title}
                             </p>
                             {item.meta ? (
-                              <span className="shrink-0 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                              <span className="shrink-0 font-mono text-[11px] tabular-nums text-zinc-500 dark:text-zinc-400">
                                 {item.meta}
                               </span>
                             ) : null}
                           </div>
-                          <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                          <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
                             {item.subtitle}
                           </p>
                         </div>
@@ -605,14 +605,14 @@ export function CommandPalette({
         </div>
 
         {/* Rodape com dicas de teclado */}
-        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50/80 px-4 py-2.5 text-[11px] text-slate-500 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-400">
+        <div className="flex items-center justify-between border-t border-zinc-200/80 bg-zinc-50/80 px-4 py-2 text-[11px] text-zinc-500 dark:border-white/[0.08] dark:bg-[#0C0D0F]/70 dark:text-zinc-400">
           <span>Digite ao menos 2 caracteres para pesquisar</span>
           <span className="hidden items-center gap-2 sm:inline-flex">
-            <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] dark:border-slate-700 dark:bg-slate-800">
+            <kbd className="rounded border border-zinc-200/90 bg-white px-1.5 py-0.5 font-mono text-[10px] dark:border-white/[0.08] dark:bg-[#1A1D21]">
               ↑↓
             </kbd>
             <span>navegar</span>
-            <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] dark:border-slate-700 dark:bg-slate-800">
+            <kbd className="rounded border border-zinc-200/90 bg-white px-1.5 py-0.5 font-mono text-[10px] dark:border-white/[0.08] dark:bg-[#1A1D21]">
               Enter
             </kbd>
             <span>abrir</span>
