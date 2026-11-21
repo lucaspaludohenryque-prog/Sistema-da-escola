@@ -107,28 +107,31 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {errorMessage ? (
         <div
           role="alert"
           aria-live="assertive"
-          className="flex items-start gap-3 rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
+          className="flex items-start gap-2.5 rounded-lg border border-red-200/90 bg-red-50/80 px-3.5 py-2.5 text-sm text-red-800 dark:border-red-500/25 dark:bg-red-500/10 dark:text-red-300"
         >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
-          <p className="leading-snug font-medium">{errorMessage}</p>
+          <AlertCircle
+            className="mt-0.5 h-4 w-4 shrink-0 text-red-600 dark:text-red-400"
+            strokeWidth={1.75}
+          />
+          <p className="leading-snug">{errorMessage}</p>
         </div>
       ) : null}
 
       <div className="space-y-1.5">
         <label
           htmlFor="login-email"
-          className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+          className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
         >
-          E-mail institucional
+          E-mail
         </label>
         <div className="relative">
           <Mail
-            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
+            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
             strokeWidth={1.75}
             aria-hidden="true"
           />
@@ -148,7 +151,7 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
               }
             }}
             placeholder="nome@escola.com"
-            className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-3.5 pl-10 text-sm text-slate-900 placeholder:text-slate-500 transition-[border-color,box-shadow] duration-150 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50"
+            className="block h-10 w-full rounded-lg border border-zinc-200/90 bg-white pr-3.5 pl-10 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:disabled:opacity-60"
           />
         </div>
       </div>
@@ -156,13 +159,13 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
       <div className="space-y-1.5">
         <label
           htmlFor="login-password"
-          className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+          className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
         >
           Senha
         </label>
         <div className="relative">
           <Lock
-            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
+            className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
             strokeWidth={1.75}
             aria-hidden="true"
           />
@@ -182,14 +185,14 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
               }
             }}
             placeholder="Digite sua senha"
-            className="block w-full rounded-lg border border-slate-300 bg-white py-2.5 pr-11 pl-10 text-sm text-slate-900 placeholder:text-slate-500 transition-[border-color,box-shadow] duration-150 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50"
+            className="block h-10 w-full rounded-lg border border-zinc-200/90 bg-white pr-10 pl-10 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:disabled:opacity-60"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             disabled={isSubmitting}
             aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-            className="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:pointer-events-none disabled:opacity-50 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+            className="absolute top-1/2 right-1.5 flex h-7 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 disabled:pointer-events-none disabled:opacity-50 dark:text-zinc-500 dark:hover:bg-white/[0.08] dark:hover:text-zinc-200"
           >
             {showPassword ? (
               <EyeOff className="h-4 w-4" strokeWidth={1.75} />
@@ -203,11 +206,11 @@ export function LoginForm({ redirectTo }: LoginFormProps): React.JSX.Element {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-2 inline-flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 text-sm font-medium text-white transition-colors duration-150 hover:bg-[var(--school-primary-hover)] disabled:cursor-not-allowed disabled:opacity-65"
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} aria-hidden="true" />
+            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.75} aria-hidden="true" />
             <span>Entrando...</span>
           </>
         ) : (
