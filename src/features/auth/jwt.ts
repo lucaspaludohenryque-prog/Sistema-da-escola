@@ -5,17 +5,23 @@ import { USER_ROLES, type SessionPayload, type UserRole } from "./types";
 
 const JWT_ALGORITHM = "HS256";
 const MIN_SECRET_LENGTH = 16;
+const DEV_ONLY_FALLBACK_SECRET =
+  "rco-local-dev-only-jwt-secret-never-used-in-production";
 
 function getJwtSecretKey(): Uint8Array {
-  const secret = process.env.JWT_SECRET;
+  const envSecret = process.env.JWT_SECRET?.trim();
 
-  if (!secret || secret.length < MIN_SECRET_LENGTH) {
-    throw new Error(
-      "JWT_SECRET ausente ou invalido. Defina uma chave com pelo menos 16 caracteres no arquivo .env."
-    );
+  if (envSecret && envSecret.length >= MIN_SECRET_LENGTH) {
+    return new TextEncoder().encode(envSecret);
   }
 
-  return new TextEncoder().encode(secret);
+  if (process.env.NODE_ENV !== "production") {
+    return new TextEncoder().encode(DEV_ONLY_FALLBACK_SECRET);
+  }
+
+  throw new Error(
+    "JWT_SECRET ausente ou curto em producao. Configure JWT_SECRET (minimo 32 caracteres) nas variaveis de ambiente."
+  );
 }
 
 function isUserRole(value: unknown): value is UserRole {

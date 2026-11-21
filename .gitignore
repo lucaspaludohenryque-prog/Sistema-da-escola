@@ -1,5 +1,6 @@
 # Dependencies
 /node_modules
+node_modules/
 /.pnp
 .pnp.*
 
@@ -21,9 +22,11 @@ yarn-error.log*
 
 # Environment variables
 .env
+.env.local
 .env*.local
 
-# SQLite databases
+# Local SQLite databases (desenvolvimento legado)
+prisma/dev.db
 prisma/*.db
 prisma/*.db-journal
 prisma/*.db-shm
