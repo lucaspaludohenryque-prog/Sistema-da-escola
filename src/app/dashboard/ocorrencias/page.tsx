@@ -1,23 +1,31 @@
 import type { Metadata } from "next";
-import { FileWarning } from "lucide-react";
-import { ModulePlaceholder } from "@/features/dashboard";
+import { redirect } from "next/navigation";
+import { getAuthenticatedUser } from "@/features/auth";
+import { listClassroomsForUser } from "@/features/classrooms";
+import { listOccurrencesForUser } from "@/features/occurrences";
+import { OccurrencesView } from "@/features/occurrences/components/OccurrencesView";
 
 export const metadata: Metadata = {
   title: "Ocorrências",
+  description: "Registro e acompanhamento de ocorrências disciplinares e pedagógicas.",
 };
 
-export default function OcorrenciasPage(): React.JSX.Element {
+export default async function OcorrenciasPage(): Promise<React.JSX.Element> {
+  const user = await getAuthenticatedUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const [classrooms, occurrences] = await Promise.all([
+    listClassroomsForUser(user),
+    listOccurrencesForUser(user),
+  ]);
+
   return (
-    <ModulePlaceholder
-      title="Ocorrências"
-      description="Documente registros disciplinares e acompanhamentos pedagógicos com trilha de auditoria entre professores e coordenação."
-      icon={FileWarning}
-      plannedCapabilities={[
-        "Abertura de ocorrência por estudante, turma e categoria",
-        "Registro de encaminhamentos e devolutivas da coordenação",
-        "Histórico cronológico por aluno com filtros por período",
-        "Emissão de relatório resumido para reuniões pedagógicas",
-      ]}
+    <OccurrencesView
+      classrooms={classrooms}
+      initialOccurrences={occurrences}
     />
   );
 }

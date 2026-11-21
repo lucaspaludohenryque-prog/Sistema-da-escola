@@ -19,31 +19,60 @@ enum Shift {
   NOITE
 }
 
+enum AttendanceStatus {
+  PRESENTE
+  FALTA
+  JUSTIFICADA
+}
+
+enum OccurrenceType {
+  INDISCIPLINA
+  ATRASO
+  SEM_MATERIAL
+  USO_CELULAR
+  ELOGIO
+  OUTRO
+}
+
+enum OccurrenceSeverity {
+  LEVE
+  MEDIA
+  GRAVE
+}
+
+enum OccurrenceStatus {
+  PENDENTE
+  RESOLVIDO
+}
+
 model User {
-  id         String      @id @default(cuid())
-  name       String
-  email      String      @unique
-  password   String
-  role       UserRole    @default(PROFESSOR)
-  classrooms Classroom[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String
+  role        UserRole     @default(PROFESSOR)
+  classrooms  Classroom[]
+  occurrences Occurrence[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([role])
   @@map("users")
 }
 
 model Classroom {
-  id        String    @id @default(cuid())
-  name      String
-  subject   String
-  year      Int
-  shift     Shift
-  teacherId String
-  teacher   User      @relation(fields: [teacherId], references: [id], onDelete: Restrict)
-  students  Student[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String       @id @default(cuid())
+  name        String
+  subject     String
+  year        Int
+  shift       Shift
+  teacherId   String
+  teacher     User         @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  students    Student[]
+  lessons     Lesson[]
+  occurrences Occurrence[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([teacherId])
   @@index([year, shift])
@@ -51,18 +80,74 @@ model Classroom {
 }
 
 model Student {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String
-  registration  String    @unique
+  registration  String       @unique
   guardianName  String
   guardianPhone String
-  active        Boolean   @default(true)
+  active        Boolean      @default(true)
   classroomId   String
-  classroom     Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  classroom     Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  attendances   Attendance[]
+  occurrences   Occurrence[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   @@index([classroomId, name])
   @@index([active])
   @@map("students")
+}
+
+model Lesson {
+  id           String       @id @default(cuid())
+  classroomId  String
+  classroom    Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  date         String
+  lessonNumber Int          @default(1)
+  content      String
+  observations String?
+  attendances  Attendance[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([classroomId, date, lessonNumber])
+  @@index([classroomId, date])
+  @@map("lessons")
+}
+
+model Attendance {
+  id        String           @id @default(cuid())
+  lessonId  String
+  lesson    Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status    AttendanceStatus @default(PRESENTE)
+  updatedAt DateTime         @updatedAt
+
+  @@unique([lessonId, studentId])
+  @@index([studentId])
+  @@map("attendances")
+}
+
+model Occurrence {
+  id             String             @id @default(cuid())
+  studentId      String
+  student        Student            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomId    String
+  classroom      Classroom          @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  authorId       String
+  author         User               @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  type           OccurrenceType
+  severity       OccurrenceSeverity
+  description    String
+  status         OccurrenceStatus   @default(PENDENTE)
+  resolutionNote String?
+  date           String
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([classroomId, date])
+  @@index([studentId])
+  @@index([status, severity])
+  @@map("occurrences")
 }
