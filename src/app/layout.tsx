@@ -16,13 +16,29 @@ const jetBrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const SITE_URL = "https://rcolasalle.vercel.app";
+const SITE_TITLE = "RCO La Salle Curitiba | Registro de Classe Online";
+const SITE_DESCRIPTION =
+  "Sistema escolar de Registro de Classe Online (RCO) para gestão de turmas, chamada, notas e ocorrências.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "RCO Escolar — Registro de Classe Online",
-    template: "%s | RCO Escolar",
+    default: SITE_TITLE,
+    template: "%s | RCO La Salle Curitiba",
   },
-  description:
-    "Sistema web de gestão pedagógica e registro de classe online para professores, coordenação e administração escolar.",
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: SITE_URL,
+    siteName: "RCO La Salle Curitiba",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
