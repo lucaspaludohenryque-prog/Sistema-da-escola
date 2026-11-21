@@ -8,11 +8,11 @@ export const NOTIFICATION_TYPE_LABELS: Record<NotificationType, string> = {
 
 export const NOTIFICATION_TYPE_STYLES: Record<NotificationType, string> = {
   FALTA:
-    "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30",
+    "border border-red-200/80 bg-red-50/70 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300",
   OCORRENCIA:
-    "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30",
+    "border border-amber-200/80 bg-amber-50/70 text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300",
   COMUNICADO:
-    "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/30",
+    "border border-blue-200/80 bg-blue-50/70 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-300",
 };
 
 export const NOTIFICATIONS_UPDATED_EVENT = "rco:notifications-updated";

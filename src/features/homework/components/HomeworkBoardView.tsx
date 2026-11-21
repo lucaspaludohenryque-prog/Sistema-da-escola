@@ -58,7 +58,7 @@ function getDeadlineBadge(
     return {
       label: `Entrega: ${formatIsoDateBr(dueDate)}`,
       className:
-        "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+        "bg-zinc-100 text-zinc-700 dark:bg-[#1A1D21] dark:text-zinc-300",
     };
   }
 
@@ -109,7 +109,7 @@ function getDeadlineBadge(
   return {
     label: `Entrega: ${formatIsoDateBr(dueDate)}`,
     className:
-      "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700",
+      "bg-zinc-100 text-zinc-700 ring-1 ring-inset ring-zinc-200 dark:bg-[#1A1D21] dark:text-zinc-300 dark:ring-white/[0.1]",
   };
 }
 
@@ -432,7 +432,7 @@ export function HomeworkBoardView({
   return (
     <div className="space-y-6">
       {/* Barra superior de filtros e acao principal */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[var(--shadow-ambient)] sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[var(--shadow-ambient)] sm:p-5 dark:border-white/[0.08] dark:bg-[#131518]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           {isStaff ? (
             <div className="flex flex-wrap items-center gap-3">
@@ -440,7 +440,7 @@ export function HomeworkBoardView({
                 aria-label="Filtrar por turma"
                 value={classroomFilter}
                 onChange={(e) => setClassroomFilter(e.target.value)}
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 sm:text-sm"
+                className="rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-xs font-medium text-zinc-800 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 sm:text-sm"
               >
                 <option value="ALL">Todas as turmas</option>
                 {classrooms.map((c) => (
@@ -454,7 +454,7 @@ export function HomeworkBoardView({
                 aria-label="Filtrar por tipo"
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 sm:text-sm"
+                className="rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-xs font-medium text-zinc-800 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 sm:text-sm"
               >
                 <option value="ALL">Todos os tipos</option>
                 {HOMEWORK_TYPES.map((t) => (
@@ -465,7 +465,7 @@ export function HomeworkBoardView({
               </select>
             </div>
           ) : (
-            <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+            <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-zinc-100 p-1 dark:bg-[#1A1D21]">
               {(
                 [
                   ["PENDENTES", "Pendentes"],
@@ -480,8 +480,8 @@ export function HomeworkBoardView({
                   onClick={() => setFamilyTab(key)}
                   className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
                     familyTab === key
-                      ? "bg-white text-slate-900 shadow-xs dark:bg-slate-900 dark:text-white"
-                      : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                      ? "bg-white text-zinc-900 shadow-xs dark:bg-[#131518] dark:text-white"
+                      : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white"
                   }`}
                 >
                   {label}
@@ -494,7 +494,7 @@ export function HomeworkBoardView({
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[var(--school-primary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] sm:text-sm"
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[var(--school-primary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] sm:text-sm"
             >
               <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               <span>Nova Tarefa / Material</span>
@@ -505,14 +505,14 @@ export function HomeworkBoardView({
 
       {/* Lista de cards */}
       {filteredHomeworks.length === 0 ? (
-        <section className="rounded-2xl border border-slate-200/80 bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] dark:border-slate-800 dark:bg-slate-900">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+        <section className="rounded-xl border border-zinc-200/80 bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] dark:border-white/[0.08] dark:bg-[#131518]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
             <BookOpenText className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">
+          <h2 className="mt-4 text-base font-semibold text-zinc-900 dark:text-white">
             Nenhuma atividade encontrada neste filtro
           </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {isStaff
               ? "Publique tarefas, trabalhos ou links de material de apoio para sua turma."
               : "Assim que os professores publicarem tarefas ou materiais, eles aparecerão aqui."}
@@ -535,7 +535,7 @@ export function HomeworkBoardView({
             return (
               <article
                 key={hw.id}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                className="flex flex-col justify-between rounded-xl border border-zinc-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:border-zinc-300 dark:hover:border-white/[0.15] dark:border-white/[0.08] dark:bg-[#131518]"
               >
                 <div>
                   <div className="flex flex-wrap items-start justify-between gap-2">
@@ -545,7 +545,7 @@ export function HomeworkBoardView({
                       >
                         {HOMEWORK_TYPE_LABELS[hw.type]}
                       </span>
-                      <span className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      <span className="inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-700 dark:bg-[#1A1D21] dark:text-zinc-300">
                         {hw.classroomName} · {hw.classroomSubject}
                       </span>
                     </div>
@@ -558,10 +558,10 @@ export function HomeworkBoardView({
                     </span>
                   </div>
 
-                  <h3 className="mt-3 text-base font-semibold text-slate-900 dark:text-white">
+                  <h3 className="mt-3 text-base font-semibold text-zinc-900 dark:text-white">
                     {hw.title}
                   </h3>
-                  <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  <p className="mt-1.5 whitespace-pre-line text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
                     {hw.description}
                   </p>
 
@@ -570,7 +570,7 @@ export function HomeworkBoardView({
                       href={hw.resourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3.5 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-[var(--school-primary)] transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-blue-400 dark:hover:bg-slate-700"
+                      className="mt-3.5 inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs font-semibold text-[var(--school-primary)] transition-colors hover:bg-zinc-100 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-blue-400 dark:hover:bg-white/[0.08]"
                     >
                       <ExternalLink className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                       <span>Abrir Material / Anexo</span>
@@ -578,19 +578,19 @@ export function HomeworkBoardView({
                   ) : null}
                 </div>
 
-                <div className="mt-4 border-t border-slate-100 pt-4 dark:border-slate-800">
+                <div className="mt-4 border-t border-zinc-200/70 pt-4 dark:border-white/[0.08]">
                   {isStaff ? (
                     <div className="space-y-3">
                       <div>
                         <div className="mb-1.5 flex items-center justify-between text-xs">
-                          <span className="font-medium text-slate-600 dark:text-slate-400">
+                          <span className="font-medium text-zinc-600 dark:text-zinc-400">
                             {hw.submittedCount} de {hw.totalStudents} alunos entregaram
                           </span>
-                          <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+                          <span className="font-mono font-semibold text-zinc-800 dark:text-zinc-200">
                             {progressPct}%
                           </span>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-[#1A1D21]">
                           <div
                             className="h-full rounded-full transition-all duration-300"
                             style={{
@@ -602,14 +602,14 @@ export function HomeworkBoardView({
                       </div>
 
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                        <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
                           Por {hw.authorName} · Prazo {formatIsoDateBr(hw.dueDate)}
                         </span>
                         <div className="flex items-center gap-2">
                           <button
                             type="button"
                             onClick={() => openSubmissionsModal(hw)}
-                            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                            className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-800 transition-colors hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:hover:bg-white/[0.08]"
                           >
                             <ClipboardList className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                             <span>Acompanhar Entregas</span>
@@ -621,7 +621,7 @@ export function HomeworkBoardView({
                               onClick={() => handleDeleteHomework(hw.id)}
                               disabled={deletingId === hw.id}
                               aria-label={`Excluir ${hw.title}`}
-                              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:border-slate-700 dark:hover:border-red-500/30 dark:hover:bg-red-500/15 dark:hover:text-red-400"
+                              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-zinc-200 text-zinc-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:border-white/[0.1] dark:hover:border-red-500/30 dark:hover:bg-red-500/15 dark:hover:text-red-400"
                             >
                               {deletingId === hw.id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -642,7 +642,7 @@ export function HomeworkBoardView({
                           >
                             {SUBMISSION_STATUS_LABELS[ownSub?.status ?? "PENDENTE"]}
                           </span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                          <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
                             Prof. {hw.authorName}
                           </span>
                         </div>
@@ -675,10 +675,10 @@ export function HomeworkBoardView({
                       {hw.studentSubmissions.map((sub) => (
                         <div
                           key={sub.studentId}
-                          className="rounded-xl bg-slate-50 px-3 py-2.5 text-xs dark:bg-slate-800/60"
+                          className="rounded-xl bg-zinc-50 px-3 py-2.5 text-xs dark:bg-white/[0.04]"
                         >
                           <div className="flex flex-wrap items-center justify-between gap-2">
-                            <span className="font-semibold text-slate-900 dark:text-slate-100">
+                            <span className="font-semibold text-zinc-900 dark:text-zinc-100">
                               {sub.studentName}
                             </span>
                             <span
@@ -688,7 +688,7 @@ export function HomeworkBoardView({
                             </span>
                           </div>
                           {sub.studentNote ? (
-                            <p className="mt-1 text-slate-600 dark:text-slate-300">
+                            <p className="mt-1 text-zinc-600 dark:text-zinc-300">
                               Obs. do estudante: {sub.studentNote}
                             </p>
                           ) : null}
@@ -717,15 +717,15 @@ export function HomeworkBoardView({
           aria-labelledby="new-hw-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => setIsCreateOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative z-10 max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+          <div className="relative z-10 max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-xl border border-zinc-200 bg-white p-6 shadow-[var(--shadow-popover)] dark:border-white/[0.1] dark:bg-[#131518]">
             <div className="mb-4 flex items-center justify-between">
               <h2
                 id="new-hw-title"
-                className="text-lg font-semibold text-slate-900 dark:text-white"
+                className="text-lg font-semibold text-zinc-900 dark:text-white"
               >
                 Nova Tarefa ou Material
               </h2>
@@ -733,7 +733,7 @@ export function HomeworkBoardView({
                 type="button"
                 onClick={() => setIsCreateOpen(false)}
                 aria-label="Fechar"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-[#1A1D21]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -742,14 +742,14 @@ export function HomeworkBoardView({
             <form onSubmit={handleCreateHomework} className="space-y-4">
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                     Turma
                   </label>
                   <select
                     required
                     value={formClassroomId}
                     onChange={(e) => setFormClassroomId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                   >
                     {classrooms.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -760,13 +760,13 @@ export function HomeworkBoardView({
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                     Tipo
                   </label>
                   <select
                     value={formType}
                     onChange={(e) => setFormType(e.target.value as HomeworkType)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                   >
                     {HOMEWORK_TYPES.map((t) => (
                       <option key={t} value={t}>
@@ -778,7 +778,7 @@ export function HomeworkBoardView({
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Título
                 </label>
                 <input
@@ -789,13 +789,13 @@ export function HomeworkBoardView({
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="Ex.: Lista de exercícios sobre funções do 1º grau"
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                     Data de Entrega / Referência
                   </label>
                   <input
@@ -803,12 +803,12 @@ export function HomeworkBoardView({
                     required
                     value={formDueDate}
                     onChange={(e) => setFormDueDate(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                     Link de Material (opcional)
                   </label>
                   <input
@@ -816,13 +816,13 @@ export function HomeworkBoardView({
                     value={formResourceUrl}
                     onChange={(e) => setFormResourceUrl(e.target.value)}
                     placeholder="https://drive.google.com/..."
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Orientações / Descrição
                 </label>
                 <textarea
@@ -832,16 +832,16 @@ export function HomeworkBoardView({
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   placeholder="Descreva os exercícios, páginas do livro ou instruções de entrega..."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                 />
               </div>
 
-              <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200">
+              <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-xs font-medium text-zinc-700 dark:border-white/[0.1] dark:bg-white/[0.04] dark:text-zinc-200">
                 <input
                   type="checkbox"
                   checked={formAddToCalendar}
                   onChange={(e) => setFormAddToCalendar(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 accent-[var(--school-primary)]"
+                  className="h-4 w-4 rounded border-zinc-200/90 accent-[var(--school-primary)]"
                 />
                 <CalendarDays className="h-4 w-4 text-[var(--school-primary)] dark:text-blue-400" />
                 <span>Marcar também no Calendário Escolar</span>
@@ -851,7 +851,7 @@ export function HomeworkBoardView({
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="cursor-pointer rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                  className="cursor-pointer rounded-xl border border-zinc-200/90 px-4 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:text-zinc-200 dark:hover:bg-[#1A1D21]"
                 >
                   Cancelar
                 </button>
@@ -880,20 +880,20 @@ export function HomeworkBoardView({
           aria-labelledby="subs-modal-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => setTrackingHomework(null)}
             aria-hidden="true"
           />
-          <div className="relative z-10 flex max-h-[88dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
-            <div className="flex items-start justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+          <div className="relative z-10 flex max-h-[88dvh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-[var(--shadow-popover)] dark:border-white/[0.1] dark:bg-[#131518]">
+            <div className="flex items-start justify-between border-b border-zinc-200 px-5 py-4 dark:border-white/[0.08]">
               <div className="min-w-0">
                 <h2
                   id="subs-modal-title"
-                  className="truncate text-base font-semibold text-slate-900 dark:text-white"
+                  className="truncate text-base font-semibold text-zinc-900 dark:text-white"
                 >
                   Entregas: {trackingHomework.title}
                 </h2>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                   {trackingHomework.classroomName} · Prazo{" "}
                   {formatIsoDateBr(trackingHomework.dueDate)}
                 </p>
@@ -902,7 +902,7 @@ export function HomeworkBoardView({
                 type="button"
                 onClick={() => setTrackingHomework(null)}
                 aria-label="Fechar"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-[#1A1D21]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -922,16 +922,16 @@ export function HomeworkBoardView({
                     return (
                       <li
                         key={sub.studentId}
-                        className="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40"
+                        className="rounded-xl border border-zinc-200/80 bg-zinc-50/70 p-3.5 dark:border-white/[0.08] dark:bg-white/[0.02]"
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-2.5">
                             <Avatar name={sub.studentName} size="xs" />
                             <div>
-                              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                              <p className="text-sm font-semibold text-zinc-900 dark:text-white">
                                 {sub.studentName}
                               </p>
-                              <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                              <p className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
                                 {sub.studentRegistration}
                               </p>
                             </div>
@@ -944,7 +944,7 @@ export function HomeworkBoardView({
                         </div>
 
                         {sub.studentNote ? (
-                          <p className="mt-2 rounded-lg bg-white px-2.5 py-1.5 text-xs text-slate-700 ring-1 ring-slate-200/80 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700">
+                          <p className="mt-2 rounded-lg bg-white px-2.5 py-1.5 text-xs text-zinc-700 ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:text-zinc-300 dark:ring-white/[0.1]">
                             <strong>Nota do aluno:</strong> {sub.studentNote}
                           </p>
                         ) : null}
@@ -960,7 +960,7 @@ export function HomeworkBoardView({
                               }))
                             }
                             placeholder="Feedback curto (opcional)"
-                            className="flex-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                            className="flex-1 rounded-lg border border-zinc-200/90 bg-white px-2.5 py-1.5 text-xs text-zinc-900 dark:border-white/[0.1] dark:bg-[#131518] dark:text-zinc-100"
                           />
                           <div className="flex flex-wrap items-center gap-1.5">
                             {(
@@ -968,7 +968,7 @@ export function HomeworkBoardView({
                                 ["CONFERIDO", "Conferido", "bg-emerald-600 text-white hover:bg-emerald-700"],
                                 ["ENTREGUE", "Entregue", "bg-blue-600 text-white hover:bg-blue-700"],
                                 ["ATRASADO", "Atrasado", "bg-red-600 text-white hover:bg-red-700"],
-                                ["PENDENTE", "Pendente", "bg-slate-200 text-slate-800 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-100"],
+                                ["PENDENTE", "Pendente", "bg-zinc-200 text-zinc-800 hover:bg-slate-300 dark:bg-slate-700 dark:text-zinc-100"],
                               ] as const
                             ).map(([statusKey, label, cls]) => (
                               <button
@@ -1007,24 +1007,24 @@ export function HomeworkBoardView({
           aria-labelledby="student-sub-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => setSubmittingHw(null)}
             aria-hidden="true"
           />
-          <div className="relative z-10 w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+          <div className="relative z-10 w-full max-w-md rounded-xl border border-zinc-200 bg-white p-6 shadow-[var(--shadow-popover)] dark:border-white/[0.1] dark:bg-[#131518]">
             <h2
               id="student-sub-title"
-              className="text-base font-semibold text-slate-900 dark:text-white"
+              className="text-base font-semibold text-zinc-900 dark:text-white"
             >
               Confirmar entrega da atividade
             </h2>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
               {submittingHw.title} ({submittingHw.classroomSubject})
             </p>
 
             <form onSubmit={handleStudentSubmit} className="mt-4 space-y-4">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                   Observação para o professor (opcional)
                 </label>
                 <textarea
@@ -1033,7 +1033,7 @@ export function HomeworkBoardView({
                   value={studentNote}
                   onChange={(e) => setStudentNote(e.target.value)}
                   placeholder="Ex.: Entregue no caderno ou enviado pelo Google Drive."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="w-full rounded-xl border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                 />
               </div>
 
@@ -1041,7 +1041,7 @@ export function HomeworkBoardView({
                 <button
                   type="button"
                   onClick={() => setSubmittingHw(null)}
-                  className="cursor-pointer rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                  className="cursor-pointer rounded-xl border border-zinc-200/90 px-4 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:text-zinc-200 dark:hover:bg-[#1A1D21]"
                 >
                   Cancelar
                 </button>

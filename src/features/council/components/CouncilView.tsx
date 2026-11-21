@@ -38,7 +38,7 @@ interface CouncilViewProps {
 }
 
 const INPUT_CLASS =
-  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400";
+  "block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-500";
 
 export function CouncilView({
   classrooms,
@@ -188,14 +188,14 @@ export function CouncilView({
 
   if (classrooms.length === 0) {
     return (
-      <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-          <ScrollText className="h-6 w-6" strokeWidth={1.75} />
+      <section className="rounded-xl border border-zinc-200/80 bg-white px-6 py-12 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
+          <ScrollText className="h-5 w-5" strokeWidth={1.75} />
         </div>
-        <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+        <h2 className="mt-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           Nenhuma turma disponível para Conselho de Classe
         </h2>
-        <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+        <p className="mx-auto mt-1 max-w-md text-xs text-zinc-500 dark:text-zinc-400">
           Cadastre ou vincule uma turma em Turmas para elaborar atas do conselho.
         </p>
       </section>
@@ -204,70 +204,80 @@ export function CouncilView({
 
   return (
     <div className="space-y-6">
-      {/* Controles de tela (ocultos na impressao) */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800 print:hidden">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-[1.6fr_1fr]">
-            <div className="space-y-1.5">
-              <label
-                htmlFor="council-classroom"
-                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
-              >
-                Turma
-              </label>
-              <select
-                id="council-classroom"
-                value={selectedClassroomId}
-                onChange={(e) => setSelectedClassroomId(e.target.value)}
-                className={INPUT_CLASS}
-              >
-                {classrooms.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} - {c.subject} ({SHIFT_LABELS[c.shift]} / {c.year})
-                  </option>
-                ))}
-              </select>
-            </div>
+      {/* Cabecalho de pagina (oculto na impressao) */}
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between print:hidden">
+        <div>
+          <h2 className="text-xl font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-100">
+            Conselho de Classe
+          </h2>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Consolidado trimestral da turma, redação da ata oficial e emissão em folha A4.
+          </p>
+        </div>
 
-            <div className="space-y-1.5">
-              <label
-                htmlFor="council-term"
-                className="block text-sm font-medium text-slate-800 dark:text-slate-200"
-              >
-                Trimestre
-              </label>
-              <select
-                id="council-term"
-                value={selectedTerm}
-                onChange={(e) =>
-                  setSelectedTerm(Number(e.target.value) as AcademicTerm)
-                }
-                className={INPUT_CLASS}
-              >
-                {ACADEMIC_TERMS.map((t) => (
-                  <option key={t} value={t}>
-                    {TERM_LABELS[t]}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <button
+          type="button"
+          disabled={!data || isLoading || isPreparingPrint}
+          onClick={() => void handlePrintWithVerification()}
+          className="inline-flex h-9 w-fit shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-zinc-200/90 bg-white px-3.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-zinc-900 disabled:opacity-50 dark:border-white/[0.09] dark:bg-[#131518] dark:text-zinc-200 dark:hover:bg-[#1A1D21]"
+        >
+          {isPreparingPrint ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Printer className="h-4 w-4" strokeWidth={1.75} />
+          )}
+          <span>
+            {isPreparingPrint ? "Gerando selo..." : "Imprimir / Salvar Ata (PDF)"}
+          </span>
+        </button>
+      </header>
+
+      {/* Seletores (ocultos na impressao) */}
+      <section className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none print:hidden">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1.6fr_1fr]">
+          <div className="space-y-1.5">
+            <label
+              htmlFor="council-classroom"
+              className="block text-xs font-medium text-zinc-600 dark:text-zinc-400"
+            >
+              Turma
+            </label>
+            <select
+              id="council-classroom"
+              value={selectedClassroomId}
+              onChange={(e) => setSelectedClassroomId(e.target.value)}
+              className={INPUT_CLASS}
+            >
+              {classrooms.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} - {c.subject} ({SHIFT_LABELS[c.shift]} / {c.year})
+                </option>
+              ))}
+            </select>
           </div>
 
-          <button
-            type="button"
-            disabled={!data || isLoading || isPreparingPrint}
-            onClick={() => void handlePrintWithVerification()}
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-          >
-            {isPreparingPrint ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Printer className="h-4 w-4" strokeWidth={1.75} />
-            )}
-            <span>
-              {isPreparingPrint ? "Gerando selo..." : "Imprimir / Salvar Ata em PDF"}
-            </span>
-          </button>
+          <div className="space-y-1.5">
+            <label
+              htmlFor="council-term"
+              className="block text-xs font-medium text-zinc-600 dark:text-zinc-400"
+            >
+              Trimestre
+            </label>
+            <select
+              id="council-term"
+              value={selectedTerm}
+              onChange={(e) =>
+                setSelectedTerm(Number(e.target.value) as AcademicTerm)
+              }
+              className={INPUT_CLASS}
+            >
+              {ACADEMIC_TERMS.map((t) => (
+                <option key={t} value={t}>
+                  {TERM_LABELS[t]}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </section>
 
@@ -279,111 +289,97 @@ export function CouncilView({
         <>
           {/* Visao interativa de tela (oculta na impressao) */}
           <div className="space-y-6 print:hidden">
-            {/* Resumo automatico dos numeros da turma */}
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                      Alunos Ativos
-                    </p>
-                    <p className="mt-1 font-mono text-3xl font-bold text-slate-900 dark:text-slate-100">
-                      {data.metrics.totalStudents}
-                    </p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[var(--school-primary)] ring-1 ring-inset ring-blue-100 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/30">
-                    <Users className="h-5 w-5" strokeWidth={1.75} />
-                  </div>
+            {/* Resumo limpo dos numeros da turma */}
+            <section className="grid grid-cols-2 gap-3.5 xl:grid-cols-4">
+              <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    Alunos Ativos
+                  </p>
+                  <Users className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
-                  {data.metrics.lessonsCount} aulas registradas na turma
+                <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">
+                  {data.metrics.totalStudents}
+                </p>
+                <p className="mt-1.5 text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
+                  {data.metrics.lessonsCount} aulas registradas
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                      Abaixo da Média (&lt; 6,0)
-                    </p>
-                    <p className="mt-1 font-mono text-3xl font-bold text-amber-700 dark:text-amber-300">
-                      {data.metrics.belowAverageCount}
-                    </p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30">
-                    <GraduationCap className="h-5 w-5" strokeWidth={1.75} />
-                  </div>
+              <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    Abaixo da Média (&lt; 6,0)
+                  </p>
+                  <GraduationCap className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
-                  Considerando recuperação do {TERM_LABELS[selectedTerm]}
+                <p
+                  className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${
+                    data.metrics.belowAverageCount > 0
+                      ? "text-amber-700 dark:text-amber-400"
+                      : "text-zinc-900 dark:text-zinc-100"
+                  }`}
+                >
+                  {data.metrics.belowAverageCount}
+                </p>
+                <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                  {TERM_LABELS[selectedTerm]} (com recuperação)
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                      Frequência &lt; 75%
-                    </p>
-                    <p className="mt-1 font-mono text-3xl font-bold text-red-700 dark:text-red-400">
-                      {data.metrics.lowAttendanceCount}
-                    </p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30">
-                    <AlertTriangle className="h-5 w-5" strokeWidth={1.75} />
-                  </div>
+              <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    Frequência &lt; 75%
+                  </p>
+                  <AlertTriangle className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
-                  Abaixo do mínimo legal de presença
+                <p
+                  className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${
+                    data.metrics.lowAttendanceCount > 0
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-zinc-900 dark:text-zinc-100"
+                  }`}
+                >
+                  {data.metrics.lowAttendanceCount}
+                </p>
+                <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
+                  Abaixo do mínimo legal
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                      Ocorrências da Turma
-                    </p>
-                    <p className="mt-1 font-mono text-3xl font-bold text-slate-900 dark:text-slate-100">
-                      {data.metrics.occurrencesCount}
-                    </p>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
-                    <FileWarning className="h-5 w-5" strokeWidth={1.75} />
-                  </div>
+              <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    Ocorrências da Turma
+                  </p>
+                  <FileWarning className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} />
                 </div>
-                <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">
+                  {data.metrics.occurrencesCount}
+                </p>
+                <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
                   Registros disciplinares e pedagógicos
                 </p>
               </div>
             </section>
 
-            <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_1fr]">
+            <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1.35fr_1fr]">
               {/* Editor da Ata */}
               <form
                 onSubmit={handleSave}
-                className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800"
+                className="rounded-xl border border-zinc-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none"
               >
-                <div className="mb-5 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 pb-4 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <ScrollText
-                      className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
-                      strokeWidth={1.75}
-                    />
-                    <div>
-                      <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                        Ata do Conselho de Classe ({TERM_LABELS[selectedTerm]})
-                      </h2>
-                      {data.minute ? (
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          Última atualização por {data.minute.authorName}
-                        </p>
-                      ) : (
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          Nenhuma ata registrada ainda para este trimestre
-                        </p>
-                      )}
-                    </div>
+                <div className="mb-5 flex flex-wrap items-center justify-between gap-2 border-b border-zinc-200/70 pb-3.5 dark:border-white/[0.07]">
+                  <div>
+                    <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      Ata do Conselho de Classe ({TERM_LABELS[selectedTerm]})
+                    </h3>
+                    <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                      {data.minute
+                        ? `Última atualização por ${data.minute.authorName}`
+                        : "Nenhuma ata registrada ainda para este trimestre"}
+                    </p>
                   </div>
                 </div>
 
@@ -391,7 +387,7 @@ export function CouncilView({
                   <div className="max-w-xs space-y-1.5">
                     <label
                       htmlFor="council-date"
-                      className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                      className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
                     >
                       Data da Reunião
                     </label>
@@ -409,7 +405,7 @@ export function CouncilView({
                   <div className="space-y-1.5">
                     <label
                       htmlFor="council-summary"
-                      className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                      className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
                     >
                       Parecer Geral da Turma
                     </label>
@@ -428,7 +424,7 @@ export function CouncilView({
                   <div className="space-y-1.5">
                     <label
                       htmlFor="council-decisions"
-                      className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                      className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
                     >
                       Decisões e Encaminhamentos Pedagógicos
                     </label>
@@ -445,11 +441,11 @@ export function CouncilView({
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end border-t border-slate-200/80 pt-5 dark:border-slate-800">
+                <div className="mt-5 flex justify-end border-t border-zinc-200/70 pt-4 dark:border-white/[0.07]">
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:opacity-70"
+                    className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 text-sm font-medium text-white transition-colors hover:bg-[var(--school-primary-hover)] disabled:opacity-65"
                   >
                     {isSaving ? (
                       <>
@@ -467,37 +463,37 @@ export function CouncilView({
               </form>
 
               {/* Alunos em ponto de atencao */}
-              <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-                <div className="border-b border-slate-200/80 px-5 py-4 dark:border-slate-800">
-                  <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              <section className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+                <div className="border-b border-zinc-200/80 px-5 py-3.5 dark:border-white/[0.08]">
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     Estudantes em Ponto de Atenção ({data.attentionStudents.length})
                   </h3>
-                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                     Média final do trimestre &lt; 6,0 ou frequência &lt; 75%
                   </p>
                 </div>
 
                 {data.attentionStudents.length === 0 ? (
-                  <p className="px-6 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+                  <p className="px-6 py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">
                     Nenhum estudante da turma em alerta neste trimestre.
                   </p>
                 ) : (
-                  <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <ul className="divide-y divide-zinc-200/70 dark:divide-white/[0.06]">
                     {data.attentionStudents.map((st) => (
                       <li
                         key={st.studentId}
-                        className="flex items-center justify-between gap-3 px-5 py-3.5"
+                        className="flex items-center justify-between gap-3 px-5 py-3 transition-colors hover:bg-zinc-50/80 dark:hover:bg-white/[0.02]"
                       >
                         <div className="flex min-w-0 items-center gap-2.5">
                           <Avatar name={st.name} size="sm" />
                           <div className="min-w-0">
                             <Link
                               href={`/dashboard/alunos/${st.studentId}/ficha`}
-                              className="block truncate text-sm font-semibold text-slate-900 hover:text-[var(--school-primary)] hover:underline dark:text-slate-100 dark:hover:text-blue-400"
+                              className="block truncate text-sm font-medium text-zinc-900 hover:text-[var(--school-primary)] hover:underline dark:text-zinc-100"
                             >
                               {st.name}
                             </Link>
-                            <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                            <p className="font-mono text-[11px] tabular-nums text-zinc-500 dark:text-zinc-400">
                               {st.registration}
                             </p>
                           </div>
@@ -506,13 +502,13 @@ export function CouncilView({
                         <div className="flex shrink-0 items-center gap-1.5">
                           {st.termFinalAverage !== null &&
                           st.termFinalAverage < PASSING_GRADE_THRESHOLD ? (
-                            <span className="rounded bg-amber-50 px-2 py-0.5 font-mono text-[11px] font-semibold text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30">
+                            <span className="rounded-md border border-amber-200/80 bg-amber-50/70 px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300">
                               Média {formatScoreBr(st.termFinalAverage)}
                             </span>
                           ) : null}
                           {st.attendanceRate !== null &&
                           st.attendanceRate < LOW_ATTENDANCE_THRESHOLD ? (
-                            <span className="rounded bg-red-50 px-2 py-0.5 font-mono text-[11px] font-semibold text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30">
+                            <span className="rounded-md border border-red-200/80 bg-red-50/70 px-2 py-0.5 font-mono text-[11px] font-medium tabular-nums text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
                               Freq. {st.attendanceRate}%
                             </span>
                           ) : null}
@@ -525,12 +521,12 @@ export function CouncilView({
             </div>
           </div>
 
-          {/* Documento A4 oficial para impressao / PDF (sempre fundo branco e texto escuro) */}
-          <article className="rco-print-sheet hidden bg-white text-slate-900 print:block">
-            <header className="flex items-start justify-between border-b-2 border-slate-900 pb-4">
-              <div className="flex items-start gap-3">
+          {/* Documento A4 oficial para impressao / PDF */}
+          <article className="rco-print-sheet hidden bg-white text-zinc-900 print:block">
+            <header className="grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b border-zinc-900 pb-4">
+              <div>
                 {data.school.logoUrl ? (
-                  <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white p-1">
+                  <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded border border-zinc-200 bg-white p-1">
                     <img
                       src={data.school.logoUrl}
                       alt={`Logo ${data.school.name}`}
@@ -538,47 +534,46 @@ export function CouncilView({
                     />
                   </div>
                 ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-slate-900 bg-slate-900 text-white">
+                  <div className="flex h-12 w-12 items-center justify-center rounded border border-zinc-900 bg-zinc-900 text-white">
                     <BookOpenCheck className="h-6 w-6" />
                   </div>
                 )}
-                <div>
-                  <p className="text-xs font-bold text-slate-700 uppercase">
-                    {data.school.name}
-                  </p>
-                  <h1 className="text-xl font-bold text-slate-900">
-                    Ata de Conselho de Classe - {TERM_LABELS[selectedTerm]}
-                  </h1>
-                  <p className="text-xs text-slate-600">
-                    {data.classroom.name} - {data.classroom.subject} (
-                    {SHIFT_LABELS[data.classroom.shift]}) · Ano Letivo{" "}
-                    {data.classroom.year}
-                  </p>
-                </div>
               </div>
-              <div className="flex items-start gap-3">
-                <div className="text-right text-xs text-slate-600">
-                  <p className="font-semibold text-slate-900">
-                    Data: {formatIsoDateBr(date)}
-                  </p>
-                  <p>Prof. {data.classroom.teacherName}</p>
-                </div>
+
+              <div className="text-center">
+                <p className="text-xs font-semibold tracking-wider text-zinc-600 uppercase">
+                  {data.school.name}
+                </p>
+                <h1 className="mt-0.5 text-lg font-bold tracking-[-0.02em] text-zinc-900">
+                  Ata de Conselho de Classe · {TERM_LABELS[selectedTerm]}
+                </h1>
+                <p className="mt-0.5 text-xs text-zinc-600 tabular-nums">
+                  {data.classroom.name} · {data.classroom.subject} (
+                  {SHIFT_LABELS[data.classroom.shift]}) · Ano Letivo{" "}
+                  {data.classroom.year}
+                </p>
+                <p className="mt-0.5 font-mono text-[11px] text-zinc-500 tabular-nums">
+                  Data: {formatIsoDateBr(date)} · Prof. {data.classroom.teacherName}
+                </p>
+              </div>
+
+              <div className="flex justify-end">
                 {qrCodeDataUrl ? (
-                  <div className="flex flex-col items-center rounded-lg border border-slate-300 bg-white p-1.5 text-center">
+                  <div className="flex flex-col items-center rounded border border-zinc-300 bg-white p-1.5 text-center">
                     <img
                       src={qrCodeDataUrl}
                       alt="QR Code de validação antifraude da Ata"
-                      width={72}
-                      height={72}
-                      className="h-[72px] w-[72px]"
+                      width={68}
+                      height={68}
+                      className="h-[68px] w-[68px]"
                     />
                     {verificationCode ? (
-                      <span className="mt-1 font-mono text-[8.5px] font-bold text-slate-900">
+                      <span className="mt-1 font-mono text-[8.5px] font-semibold text-zinc-900">
                         {verificationCode}
                       </span>
                     ) : null}
-                    <span className="text-[8px] text-slate-500">
-                      Validação antifraude
+                    <span className="text-[8px] text-zinc-500">
+                      Validação digital
                     </span>
                   </div>
                 ) : null}
@@ -586,60 +581,62 @@ export function CouncilView({
             </header>
 
             <section className="print-avoid-break mt-6">
-              <h2 className="border-b border-slate-300 pb-1 text-xs font-bold uppercase">
+              <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
                 1. Indicadores Consolidados da Turma
               </h2>
-              <div className="mt-3 grid grid-cols-4 gap-3 text-center text-xs">
-                <div className="rounded border border-slate-300 p-2.5">
-                  <p className="text-slate-600">Alunos Ativos</p>
-                  <p className="mt-1 font-mono text-base font-bold">
-                    {data.metrics.totalStudents}
-                  </p>
-                </div>
-                <div className="rounded border border-slate-300 p-2.5">
-                  <p className="text-slate-600">Abaixo da Média</p>
-                  <p className="mt-1 font-mono text-base font-bold">
-                    {data.metrics.belowAverageCount}
-                  </p>
-                </div>
-                <div className="rounded border border-slate-300 p-2.5">
-                  <p className="text-slate-600">Freq. &lt; 75%</p>
-                  <p className="mt-1 font-mono text-base font-bold">
-                    {data.metrics.lowAttendanceCount}
-                  </p>
-                </div>
-                <div className="rounded border border-slate-300 p-2.5">
-                  <p className="text-slate-600">Ocorrências</p>
-                  <p className="mt-1 font-mono text-base font-bold">
-                    {data.metrics.occurrencesCount}
-                  </p>
+              <div className="mt-3 overflow-hidden rounded border border-zinc-300">
+                <div className="grid grid-cols-4 divide-x divide-zinc-300 text-center text-xs">
+                  <div className="p-2.5">
+                    <p className="text-[10px] text-zinc-500 uppercase">Alunos Ativos</p>
+                    <p className="mt-1 font-mono text-base font-semibold tabular-nums">
+                      {data.metrics.totalStudents}
+                    </p>
+                  </div>
+                  <div className="p-2.5">
+                    <p className="text-[10px] text-zinc-500 uppercase">Abaixo da Média</p>
+                    <p className="mt-1 font-mono text-base font-semibold tabular-nums">
+                      {data.metrics.belowAverageCount}
+                    </p>
+                  </div>
+                  <div className="p-2.5">
+                    <p className="text-[10px] text-zinc-500 uppercase">Freq. &lt; 75%</p>
+                    <p className="mt-1 font-mono text-base font-semibold tabular-nums">
+                      {data.metrics.lowAttendanceCount}
+                    </p>
+                  </div>
+                  <div className="p-2.5">
+                    <p className="text-[10px] text-zinc-500 uppercase">Ocorrências</p>
+                    <p className="mt-1 font-mono text-base font-semibold tabular-nums">
+                      {data.metrics.occurrencesCount}
+                    </p>
+                  </div>
                 </div>
               </div>
             </section>
 
             {data.attentionStudents.length > 0 ? (
               <section className="print-avoid-break mt-6">
-                <h2 className="border-b border-slate-300 pb-1 text-xs font-bold uppercase">
+                <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
                   2. Estudantes em Acompanhamento Prioritário
                 </h2>
-                <table className="mt-2 w-full border-collapse text-left text-xs">
+                <table className="mt-2.5 w-full border-collapse text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-300">
+                    <tr className="border-b border-zinc-300 text-[11px] text-zinc-600 uppercase">
                       <th className="py-1.5 font-semibold">Estudante</th>
                       <th className="py-1.5 font-semibold">Matrícula</th>
                       <th className="py-1.5 text-center font-semibold">Média Final</th>
                       <th className="py-1.5 text-center font-semibold">Frequência</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200">
+                  <tbody className="divide-y divide-zinc-200">
                     {data.attentionStudents.map((st) => (
                       <tr key={st.studentId}>
                         <td className="py-1.5 font-medium">{st.name}</td>
-                        <td className="py-1.5 font-mono">{st.registration}</td>
-                        <td className="py-1.5 text-center font-mono">
+                        <td className="py-1.5 font-mono tabular-nums">{st.registration}</td>
+                        <td className="py-1.5 text-center font-mono tabular-nums">
                           {formatScoreBr(st.termFinalAverage)}
                         </td>
-                        <td className="py-1.5 text-center font-mono">
+                        <td className="py-1.5 text-center font-mono tabular-nums">
                           {st.attendanceRate !== null ? `${st.attendanceRate}%` : "-"}
                         </td>
                       </tr>
@@ -650,40 +647,40 @@ export function CouncilView({
             ) : null}
 
             <section className="print-avoid-break mt-6">
-              <h2 className="border-b border-slate-300 pb-1 text-xs font-bold uppercase">
+              <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
                 {data.attentionStudents.length > 0 ? "3." : "2."} Parecer Geral da Turma
               </h2>
-              <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-slate-800">
+              <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-zinc-800">
                 {summary || "(Sem parecer registrado)"}
               </p>
             </section>
 
             <section className="print-avoid-break mt-6">
-              <h2 className="border-b border-slate-300 pb-1 text-xs font-bold uppercase">
+              <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
                 {data.attentionStudents.length > 0 ? "4." : "3."} Decisões e Encaminhamentos
               </h2>
-              <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-slate-800">
+              <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed text-zinc-800">
                 {decisions || "(Sem encaminhamentos registrados)"}
               </p>
             </section>
 
-            <footer className="print-avoid-break mt-14 grid grid-cols-3 gap-6 border-t border-slate-300 pt-8 text-center text-xs text-slate-700">
+            <footer className="print-avoid-break mt-14 grid grid-cols-3 gap-6 border-t border-zinc-300 pt-8 text-center text-xs text-zinc-600">
               <div>
-                <div className="mx-auto mb-2 w-44 border-b border-slate-500" />
-                <p className="font-semibold text-slate-900">
+                <div className="mx-auto mb-2 w-44 border-b border-zinc-400" />
+                <p className="font-semibold text-zinc-900">
                   {data.classroom.teacherName}
                 </p>
-                <p>Professor(a)</p>
+                <p className="text-[11px] text-zinc-500">Professor(a)</p>
               </div>
               <div>
-                <div className="mx-auto mb-2 w-44 border-b border-slate-500" />
-                <p className="font-semibold text-slate-900">Coordenação Pedagógica</p>
-                <p>Assinatura</p>
+                <div className="mx-auto mb-2 w-44 border-b border-zinc-400" />
+                <p className="font-semibold text-zinc-900">Coordenação Pedagógica</p>
+                <p className="text-[11px] text-zinc-500">Assinatura / Carimbo</p>
               </div>
               <div>
-                <div className="mx-auto mb-2 w-44 border-b border-slate-500" />
-                <p className="font-semibold text-slate-900">Direção Escolar</p>
-                <p>Assinatura / Carimbo</p>
+                <div className="mx-auto mb-2 w-44 border-b border-zinc-400" />
+                <p className="font-semibold text-zinc-900">Direção Escolar</p>
+                <p className="text-[11px] text-zinc-500">Assinatura / Carimbo</p>
               </div>
             </footer>
           </article>

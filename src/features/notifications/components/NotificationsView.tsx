@@ -137,35 +137,36 @@ export function NotificationsView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* Cabecalho limpo de pagina + filtros */}
+      <header className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
+            <h2 className="text-xl font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-100">
               Central de Avisos Escolares
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
               Acompanhe notificações automáticas de faltas e ocorrências e confirme sua ciência.
             </p>
           </div>
 
           <span
-            className={`inline-flex w-fit items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold ${
+            className={`inline-flex w-fit items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium tabular-nums ${
               unacknowledgedCount > 0
-                ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
-                : "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
+                ? "border-red-200/80 bg-red-50/70 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
+                : "border-emerald-200/80 bg-emerald-50/70 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"
             }`}
           >
             <Bell className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
             <span>
               {unacknowledgedCount > 0
-                ? `${unacknowledgedCount} ${unacknowledgedCount === 1 ? "aviso aguardando ciência" : "avisos aguardando ciência"}`
-                : "Todos os avisos confirmados"}
+                ? `${unacknowledgedCount} ${unacknowledgedCount === 1 ? "pendente" : "pendentes"}`
+                : "Todos confirmados"}
             </span>
           </span>
         </div>
 
         <div
-          className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-slate-200/80 pt-4 dark:border-slate-800"
+          className="flex flex-wrap items-center gap-1.5"
           role="group"
           aria-label="Filtrar avisos"
         >
@@ -177,10 +178,10 @@ export function NotificationsView({
                 type="button"
                 onClick={() => setActiveFilter(option.id)}
                 aria-pressed={isSelected}
-                className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                className={`h-8 cursor-pointer rounded-lg border px-3 text-xs font-medium transition-colors ${
                   isSelected
-                    ? "bg-[var(--school-primary)] text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    ? "border-[var(--school-primary)] bg-[var(--school-primary)] text-white"
+                    : "border-zinc-200/80 bg-white text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:border-white/[0.08] dark:bg-[#131518] dark:text-zinc-400 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-200"
                 }`}
               >
                 {option.label}
@@ -188,42 +189,42 @@ export function NotificationsView({
             );
           })}
         </div>
-      </section>
+      </header>
 
       {errorMessage ? (
         <div
           role="alert"
-          className="flex items-start gap-2.5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
+          className="flex items-start gap-2.5 rounded-lg border border-red-200/90 bg-red-50/70 px-4 py-3 text-sm text-red-800 dark:border-red-500/25 dark:bg-red-500/10 dark:text-red-300"
         >
-          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700 dark:text-red-300" strokeWidth={1.75} />
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600 dark:text-red-400" strokeWidth={1.75} />
           <span>{errorMessage}</span>
         </div>
       ) : null}
 
       {filteredNotifications.length === 0 ? (
-        <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-            <Bell className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+        <section className="rounded-xl border border-zinc-200/80 bg-white px-6 py-12 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
+            <Bell className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+          <h3 className="mt-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
             Nenhum aviso nesta visualização
           </h3>
-          <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-1 max-w-md text-xs text-zinc-500 dark:text-zinc-400">
             Quando a escola registrar uma falta ou ocorrência vinculada ao estudante, o aviso
             aparecerá automaticamente aqui.
           </p>
         </section>
       ) : (
-        <section aria-label="Lista de avisos" className="space-y-4">
+        <section aria-label="Lista de avisos" className="space-y-3">
           {filteredNotifications.map((item) => {
             const isAcknowledged = Boolean(item.acknowledgedAt);
             const isWorking = acknowledgingId === item.id;
             const leftBorderClass =
               item.type === "FALTA"
-                ? "border-l-red-500"
+                ? "border-l-red-500/80"
                 : item.type === "OCORRENCIA"
                   ? getOccurrenceAccent(item.title)
-                  : "border-l-blue-600";
+                  : "border-l-[var(--school-primary)]";
 
             const TypeIcon =
               item.type === "FALTA"
@@ -235,50 +236,50 @@ export function NotificationsView({
             return (
               <article
                 key={item.id}
-                className={`rounded-2xl border-l-4 bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800 ${leftBorderClass}`}
+                className={`rounded-xl border border-zinc-200/80 border-l-[3px] bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:p-5 dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none ${leftBorderClass}`}
               >
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="min-w-0 flex-1 space-y-2.5">
+                  <div className="min-w-0 flex-1 space-y-2">
                     <div className="flex flex-wrap items-center gap-2">
                       <span
-                        className={`inline-flex items-center gap-1 rounded-md px-2.5 py-0.5 text-xs font-semibold ${NOTIFICATION_TYPE_STYLES[item.type]}`}
+                        className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${NOTIFICATION_TYPE_STYLES[item.type]}`}
                       >
-                        <TypeIcon className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                        <TypeIcon className="h-3 w-3" strokeWidth={1.75} aria-hidden="true" />
                         {NOTIFICATION_TYPE_LABELS[item.type]}
                       </span>
 
-                      <span className="inline-flex items-center gap-1 font-mono text-xs text-slate-500 dark:text-slate-400">
-                        <Calendar className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                      <span className="inline-flex items-center gap-1 font-mono text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
+                        <Calendar className="h-3 w-3" strokeWidth={1.75} aria-hidden="true" />
                         {formatDateTimeCompactBr(item.createdAt)}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                    <h3 className="text-sm font-semibold text-zinc-900 sm:text-[15px] dark:text-zinc-100">
                       {item.title}
                     </h3>
 
-                    <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
                       {item.message}
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                       <span className="inline-flex items-center gap-1">
                         <Users className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                        {item.student.classroom.name} - {item.student.classroom.subject}
+                        {item.student.classroom.name} · {item.student.classroom.subject}
                       </span>
                       <Link
                         href={`/dashboard/alunos/${item.student.id}/ficha`}
-                        className="font-medium text-[var(--school-primary)] hover:underline dark:text-blue-400"
+                        className="font-medium text-zinc-700 underline-offset-2 hover:text-[var(--school-primary)] hover:underline dark:text-zinc-300"
                       >
                         Ver ficha do estudante
                       </Link>
                     </div>
                   </div>
 
-                  <div className="flex shrink-0 items-center lg:pt-1">
+                  <div className="flex shrink-0 items-center lg:pt-0.5">
                     {isAcknowledged && item.acknowledgedAt ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3.5 py-2 text-xs font-semibold text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30">
-                        <CheckCheck className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                      <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200/80 bg-emerald-50/70 px-3 py-1.5 text-xs font-medium tabular-nums text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+                        <CheckCheck className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                         <span>
                           Ciente em{" "}
                           {formatDateTimeCompactBr(item.acknowledgedAt).replace(
@@ -292,13 +293,13 @@ export function NotificationsView({
                         type="button"
                         disabled={isWorking}
                         onClick={() => handleAcknowledge(item.id)}
-                        className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+                        className="inline-flex h-9 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 text-sm font-medium text-white transition-colors duration-150 hover:bg-[var(--school-primary-hover)] disabled:cursor-not-allowed disabled:opacity-65 sm:w-auto"
                       >
                         {isWorking ? (
                           <>
                             <Loader2
                               className="h-4 w-4 animate-spin"
-                              strokeWidth={2}
+                              strokeWidth={1.75}
                               aria-hidden="true"
                             />
                             <span>Confirmando...</span>

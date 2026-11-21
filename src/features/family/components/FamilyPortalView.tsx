@@ -72,16 +72,16 @@ export function FamilyPortalView({
 
   if (!activeStudent) {
     return (
-      <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-          <Users className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+      <section className="rounded-xl border border-zinc-200/80 bg-white px-6 py-12 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
+          <Users className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
         </div>
-        <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+        <h2 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
           {isGuardian
             ? "Nenhum estudante vinculado à sua conta"
             : "Seu cadastro escolar ainda não foi vinculado"}
         </h2>
-        <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+        <p className="mx-auto mt-1.5 max-w-md text-sm text-zinc-500 dark:text-zinc-400">
           Procure a secretaria ou coordenação da escola para concluir o vínculo da sua conta com a
           matrícula escolar.
         </p>
@@ -174,57 +174,56 @@ export function FamilyPortalView({
 
   return (
     <div className="space-y-6">
-      {/* Alerta de avisos pendentes */}
+      {/* Alerta discreto de avisos pendentes */}
       {overview.unacknowledgedCount > 0 ? (
-        <section className="flex flex-col gap-3 rounded-2xl bg-amber-50 p-4 text-amber-950 ring-1 ring-inset ring-amber-200 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:bg-amber-500/15 dark:text-amber-100 dark:ring-amber-400/30">
+        <section className="flex flex-col gap-3 rounded-xl border border-amber-200/90 bg-amber-50/70 px-4 py-3.5 text-amber-950 sm:flex-row sm:items-center sm:justify-between sm:px-5 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-100">
           <div className="flex items-start gap-3">
-            <Bell className="mt-0.5 h-5 w-5 shrink-0 text-amber-700 dark:text-amber-300" strokeWidth={1.75} />
+            <Bell className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-400" strokeWidth={1.75} />
             <div>
-              <p className="text-sm font-semibold">
-                Você possui {overview.unacknowledgedCount}{" "}
+              <p className="text-sm font-medium">
+                {overview.unacknowledgedCount}{" "}
                 {overview.unacknowledgedCount === 1
-                  ? "aviso escolar aguardando confirmação"
-                  : "avisos escolares aguardando confirmação"}
+                  ? "aviso escolar aguardando confirmação de ciência"
+                  : "avisos escolares aguardando confirmação de ciência"}
               </p>
-              <p className="text-xs text-amber-800 dark:text-amber-200/90">
-                Acesse a Central de Avisos para visualizar faltas, comunicados ou ocorrências e
-                registrar sua ciência.
+              <p className="mt-0.5 text-xs text-amber-800/90 dark:text-amber-200/80">
+                Consulte faltas, comunicados ou ocorrências na Central de Avisos.
               </p>
             </div>
           </div>
           <Link
             href="/dashboard/avisos"
-            className="inline-flex shrink-0 items-center justify-center rounded-lg bg-amber-700 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-amber-800 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400"
+            className="inline-flex h-8 shrink-0 items-center justify-center rounded-lg bg-amber-700 px-3.5 text-xs font-medium text-white transition-colors hover:bg-amber-800 dark:bg-amber-500 dark:text-zinc-950 dark:hover:bg-amber-400"
           >
             Abrir Avisos
           </Link>
         </section>
       ) : null}
 
-      {/* Cabecalho e seletor de filhos */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-start gap-3.5">
-            <Avatar name={student.name} size="lg" className="mt-0.5" />
+      {/* Cabecalho limpo do estudante e seletor de filhos */}
+      <header className="space-y-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-start gap-3">
+            <Avatar name={student.name} size="md" className="mt-0.5" />
             <div className="min-w-0">
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
                 {isGuardian
-                  ? `Bem-vindo(a), ${userName}`
-                  : "Acompanhamento individual somente leitura"}
+                  ? `Responsável: ${userName}`
+                  : "Acompanhamento individual"}
               </p>
-              <h2 className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl dark:text-slate-100">
+              <h2 className="mt-0.5 text-xl font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-100">
                 {student.name}
               </h2>
-              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-300">
-                <span className="inline-flex items-center gap-1 font-medium text-[var(--school-primary)] dark:text-blue-400">
-                  <BookOpen className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                  {classroom.name} - {classroom.subject} ({SHIFT_LABELS[classroom.shift]})
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400">
+                <span className="inline-flex items-center gap-1 font-medium text-zinc-700 dark:text-zinc-300">
+                  <BookOpen className="h-3.5 w-3.5 text-zinc-400" strokeWidth={1.75} aria-hidden="true" />
+                  {classroom.name} · {classroom.subject} ({SHIFT_LABELS[classroom.shift]})
                 </span>
-                <span className="font-mono text-slate-500 dark:text-slate-400">
+                <span className="font-mono tabular-nums">
                   Matrícula {student.registration}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                  <UserCheck className="h-3.5 w-3.5 text-slate-400" strokeWidth={1.75} />
+                  <UserCheck className="h-3.5 w-3.5 text-zinc-400" strokeWidth={1.75} />
                   {classroom.teacherName}
                 </span>
               </div>
@@ -233,181 +232,152 @@ export function FamilyPortalView({
 
           <Link
             href={`/dashboard/alunos/${student.id}/ficha`}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+            className="inline-flex h-9 w-fit shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-3.5 text-sm font-medium text-white transition-colors hover:bg-[var(--school-primary-hover)]"
           >
             <Printer className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-            <span>Ficha / Boletim (PDF)</span>
+            <span>Boletim / Ficha A4</span>
           </Link>
         </div>
 
         {isGuardian && studentsData.length > 1 ? (
-          <div className="mt-5 border-t border-slate-200/80 pt-4 dark:border-slate-800">
-            <p className="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
-              Selecionar estudante acompanhado:
-            </p>
-            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filhos vinculados">
-              {studentsData.map((entry, idx) => {
-                const isSelected = idx === selectedIndex;
-                return (
-                  <button
-                    key={entry.student.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={isSelected}
-                    onClick={() => setSelectedIndex(idx)}
-                    className={`inline-flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                      isSelected
-                        ? "bg-[var(--school-primary)] text-white"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200/80 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-                    }`}
-                  >
-                    <Avatar name={entry.student.name} size="xs" />
-                    <span>
-                      {entry.student.name}{" "}
-                      <span className="opacity-80">({entry.classroom.name})</span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+          <div
+            className="flex flex-wrap items-center gap-2 border-t border-zinc-200/80 pt-3 dark:border-white/[0.08]"
+            role="tablist"
+            aria-label="Filhos vinculados"
+          >
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              Estudante:
+            </span>
+            {studentsData.map((entry, idx) => {
+              const isSelected = idx === selectedIndex;
+              return (
+                <button
+                  key={entry.student.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  onClick={() => setSelectedIndex(idx)}
+                  className={`inline-flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-medium transition-colors ${
+                    isSelected
+                      ? "border-[var(--school-primary)] bg-[var(--school-primary)] text-white"
+                      : "border-zinc-200/90 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.09] dark:bg-[#131518] dark:text-zinc-300 dark:hover:bg-[#1A1D21]"
+                  }`}
+                >
+                  <Avatar name={entry.student.name} size="xs" />
+                  <span>
+                    {entry.student.name}{" "}
+                    <span className="opacity-75">({entry.classroom.name})</span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
         ) : null}
-      </section>
+      </header>
 
-      {/* 4 cards de resumo */}
+      {/* Faixa limpa de KPIs */}
       <section
         aria-label="Resumo escolar"
-        className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+        className="grid grid-cols-2 gap-3.5 xl:grid-cols-4"
       >
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                Frequência Geral
-              </p>
-              <p
-                className={`font-mono text-3xl font-bold tracking-tight sm:text-[2rem] ${
-                  isLowAttendance
-                    ? "text-red-700 dark:text-red-400"
-                    : "text-slate-900 dark:text-white"
-                }`}
-              >
-                {attendance.attendanceRate !== null
-                  ? `${attendance.attendanceRate}%`
-                  : "-"}
-              </p>
-            </div>
-            <div
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ${
-                isLowAttendance
-                  ? "bg-red-500/10 text-red-700 ring-red-500/20 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/25"
-                  : "bg-blue-500/10 text-[var(--school-primary)] ring-blue-500/20 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/25"
-              }`}
-            >
-              <ClipboardCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+        <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Frequência Geral
+            </p>
+            <ClipboardCheck className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+          <p
+            className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${
+              isLowAttendance
+                ? "text-red-600 dark:text-red-400"
+                : "text-zinc-900 dark:text-zinc-100"
+            }`}
+          >
+            {attendance.attendanceRate !== null
+              ? `${attendance.attendanceRate}%`
+              : "-"}
+          </p>
+          <p className="mt-1.5 text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
             {attendance.totalLessons}{" "}
             {attendance.totalLessons === 1 ? "aula registrada" : "aulas registradas"}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                Média Geral
-              </p>
-              <p
-                className={`font-mono text-3xl font-bold tracking-tight sm:text-[2rem] ${
-                  annualAverage === null
-                    ? "text-slate-900 dark:text-white"
-                    : isLowAverage
-                      ? "text-red-700 dark:text-red-400"
-                      : "text-emerald-700 dark:text-emerald-400"
-                }`}
-              >
-                {formatScoreBr(annualAverage)}
-              </p>
-            </div>
-            <div
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ${
-                annualAverage === null
-                  ? "bg-slate-500/10 text-slate-600 ring-slate-500/20 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700"
-                  : isLowAverage
-                    ? "bg-red-500/10 text-red-700 ring-red-500/20 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/25"
-                    : "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/25"
-              }`}
-            >
-              <GraduationCap className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+        <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Média Geral
+            </p>
+            <GraduationCap className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+          <p
+            className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${
+              annualAverage === null
+                ? "text-zinc-900 dark:text-zinc-100"
+                : isLowAverage
+                  ? "text-red-600 dark:text-red-400"
+                  : "text-zinc-900 dark:text-zinc-100"
+            }`}
+          >
+            {formatScoreBr(annualAverage)}
+          </p>
+          <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             Mínimo para aprovação: 6,0
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                Total de Faltas
-              </p>
-              <p className="font-mono text-3xl font-bold tracking-tight text-slate-900 sm:text-[2rem] dark:text-white">
-                {attendance.absentCount}
-              </p>
-            </div>
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-800 ring-1 ring-inset ring-amber-500/20 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/25">
-              <Calendar className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+        <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Total de Faltas
+            </p>
+            <Calendar className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+          <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">
+            {attendance.absentCount}
+          </p>
+          <p className="mt-1.5 text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
             {attendance.justifiedCount}{" "}
             {attendance.justifiedCount === 1 ? "justificada" : "justificadas"}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
-                Ocorrências
-              </p>
-              <p className="font-mono text-3xl font-bold tracking-tight text-slate-900 sm:text-[2rem] dark:text-white">
-                {occurrences.length}
-              </p>
-            </div>
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-500/10 text-slate-700 ring-1 ring-inset ring-slate-500/20 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
-              <FileWarning className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+        <div className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Ocorrências
+            </p>
+            <FileWarning className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
+          <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">
+            {occurrences.length}
+          </p>
+          <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             Registros disciplinares e elogios
           </p>
         </div>
       </section>
 
-      {/* Estante de Conquistas e Medalhas */}
+      {/* Estante sobria e elegante de Medalhas de Merito */}
       {badges.length > 0 ? (
         <section
-          aria-label="Conquistas e Medalhas"
-          className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/70 via-white to-white p-5 shadow-[var(--shadow-ambient)] sm:p-6 dark:border-amber-500/30 dark:from-amber-500/10 dark:via-slate-900 dark:to-slate-900"
+          aria-label="Reconhecimentos de Mérito"
+          className="rounded-xl border border-zinc-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none"
         >
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 ring-1 ring-inset ring-amber-500/30 dark:text-amber-300">
-                <Award className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-              </div>
-              <div>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-white">
-                  Conquistas e Medalhas ({badges.length})
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Reconhecimentos de mérito concedidos pela equipe pedagógica
-                </p>
-              </div>
+          <div className="mb-4 flex items-center justify-between gap-2 border-b border-zinc-200/70 pb-3 dark:border-white/[0.07]">
+            <div>
+              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                Reconhecimentos de Mérito
+              </h3>
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+                Distinções concedidas pela equipe pedagógica neste ano letivo
+              </p>
             </div>
+            <span className="inline-flex items-center gap-1 font-mono text-xs font-medium tabular-nums text-zinc-500 dark:text-zinc-400">
+              <Award className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" strokeWidth={1.75} aria-hidden="true" />
+              {badges.length}
+            </span>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -416,25 +386,23 @@ export function FamilyPortalView({
               return (
                 <div
                   key={badge.id}
-                  className={`flex items-start gap-3 rounded-xl border p-3.5 ${meta.cardClass}`}
+                  className="flex items-start gap-3 rounded-lg border border-zinc-200/80 bg-zinc-50/60 p-3.5 dark:border-white/[0.08] dark:bg-[#1A1D21]/60"
                 >
-                  <div
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${meta.iconWrapClass}`}
-                  >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-amber-200/80 bg-amber-50/80 text-amber-700 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400">
                     <Medal className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                    <p className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400">
                       {meta.label}
                     </p>
-                    <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                    <p className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                       {badge.title}
                     </p>
-                    <p className="mt-0.5 line-clamp-2 text-xs text-slate-600 dark:text-slate-300">
+                    <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400">
                       {badge.reason}
                     </p>
-                    <p className="mt-1.5 text-[10px] text-slate-500 dark:text-slate-400">
-                      Por {badge.awardedByName}
+                    <p className="mt-1.5 text-[11px] text-zinc-400 dark:text-zinc-500">
+                      Concedido por {badge.awardedByName}
                     </p>
                   </div>
                 </div>
@@ -451,20 +419,20 @@ export function FamilyPortalView({
       <section
         id="notas"
         aria-labelledby="boletim"
-        className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800"
+        className="rounded-xl border border-zinc-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none"
       >
-        <div className="mb-4 flex items-center justify-between gap-2 border-b border-slate-200/80 pb-3 dark:border-slate-800">
+        <div className="mb-4 flex items-center justify-between gap-2 border-b border-zinc-200/70 pb-3 dark:border-white/[0.07]">
           <div className="flex items-center gap-2">
             <FileText
-              className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
+              className="h-4 w-4 text-zinc-400 dark:text-zinc-500"
               strokeWidth={1.75}
               aria-hidden="true"
             />
-            <h3 id="boletim" className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3 id="boletim" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               Boletim e Notas por Trimestre
             </h3>
           </div>
-          <span className="font-mono text-xs font-semibold text-slate-600 dark:text-slate-400">
+          <span className="font-mono text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
             Ano {classroom.year}
           </span>
         </div>
@@ -478,19 +446,19 @@ export function FamilyPortalView({
             return (
               <div
                 key={termItem.term}
-                className="overflow-hidden rounded-xl border border-slate-200/90 dark:border-slate-800"
+                className="overflow-hidden rounded-lg border border-zinc-200/80 dark:border-white/[0.08]"
               >
-                <div className="flex items-center justify-between bg-slate-50 px-4 py-2.5 dark:bg-slate-800/70">
-                  <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                <div className="flex items-center justify-between border-b border-zinc-200/70 bg-zinc-50/80 px-4 py-2.5 dark:border-white/[0.06] dark:bg-white/[0.03]">
+                  <h4 className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
                     {TERM_LABELS[termItem.term]}
                   </h4>
                   <span
-                    className={`rounded-md px-2 py-0.5 font-mono text-xs font-bold ${
+                    className={`rounded-md px-2 py-0.5 font-mono text-xs font-medium tabular-nums ${
                       termItem.termAverage === null
-                        ? "bg-slate-200/70 text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+                        ? "bg-zinc-200/70 text-zinc-600 dark:bg-white/[0.07] dark:text-zinc-400"
                         : isTermLow
-                          ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
-                          : "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
+                          ? "border border-red-200/80 bg-red-50/70 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
+                          : "border border-emerald-200/80 bg-emerald-50/70 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300"
                     }`}
                   >
                     Média: {formatScoreBr(termItem.termAverage)}
@@ -498,43 +466,46 @@ export function FamilyPortalView({
                 </div>
 
                 {termItem.assessments.length === 0 ? (
-                  <p className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">
+                  <p className="px-4 py-3 text-xs text-zinc-500 dark:text-zinc-400">
                     Nenhuma avaliação lançada neste trimestre.
                   </p>
                 ) : (
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-slate-100 text-left text-xs dark:divide-slate-800">
-                      <thead className="bg-white text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                    <table className="min-w-full divide-y divide-zinc-200/70 text-left text-xs dark:divide-white/[0.06]">
+                      <thead className="bg-zinc-50/40 text-[11px] font-medium tracking-wider text-zinc-500 uppercase dark:bg-white/[0.02] dark:text-zinc-400">
                         <tr>
-                          <th scope="col" className="px-4 py-2.5 font-semibold">
+                          <th scope="col" className="px-4 py-2.5 font-medium">
                             Avaliação
                           </th>
-                          <th scope="col" className="px-3 py-2.5 font-semibold">
+                          <th scope="col" className="px-3 py-2.5 font-medium">
                             Data
                           </th>
-                          <th scope="col" className="px-3 py-2.5 text-center font-semibold">
+                          <th scope="col" className="px-3 py-2.5 text-center font-medium">
                             Peso
                           </th>
-                          <th scope="col" className="px-4 py-2.5 text-right font-semibold">
+                          <th scope="col" className="px-4 py-2.5 text-right font-medium">
                             Nota
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
+                      <tbody className="divide-y divide-zinc-200/60 bg-white dark:divide-white/[0.06] dark:bg-[#131518]">
                         {termItem.assessments.map((assessment) => (
-                          <tr key={assessment.assessmentId}>
-                            <td className="px-4 py-2.5 font-medium text-slate-900 dark:text-slate-100">
+                          <tr
+                            key={assessment.assessmentId}
+                            className="transition-colors hover:bg-zinc-50/80 dark:hover:bg-white/[0.02]"
+                          >
+                            <td className="px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-100">
                               {assessment.title}
                             </td>
-                            <td className="px-3 py-2.5 font-mono text-slate-600 dark:text-slate-400">
+                            <td className="px-3 py-2.5 font-mono tabular-nums text-zinc-500 dark:text-zinc-400">
                               {formatIsoDateBr(assessment.date)}
                             </td>
-                            <td className="px-3 py-2.5 text-center font-mono text-slate-600 dark:text-slate-400">
+                            <td className="px-3 py-2.5 text-center font-mono tabular-nums text-zinc-500 dark:text-zinc-400">
                               {assessment.weight}
                             </td>
-                            <td className="px-4 py-2.5 text-right font-mono font-semibold text-slate-900 dark:text-slate-100">
+                            <td className="px-4 py-2.5 text-right font-mono font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
                               {formatScoreBr(assessment.score)}
-                              <span className="ml-1 text-[10px] font-normal text-slate-400 dark:text-slate-500">
+                              <span className="ml-1 text-[10px] font-normal text-zinc-400 dark:text-zinc-500">
                                 / {assessment.maxScore}
                               </span>
                             </td>
@@ -551,28 +522,28 @@ export function FamilyPortalView({
       </section>
 
       {/* Historico de Faltas + Ocorrencias */}
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
         <section
           id="frequencia"
-          className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800"
+          className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none"
         >
-          <div className="border-b border-slate-200/80 px-5 py-4 sm:px-6 dark:border-slate-800">
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+          <div className="border-b border-zinc-200/80 px-5 py-3.5 dark:border-white/[0.08]">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               Histórico de Faltas e Justificativas
             </h3>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
               {isGuardian
-                ? "Envie justificativas diretamente à coordenação para faltas ainda não justificadas"
-                : "Aulas em que o estudante teve ausência registrada"}
+                ? "Envie justificativas à coordenação para faltas ainda não justificadas"
+                : "Aulas em que houve ausência registrada"}
             </p>
           </div>
 
           {attendance.absences.length === 0 ? (
-            <p className="px-6 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+            <p className="px-6 py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">
               Nenhuma falta registrada até o momento.
             </p>
           ) : (
-            <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+            <ul className="divide-y divide-zinc-200/70 dark:divide-white/[0.06]">
               {attendance.absences.map((item) => {
                 const canRequestJustification =
                   isGuardian &&
@@ -580,20 +551,17 @@ export function FamilyPortalView({
                   (!item.justification || item.justification.status === "RECUSADA");
 
                 return (
-                  <li
-                    key={item.attendanceId}
-                    className="space-y-2 px-5 py-4 sm:px-6"
-                  >
+                  <li key={item.attendanceId} className="space-y-2 px-5 py-3.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="font-mono text-xs font-medium text-slate-700 dark:text-slate-300">
+                      <span className="font-mono text-xs font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
                         {formatIsoDateBr(item.date)} · {item.lessonNumber}ª aula
                       </span>
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span
-                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${
                             item.status === "FALTA"
-                              ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
-                              : "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30"
+                              ? "border border-red-200/80 bg-red-50/70 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300"
+                              : "border border-amber-200/80 bg-amber-50/70 text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300"
                           }`}
                         >
                           {item.status === "FALTA" ? "Falta" : "Falta Justificada"}
@@ -601,7 +569,7 @@ export function FamilyPortalView({
 
                         {item.justification ? (
                           <span
-                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${JUSTIFICATION_STATUS_STYLES[item.justification.status]}`}
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${JUSTIFICATION_STATUS_STYLES[item.justification.status]}`}
                           >
                             {JUSTIFICATION_STATUS_LABELS[item.justification.status]}
                           </span>
@@ -609,16 +577,16 @@ export function FamilyPortalView({
                       </div>
                     </div>
 
-                    <p className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                    <p className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
                       {item.subject} ({item.classroomName})
                     </p>
-                    <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                    <p className="line-clamp-2 text-xs text-zinc-500 dark:text-zinc-400">
                       Conteúdo: {item.content}
                     </p>
 
                     {item.justification?.reviewNote ? (
-                      <p className="rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11px] text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
-                        <span className="font-semibold">Parecer: </span>
+                      <p className="rounded-lg border border-zinc-200/80 bg-zinc-50 px-2.5 py-1.5 text-xs text-zinc-700 dark:border-white/[0.08] dark:bg-[#1A1D21] dark:text-zinc-300">
+                        <span className="font-medium">Parecer: </span>
                         {item.justification.reviewNote}
                       </p>
                     ) : null}
@@ -631,7 +599,7 @@ export function FamilyPortalView({
                             setAbsenceToJustify(item);
                             setReason(item.justification?.reason ?? "");
                           }}
-                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:border-[var(--school-primary-soft-border)] hover:bg-slate-50 hover:text-[var(--school-primary)] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                          className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-2.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:border-white/[0.09] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                         >
                           <FileCheck2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                           <span>
@@ -651,68 +619,68 @@ export function FamilyPortalView({
 
         <section
           id="ocorrencias"
-          className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800"
+          className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none"
         >
-          <div className="border-b border-slate-200/80 px-5 py-4 sm:px-6 dark:border-slate-800">
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+          <div className="border-b border-zinc-200/80 px-5 py-3.5 dark:border-white/[0.08]">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               Histórico de Ocorrências
             </h3>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
               Registros pedagógicos, disciplinares e elogios
             </p>
           </div>
 
           {occurrences.length === 0 ? (
-            <p className="px-6 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+            <p className="px-6 py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">
               Nenhuma ocorrência registrada para este estudante.
             </p>
           ) : (
-            <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+            <ul className="divide-y divide-zinc-200/70 dark:divide-white/[0.06]">
               {occurrences.map((item) => {
                 const isPraise = item.type === "ELOGIO";
 
                 return (
-                  <li key={item.id} className="space-y-2 px-5 py-4 sm:px-6">
+                  <li key={item.id} className="space-y-2 px-5 py-3.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span
-                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${
                             isPraise
                               ? OCCURRENCE_PRAISE_STYLE
-                              : "bg-slate-100 text-slate-800 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700"
+                              : "border border-zinc-200/80 bg-zinc-50 text-zinc-700 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-zinc-300"
                           }`}
                         >
                           {OCCURRENCE_TYPE_LABELS[item.type]}
                         </span>
                         {!isPraise ? (
                           <span
-                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${OCCURRENCE_SEVERITY_STYLES[item.severity]}`}
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${OCCURRENCE_SEVERITY_STYLES[item.severity]}`}
                           >
                             {OCCURRENCE_SEVERITY_LABELS[item.severity]}
                           </span>
                         ) : null}
                         <span
-                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium ${OCCURRENCE_STATUS_STYLES[item.status]}`}
+                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${OCCURRENCE_STATUS_STYLES[item.status]}`}
                         >
                           {OCCURRENCE_STATUS_LABELS[item.status]}
                         </span>
                       </div>
 
-                      <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                      <span className="font-mono text-[11px] tabular-nums text-zinc-500 dark:text-zinc-400">
                         {formatIsoDateBr(item.date)}
                       </span>
                     </div>
 
-                    <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                    <p className="text-xs leading-relaxed text-zinc-700 dark:text-zinc-300">
                       {item.description}
                     </p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
                       Registrado por {item.authorName}
                     </p>
 
                     {item.resolutionNote ? (
-                      <div className="rounded-lg bg-emerald-50/70 px-3 py-2 text-xs text-emerald-950 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:ring-emerald-400/30">
-                        <span className="font-semibold text-emerald-800 dark:text-emerald-300">
+                      <div className="rounded-lg border border-emerald-200/80 bg-emerald-50/60 px-3 py-2 text-xs text-emerald-950 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200">
+                        <span className="font-medium text-emerald-800 dark:text-emerald-300">
                           Encaminhamento:{" "}
                         </span>
                         {item.resolutionNote}
@@ -735,22 +703,22 @@ export function FamilyPortalView({
           aria-labelledby="justify-modal-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => {
               if (!isSubmittingJustification) setAbsenceToJustify(null);
             }}
             aria-hidden="true"
           />
-          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
-            <div className="flex items-start justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
+          <div className="relative z-10 w-full max-w-md rounded-xl border border-zinc-200/90 bg-white p-6 shadow-[var(--shadow-popover)] dark:border-white/10 dark:bg-[#131518]">
+            <div className="flex items-start justify-between border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
               <div>
                 <h3
                   id="justify-modal-title"
-                  className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                  className="text-base font-semibold text-zinc-900 dark:text-zinc-100"
                 >
                   Justificar Falta
                 </h3>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
                   {formatIsoDateBr(absenceToJustify.date)} ·{" "}
                   {absenceToJustify.lessonNumber}ª aula ({absenceToJustify.subject})
                 </p>
@@ -758,7 +726,7 @@ export function FamilyPortalView({
               <button
                 type="button"
                 onClick={() => setAbsenceToJustify(null)}
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-200"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -768,7 +736,7 @@ export function FamilyPortalView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="justification-reason"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Motivo da ausência
                 </label>
@@ -779,24 +747,24 @@ export function FamilyPortalView({
                   disabled={isSubmittingJustification}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder="Ex: Consulta médica com atestado entregue na secretaria..."
-                  className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400"
+                  placeholder="Ex.: Consulta médica com atestado entregue na secretaria..."
+                  className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+              <div className="flex justify-end gap-2 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setAbsenceToJustify(null)}
                   disabled={isSubmittingJustification}
-                  className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="h-9 cursor-pointer rounded-lg border border-zinc-200/90 bg-white px-3.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.09] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingJustification}
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)] disabled:opacity-70"
+                  className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-3.5 text-sm font-medium text-white hover:bg-[var(--school-primary-hover)] disabled:opacity-70"
                 >
                   {isSubmittingJustification ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

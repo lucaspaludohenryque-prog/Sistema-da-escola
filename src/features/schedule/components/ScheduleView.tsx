@@ -31,7 +31,7 @@ interface ScheduleViewProps {
 }
 
 const INPUT_CLASS =
-  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400";
+  "block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400";
 
 export function ScheduleView({
   initialSlots,
@@ -174,13 +174,13 @@ export function ScheduleView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100">
               Grade de Horários Semanal
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               {canManage
                 ? "Organize os horários das aulas de Segunda a Sexta e abra a chamada em um clique."
                 : "Consulte a grade semanal de aulas e salas da turma."}
@@ -193,7 +193,7 @@ export function ScheduleView({
                 aria-label="Filtrar grade por turma"
                 value={classroomFilter}
                 onChange={(event) => void handleFilterChange(event.target.value)}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                className="rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
               >
                 <option value="">Todas as turmas</option>
                 {classrooms.map((c) => (
@@ -208,7 +208,7 @@ export function ScheduleView({
               <button
                 type="button"
                 onClick={() => openAddModal()}
-                className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+                className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)]"
               >
                 <Plus className="h-4 w-4" strokeWidth={2} />
                 <span>Adicionar Horário</span>
@@ -218,7 +218,7 @@ export function ScheduleView({
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
+      <section className="overflow-hidden rounded-xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:ring-white/[0.08]">
         {isLoading ? (
           <div className="grid grid-cols-1 gap-3 p-6 sm:grid-cols-5">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -229,10 +229,10 @@ export function ScheduleView({
           <div className="overflow-x-auto">
             <table className="min-w-[820px] w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/90 text-slate-700 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-200">
+                <tr className="border-b border-zinc-200 bg-zinc-50/90 text-zinc-700 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-200">
                   <th
                     scope="col"
-                    className="w-24 border-r border-slate-200 px-3 py-3.5 text-center font-semibold dark:border-slate-800"
+                    className="w-24 border-r border-zinc-200 px-3 py-3.5 text-center font-semibold dark:border-white/[0.08]"
                   >
                     Aula
                   </th>
@@ -240,24 +240,24 @@ export function ScheduleView({
                     <th
                       key={day}
                       scope="col"
-                      className="w-1/5 border-r border-slate-200/80 px-3 py-3.5 font-semibold last:border-r-0 dark:border-slate-800"
+                      className="w-1/5 border-r border-zinc-200/80 px-3 py-3.5 font-semibold last:border-r-0 dark:border-white/[0.08]"
                     >
                       {SCHEDULE_DAY_LABELS[day]}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800">
+              <tbody className="divide-y divide-zinc-200/80/80 dark:divide-white/[0.06]">
                 {LESSON_NUMBERS.map((num) => {
                   const defaultTime = DEFAULT_LESSON_TIMES[num];
                   return (
                     <tr key={num} className="align-top">
-                      <td className="border-r border-slate-200 bg-slate-50/50 px-3 py-3 text-center dark:border-slate-800 dark:bg-slate-800/30">
-                        <p className="font-mono text-xs font-bold text-slate-900 dark:text-slate-100">
+                      <td className="border-r border-zinc-200 bg-zinc-50/50 px-3 py-3 text-center dark:border-white/[0.08] dark:bg-[#1A1D21]/30">
+                        <p className="font-mono text-xs font-bold text-zinc-900 dark:text-zinc-100">
                           {num}ª aula
                         </p>
                         {defaultTime ? (
-                          <p className="mt-0.5 font-mono text-[10px] text-slate-500 dark:text-slate-400">
+                          <p className="mt-0.5 font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
                             {defaultTime.startTime}
                           </p>
                         ) : null}
@@ -268,20 +268,20 @@ export function ScheduleView({
                         return (
                           <td
                             key={`${day}:${num}`}
-                            className="min-h-[96px] border-r border-slate-100 p-2 last:border-r-0 dark:border-slate-800/80"
+                            className="min-h-[96px] border-r border-zinc-200/70 p-2 last:border-r-0 dark:border-white/[0.08]"
                           >
                             {cellSlots.length === 0 ? (
                               canManage && classrooms.length > 0 ? (
                                 <button
                                   type="button"
                                   onClick={() => openAddModal(day, num)}
-                                  className="flex h-20 w-full cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-200 text-slate-400 transition-colors hover:border-[var(--school-primary-soft-border)] hover:bg-slate-50 hover:text-[var(--school-primary)] dark:border-slate-800 dark:text-slate-600 dark:hover:bg-slate-800/50 dark:hover:text-blue-400"
+                                  className="flex h-20 w-full cursor-pointer items-center justify-center rounded-xl border border-dashed border-zinc-200 text-zinc-400 transition-colors hover:border-[var(--school-primary-soft-border)] hover:bg-zinc-50 hover:text-[var(--school-primary)] dark:border-white/[0.08] dark:text-zinc-600 dark:hover:bg-white/[0.03] dark:hover:text-blue-400"
                                   aria-label={`Adicionar horário ${SCHEDULE_DAY_LABELS[day]} ${num}ª aula`}
                                 >
                                   <Plus className="h-4 w-4" strokeWidth={1.75} />
                                 </button>
                               ) : (
-                                <div className="flex h-20 items-center justify-center text-[11px] text-slate-300 dark:text-slate-700">
+                                <div className="flex h-20 items-center justify-center text-[11px] text-slate-300 dark:text-zinc-700">
                                   -
                                 </div>
                               )
@@ -290,11 +290,11 @@ export function ScheduleView({
                                 {cellSlots.map((slot) => (
                                   <div
                                     key={slot.id}
-                                    className="rounded-xl border border-slate-200/90 bg-slate-50/70 p-2.5 transition-colors hover:border-[var(--school-primary-soft-border)] dark:border-slate-700/80 dark:bg-slate-800/70"
+                                    className="rounded-xl border border-zinc-200/90 bg-zinc-50/70 p-2.5 transition-colors hover:border-[var(--school-primary-soft-border)] dark:border-white/[0.1] dark:bg-white/[0.04]"
                                   >
                                     <div className="flex items-start justify-between gap-1.5">
                                       <div className="min-w-0">
-                                        <p className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
+                                        <p className="truncate text-xs font-semibold text-zinc-900 dark:text-zinc-100">
                                           {slot.classroom.subject}
                                         </p>
                                         <p className="truncate text-[11px] font-medium text-[var(--school-primary)] dark:text-blue-400">
@@ -307,14 +307,14 @@ export function ScheduleView({
                                           disabled={deletingId === slot.id}
                                           onClick={() => void handleDelete(slot.id)}
                                           aria-label="Remover horário"
-                                          className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
+                                          className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
                                         >
                                           <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                                         </button>
                                       ) : null}
                                     </div>
 
-                                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-slate-500 dark:text-slate-400">
+                                    <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-zinc-500 dark:text-zinc-400">
                                       <span className="inline-flex items-center gap-0.5 font-mono">
                                         <Clock className="h-3 w-3" />
                                         {slot.startTime}-{slot.endTime}
@@ -330,13 +330,13 @@ export function ScheduleView({
                                     {canManage ? (
                                       <Link
                                         href={`/dashboard/chamada?classroomId=${encodeURIComponent(slot.classroomId)}&lessonNumber=${slot.lessonNumber}`}
-                                        className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-lg bg-white px-2 py-1 text-[11px] font-semibold text-[var(--school-primary)] ring-1 ring-inset ring-slate-200 transition-colors hover:bg-blue-50 dark:bg-slate-900 dark:text-blue-300 dark:ring-slate-700 dark:hover:bg-slate-800"
+                                        className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-lg bg-white px-2 py-1 text-[11px] font-semibold text-[var(--school-primary)] ring-1 ring-inset ring-zinc-200 transition-colors hover:bg-blue-50 dark:bg-[#131518] dark:text-blue-300 dark:ring-white/[0.1] dark:hover:bg-[#1A1D21]"
                                       >
                                         <ClipboardCheck className="h-3 w-3" strokeWidth={1.75} />
                                         <span>Abrir Chamada</span>
                                       </Link>
                                     ) : (
-                                      <p className="mt-1 truncate text-[10px] text-slate-500 dark:text-slate-400">
+                                      <p className="mt-1 truncate text-[10px] text-zinc-500 dark:text-zinc-400">
                                         Prof. {slot.classroom.teacherName}
                                       </p>
                                     )}
@@ -365,29 +365,29 @@ export function ScheduleView({
           aria-labelledby="schedule-modal-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => {
               if (!isSaving) setIsModalOpen(false);
             }}
             aria-hidden="true"
           />
-          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
-            <div className="flex items-start justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
+          <div className="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl ring-1 ring-zinc-200/90 dark:bg-[#131518] dark:ring-white/[0.1]">
+            <div className="flex items-start justify-between border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
               <div>
                 <h3
                   id="schedule-modal-title"
-                  className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                  className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
                 >
                   Adicionar Horário
                 </h3>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                   Se já existir horário na mesma turma/dia/aula, ele será atualizado.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-[#1A1D21]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -397,7 +397,7 @@ export function ScheduleView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="slot-classroom"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Turma
                 </label>
@@ -420,7 +420,7 @@ export function ScheduleView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="slot-day"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Dia da semana
                   </label>
@@ -443,7 +443,7 @@ export function ScheduleView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="slot-lesson"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Nº da Aula
                   </label>
@@ -466,7 +466,7 @@ export function ScheduleView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="slot-start"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Início
                   </label>
@@ -482,7 +482,7 @@ export function ScheduleView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="slot-end"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Término
                   </label>
@@ -500,10 +500,10 @@ export function ScheduleView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="slot-room"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Sala / Laboratório{" "}
-                  <span className="text-xs font-normal text-slate-500">(opcional)</span>
+                  <span className="text-xs font-normal text-zinc-500">(opcional)</span>
                 </label>
                 <input
                   id="slot-room"
@@ -515,12 +515,12 @@ export function ScheduleView({
                 />
               </div>
 
-              <div className="flex justify-end gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+              <div className="flex justify-end gap-2 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSaving}
-                  className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="cursor-pointer rounded-lg border border-zinc-200/90 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                 >
                   Cancelar
                 </button>

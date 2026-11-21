@@ -47,14 +47,14 @@ function TermTooltip({
     point.average !== null && point.average < PASSING_GRADE_THRESHOLD;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs shadow-lg dark:border-slate-700 dark:bg-slate-900">
-      <p className="font-semibold text-slate-900 dark:text-slate-100">
+    <div className="rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-xs shadow-[var(--shadow-popover)] dark:border-white/10 dark:bg-[#1A1D21]">
+      <p className="font-medium text-zinc-900 dark:text-zinc-100">
         {point.term}º Trimestre
       </p>
       <p
-        className={`mt-1 font-mono text-sm font-bold ${
+        className={`mt-1 font-mono text-sm font-semibold tabular-nums ${
           point.average === null
-            ? "text-slate-500 dark:text-slate-400"
+            ? "text-zinc-500 dark:text-zinc-400"
             : isLow
               ? "text-red-600 dark:text-red-400"
               : "text-emerald-700 dark:text-emerald-400"
@@ -79,61 +79,59 @@ export function TermEvolutionChart({
   }));
 
   const hasAnyScore = chartData.some((item) => item.average !== null);
-  const gridStroke = isDark ? "#1e293b" : "#e2e8f0";
-  const axisTickColor = isDark ? "#94a3b8" : "#64748b";
+  const gridStroke = isDark ? "#27272A" : "#E4E4E7";
+  const axisTickColor = "#71717A";
   const strokeColor = isDark ? "#60a5fa" : "var(--school-primary)";
 
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-2 border-b border-slate-200/80 pb-3.5 dark:border-slate-800">
-        <div className="flex items-center gap-2">
-          <TrendingUp
-            className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
-            strokeWidth={1.75}
-            aria-hidden="true"
-          />
-          <div>
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
-              Evolução da Média por Trimestre
-            </h3>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              Linha tracejada indica a média mínima de aprovação (6,0)
-            </p>
-          </div>
+    <section className="rounded-xl border border-zinc-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-2 border-b border-zinc-200/70 pb-3 dark:border-white/[0.07]">
+        <div>
+          <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+            Evolução da Média por Trimestre
+          </h3>
+          <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+            Linha tracejada indica a média mínima de aprovação (6,0)
+          </p>
         </div>
+        <TrendingUp
+          className="h-4 w-4 shrink-0 text-zinc-400 dark:text-zinc-500"
+          strokeWidth={1.75}
+          aria-hidden="true"
+        />
       </div>
 
       {!hasAnyScore ? (
-        <div className="flex h-[210px] flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-6 text-center dark:border-slate-800 dark:bg-slate-950/50">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-            <TrendingUp className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+        <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed border-zinc-200 bg-zinc-50/60 px-6 text-center dark:border-white/[0.08] dark:bg-[#0C0D0F]/50">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
+            <TrendingUp className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
+          <p className="mt-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">
             Ainda sem notas suficientes para traçar evolução
           </p>
-          <p className="mt-1 max-w-xs text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-1 max-w-xs text-xs text-zinc-500 dark:text-zinc-400">
             Assim que as avaliações forem lançadas, o gráfico exibirá a evolução trimestral do
             estudante.
           </p>
         </div>
       ) : (
-        <div className="h-[220px] w-full">
+        <div className="h-[210px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={chartData}
-              margin={{ top: 14, right: 18, left: -14, bottom: 4 }}
+              margin={{ top: 12, right: 16, left: -16, bottom: 4 }}
             >
               <defs>
                 <linearGradient id="termAverageFill" x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="5%"
                     stopColor={isDark ? "#60a5fa" : "#1d4ed8"}
-                    stopOpacity={0.28}
+                    stopOpacity={0.16}
                   />
                   <stop
                     offset="95%"
                     stopColor={isDark ? "#60a5fa" : "#1d4ed8"}
-                    stopOpacity={0.02}
+                    stopOpacity={0.01}
                   />
                 </linearGradient>
               </defs>
@@ -141,11 +139,12 @@ export function TermEvolutionChart({
                 strokeDasharray="3 3"
                 vertical={false}
                 stroke={gridStroke}
+                strokeOpacity={0.75}
               />
               <XAxis
                 dataKey="label"
-                tick={{ fill: axisTickColor, fontSize: 12 }}
-                axisLine={{ stroke: gridStroke }}
+                tick={{ fill: axisTickColor, fontSize: 11 }}
+                axisLine={false}
                 tickLine={false}
               />
               <YAxis
@@ -158,12 +157,13 @@ export function TermEvolutionChart({
               <Tooltip content={<TermTooltip />} />
               <ReferenceLine
                 y={PASSING_GRADE_THRESHOLD}
-                stroke="#d97706"
-                strokeDasharray="5 5"
+                stroke="#c2883a"
+                strokeDasharray="4 4"
+                strokeOpacity={0.7}
                 label={{
                   value: "Mín. 6,0",
                   position: "insideTopRight",
-                  fill: isDark ? "#fbbf24" : "#b45309",
+                  fill: axisTickColor,
                   fontSize: 11,
                 }}
               />
@@ -172,15 +172,15 @@ export function TermEvolutionChart({
                 dataKey="average"
                 connectNulls
                 stroke={strokeColor}
-                strokeWidth={2.5}
+                strokeWidth={2}
                 fill="url(#termAverageFill)"
                 dot={{
-                  r: 5,
+                  r: 4,
                   strokeWidth: 2,
-                  fill: isDark ? "#0f172a" : "#ffffff",
+                  fill: isDark ? "#131518" : "#ffffff",
                   stroke: strokeColor,
                 }}
-                activeDot={{ r: 6.5 }}
+                activeDot={{ r: 5.5 }}
               />
             </AreaChart>
           </ResponsiveContainer>

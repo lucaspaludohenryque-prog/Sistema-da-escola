@@ -20,15 +20,15 @@ interface AuditBackupViewProps {
 
 function getActionBadgeStyle(action: string): string {
   if (action.includes("EXCLUIR") || action.includes("DESATIVAR") || action.includes("RECUSAR")) {
-    return "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30";
+    return "border border-red-200/80 bg-red-50/70 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300";
   }
   if (action.includes("TRANCAR") || action.includes("CONFIG")) {
-    return "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30";
+    return "border border-amber-200/80 bg-amber-50/70 text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300";
   }
   if (action.includes("APROVAR") || action.includes("CRIAR") || action.includes("BACKUP")) {
-    return "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30";
+    return "border border-emerald-200/80 bg-emerald-50/70 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300";
   }
-  return "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/30";
+  return "border border-zinc-200/80 bg-zinc-50 text-zinc-700 dark:border-white/[0.08] dark:bg-white/[0.05] dark:text-zinc-300";
 }
 
 function formatDateTimeBr(iso: string): string {
@@ -118,28 +118,26 @@ export function AuditBackupView({
   }
 
   return (
-    <div className="space-y-6">
-      {/* Cabecalho com botao de Backup Completo */}
-      <section className="flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-700 ring-1 ring-inset ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-300">
-            <ShieldCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-          </div>
-          <div>
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white">
-              Trilha de Auditoria LGPD e Backup
+    <div className="space-y-5">
+      {/* Cabecalho limpo com botao de Backup */}
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-100">
+              Auditoria LGPD e Backup
             </h2>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              Registro automático das operações sensíveis e snapshot JSON completo sem credenciais.
-            </p>
+            <ShieldCheck className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Registro das operações sensíveis do sistema e exportação JSON completa sem credenciais.
+          </p>
         </div>
 
         <button
           type="button"
           onClick={handleExportBackup}
           disabled={isExporting}
-          className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[var(--school-primary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:opacity-60 sm:text-sm"
+          className="inline-flex h-9 w-fit shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[var(--school-primary)] px-3.5 text-sm font-medium text-white transition-colors hover:bg-[var(--school-primary-hover)] disabled:opacity-60"
         >
           {isExporting ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -147,17 +145,17 @@ export function AuditBackupView({
             <Download className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           )}
           <span>
-            {isExporting ? "Gerando Backup..." : "Exportar Backup Completo (JSON)"}
+            {isExporting ? "Gerando Backup..." : "Exportar Backup (JSON)"}
           </span>
         </button>
-      </section>
+      </header>
 
       {/* Filtros */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[var(--shadow-ambient)] sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
           <div className="relative md:col-span-5">
             <Search
-              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
               strokeWidth={1.75}
             />
             <input
@@ -165,7 +163,7 @@ export function AuditBackupView({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por usuário, ação ou detalhe..."
-              className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-3 pl-9 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border border-zinc-200/90 bg-white pr-3 pl-9 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-500"
             />
           </div>
 
@@ -174,7 +172,7 @@ export function AuditBackupView({
               aria-label="Filtrar por ação"
               value={actionFilter}
               onChange={(e) => setActionFilter(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border border-zinc-200/90 bg-white px-3 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               <option value="">Todas as ações</option>
               {actions.map((a) => (
@@ -190,7 +188,7 @@ export function AuditBackupView({
               aria-label="Filtrar por perfil"
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border border-zinc-200/90 bg-white px-3 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               <option value="">Todos os perfis</option>
               <option value="ADMIN">ADMIN</option>
@@ -204,66 +202,66 @@ export function AuditBackupView({
               type="button"
               onClick={() => void fetchLogs()}
               aria-label="Recarregar logs"
-              className="flex h-10 w-full cursor-pointer items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              className="flex h-9 w-full cursor-pointer items-center justify-center rounded-lg border border-zinc-200/90 bg-white text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:border-white/[0.09] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:bg-white/[0.08]"
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} strokeWidth={1.75} />
             </button>
           </div>
         </div>
       </section>
 
-      {/* Tabela / Timeline de Auditoria */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[var(--shadow-ambient)] dark:border-slate-800 dark:bg-slate-900">
+      {/* Tabela de Auditoria */}
+      <section className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
         {isLoading ? (
           <div className="space-y-3 p-5">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-12 rounded-xl" />
+              <Skeleton key={i} className="h-11 rounded-lg" />
             ))}
           </div>
         ) : logs.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="px-6 py-12 text-center text-sm text-zinc-500 dark:text-zinc-400">
             Nenhum evento de auditoria encontrado para os filtros aplicados.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-xs dark:divide-slate-800">
-              <thead className="bg-slate-50 text-slate-500 dark:bg-slate-950/60 dark:text-slate-400">
+            <table className="min-w-full divide-y divide-zinc-200/80 text-left text-xs dark:divide-white/[0.08]">
+              <thead className="bg-zinc-50 text-[11px] font-medium tracking-wider text-zinc-500 uppercase dark:bg-white/[0.03] dark:text-zinc-400">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Data / Hora</th>
-                  <th className="px-4 py-3 font-semibold">Usuário</th>
-                  <th className="px-4 py-3 font-semibold">Ação</th>
-                  <th className="px-4 py-3 font-semibold">Entidade</th>
-                  <th className="px-4 py-3 font-semibold">Detalhes</th>
+                  <th className="px-4 py-3 font-medium">Data / Hora</th>
+                  <th className="px-4 py-3 font-medium">Usuário</th>
+                  <th className="px-4 py-3 font-medium">Ação</th>
+                  <th className="px-4 py-3 font-medium">Entidade</th>
+                  <th className="px-4 py-3 font-medium">Detalhes</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-zinc-200/70 dark:divide-white/[0.06]">
                 {logs.map((log) => (
                   <tr
                     key={log.id}
-                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
+                    className="transition-colors hover:bg-zinc-50/80 dark:hover:bg-white/[0.02]"
                   >
-                    <td className="px-4 py-3 font-mono whitespace-nowrap text-slate-600 dark:text-slate-400">
+                    <td className="px-4 py-3 font-mono whitespace-nowrap tabular-nums text-zinc-500 dark:text-zinc-400">
                       {formatDateTimeBr(log.createdAt)}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <p className="font-semibold text-slate-900 dark:text-white">
+                      <p className="font-medium text-zinc-900 dark:text-zinc-100">
                         {log.userName}
                       </p>
-                      <p className="font-mono text-[10px] text-slate-500 dark:text-slate-400">
+                      <p className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500">
                         {log.userRole}
                       </p>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center rounded-md px-2 py-0.5 font-mono text-[11px] font-semibold ${getActionBadgeStyle(log.action)}`}
+                        className={`inline-flex items-center rounded-md px-2 py-0.5 font-mono text-[11px] font-medium ${getActionBadgeStyle(log.action)}`}
                       >
                         {log.action}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-mono whitespace-nowrap text-slate-600 dark:text-slate-300">
+                    <td className="px-4 py-3 font-mono whitespace-nowrap text-zinc-600 dark:text-zinc-300">
                       {log.entity}
                     </td>
-                    <td className="max-w-md px-4 py-3 text-slate-700 dark:text-slate-300">
+                    <td className="max-w-md px-4 py-3 text-zinc-600 dark:text-zinc-300">
                       {log.details}
                     </td>
                   </tr>

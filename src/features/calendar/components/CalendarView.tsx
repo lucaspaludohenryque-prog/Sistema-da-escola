@@ -49,7 +49,7 @@ const MONTH_NAMES = [
 ];
 
 const INPUT_CLASS =
-  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400";
+  "block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400";
 
 function shiftYearMonth(yearMonth: string, delta: number): string {
   const [yStr, mStr] = yearMonth.split("-");
@@ -208,35 +208,35 @@ export function CalendarView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100">
               Calendário Escolar
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               Acompanhe datas de provas, trabalhos, reuniões, feriados e eventos institucionais.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
+            <div className="inline-flex items-center rounded-lg border border-zinc-200 bg-zinc-50 p-1 dark:border-white/[0.1] dark:bg-[#1A1D21]">
               <button
                 type="button"
                 onClick={() => void loadMonth(shiftYearMonth(currentMonth, -1))}
                 aria-label="Mês anterior"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-slate-700 hover:bg-white dark:text-slate-200 dark:hover:bg-slate-700"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-zinc-700 hover:bg-white dark:text-zinc-200 dark:hover:bg-white/[0.08]"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <span className="min-w-[140px] px-2 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <span className="min-w-[140px] px-2 text-center text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                 {MONTH_NAMES[monthIdx]} {year}
               </span>
               <button
                 type="button"
                 onClick={() => void loadMonth(shiftYearMonth(currentMonth, 1))}
                 aria-label="Próximo mês"
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-slate-700 hover:bg-white dark:text-slate-200 dark:hover:bg-slate-700"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-zinc-700 hover:bg-white dark:text-zinc-200 dark:hover:bg-white/[0.08]"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -246,7 +246,7 @@ export function CalendarView({
               <button
                 type="button"
                 onClick={() => openNewEventModal()}
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)]"
               >
                 <Plus className="h-4 w-4" strokeWidth={2} />
                 <span>Novo Evento</span>
@@ -256,7 +256,7 @@ export function CalendarView({
         </div>
 
         {/* Legenda */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
           {SCHOOL_EVENT_TYPES.map((eventType) => (
             <span
               key={eventType}
@@ -270,7 +270,7 @@ export function CalendarView({
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.55fr_1fr]">
         {/* Grade Mensal */}
-        <section className="overflow-hidden rounded-2xl bg-white p-4 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-5 dark:bg-slate-900 dark:ring-slate-800">
+        <section className="overflow-hidden rounded-xl bg-white p-4 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-5 dark:bg-[#131518] dark:ring-white/[0.08]">
           {isLoading ? (
             <div className="grid grid-cols-7 gap-2">
               {Array.from({ length: 28 }).map((_, i) => (
@@ -279,7 +279,7 @@ export function CalendarView({
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-7 gap-1.5 pb-2 text-center text-[11px] font-semibold text-slate-500 uppercase dark:text-slate-400">
+              <div className="grid grid-cols-7 gap-1.5 pb-2 text-center text-[11px] font-semibold text-zinc-500 uppercase dark:text-zinc-400">
                 {WEEKDAYS_HEADER.map((label) => (
                   <div key={label} className="py-1">
                     {label}
@@ -292,7 +292,7 @@ export function CalendarView({
                     return (
                       <div
                         key={`empty-${idx}`}
-                        className="min-h-[82px] rounded-xl bg-slate-50/40 dark:bg-slate-950/30"
+                        className="min-h-[82px] rounded-xl bg-zinc-50/40 dark:bg-[#0C0D0F]/30"
                       />
                     );
                   }
@@ -311,15 +311,15 @@ export function CalendarView({
                       className={`min-h-[86px] rounded-xl border p-1.5 transition-colors ${
                         isToday
                           ? "border-[var(--school-primary)] bg-blue-50/40 dark:bg-blue-500/10"
-                          : "border-slate-200/80 bg-white dark:border-slate-800 dark:bg-slate-900/60"
-                      } ${canCreate ? "cursor-pointer hover:border-slate-400 dark:hover:border-slate-600" : ""}`}
+                          : "border-zinc-200/80 bg-white dark:border-white/[0.08] dark:bg-[#131518]/60"
+                      } ${canCreate ? "cursor-pointer hover:border-zinc-300 dark:hover:border-slate-600" : ""}`}
                     >
                       <div className="flex items-center justify-between">
                         <span
                           className={`inline-flex h-6 w-6 items-center justify-center rounded-full font-mono text-xs font-semibold ${
                             isToday
                               ? "bg-[var(--school-primary)] text-white"
-                              : "text-slate-700 dark:text-slate-300"
+                              : "text-zinc-700 dark:text-zinc-300"
                           }`}
                         >
                           {cell.day}
@@ -337,7 +337,7 @@ export function CalendarView({
                           </div>
                         ))}
                         {dayEvents.length > 2 ? (
-                          <p className="px-1 font-mono text-[10px] text-slate-500 dark:text-slate-400">
+                          <p className="px-1 font-mono text-[10px] text-zinc-500 dark:text-zinc-400">
                             +{dayEvents.length - 2} mais
                           </p>
                         ) : null}
@@ -351,37 +351,37 @@ export function CalendarView({
         </section>
 
         {/* Lista lateral dos eventos do mes */}
-        <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="flex items-center justify-between border-b border-slate-200/80 px-5 py-4 dark:border-slate-800">
+        <section className="overflow-hidden rounded-xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:ring-white/[0.08]">
+          <div className="flex items-center justify-between border-b border-zinc-200/80 px-5 py-4 dark:border-white/[0.08]">
             <div>
-              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                 Eventos de {MONTH_NAMES[monthIdx]}
               </h3>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                 Ordenados cronologicamente
               </p>
             </div>
-            <span className="font-mono text-xs font-semibold text-slate-600 dark:text-slate-400">
+            <span className="font-mono text-xs font-semibold text-zinc-600 dark:text-zinc-400">
               {events.length}
             </span>
           </div>
 
           {events.length === 0 ? (
             <div className="px-6 py-12 text-center">
-              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
                 <CalendarDays className="h-5 w-5" strokeWidth={1.75} />
               </div>
-              <p className="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <p className="mt-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                 Nenhum evento neste mês
               </p>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                 {canCreate
                   ? "Clique em Novo Evento ou em qualquer dia do calendário para cadastrar."
                   : "Quando a escola agendar provas ou eventos, eles aparecerão aqui."}
               </p>
             </div>
           ) : (
-            <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+            <ul className="divide-y divide-zinc-200/70 dark:divide-white/[0.06]">
               {events.map((ev) => (
                 <li key={ev.id} className="space-y-1.5 px-5 py-4">
                   <div className="flex items-start justify-between gap-2">
@@ -391,7 +391,7 @@ export function CalendarView({
                       >
                         {SCHOOL_EVENT_LABELS[ev.type]}
                       </span>
-                      <span className="font-mono text-xs text-slate-500 dark:text-slate-400">
+                      <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">
                         {formatIsoDateBr(ev.date)}
                       </span>
                     </div>
@@ -401,21 +401,21 @@ export function CalendarView({
                         disabled={deletingId === ev.id}
                         onClick={() => void handleDelete(ev.id)}
                         aria-label={`Excluir evento ${ev.title}`}
-                        className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
+                        className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-zinc-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
                       >
                         <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
                       </button>
                     ) : null}
                   </div>
-                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     {ev.title}
                   </p>
                   {ev.description ? (
-                    <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                    <p className="text-xs leading-relaxed text-zinc-600 dark:text-zinc-300">
                       {ev.description}
                     </p>
                   ) : null}
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                     {ev.classroomLabel ?? "Toda a escola"} · por {ev.authorName}
                   </p>
                 </li>
@@ -434,24 +434,24 @@ export function CalendarView({
           aria-labelledby="calendar-modal-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => {
               if (!isSaving) setIsModalOpen(false);
             }}
             aria-hidden="true"
           />
-          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
-            <div className="flex items-start justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
+          <div className="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl ring-1 ring-zinc-200/90 dark:bg-[#131518] dark:ring-white/[0.1]">
+            <div className="flex items-start justify-between border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
               <h3
                 id="calendar-modal-title"
-                className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
               >
                 Novo Evento Escolar
               </h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-[#1A1D21]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -461,7 +461,7 @@ export function CalendarView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="event-title"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Título
                 </label>
@@ -480,7 +480,7 @@ export function CalendarView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="event-date"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Data
                   </label>
@@ -497,7 +497,7 @@ export function CalendarView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="event-type"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Tipo
                   </label>
@@ -519,7 +519,7 @@ export function CalendarView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="event-classroom"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Alcance / Turma
                 </label>
@@ -544,10 +544,10 @@ export function CalendarView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="event-description"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Descrição{" "}
-                  <span className="text-xs font-normal text-slate-500">(opcional)</span>
+                  <span className="text-xs font-normal text-zinc-500">(opcional)</span>
                 </label>
                 <textarea
                   id="event-description"
@@ -559,12 +559,12 @@ export function CalendarView({
                 />
               </div>
 
-              <div className="flex justify-end gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+              <div className="flex justify-end gap-2 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSaving}
-                  className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="cursor-pointer rounded-lg border border-zinc-200/90 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                 >
                   Cancelar
                 </button>

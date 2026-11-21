@@ -175,18 +175,18 @@ export function SchoolConfigView({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
         <div className="space-y-6">
           {/* Dados institucionais */}
-          <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-            <div className="mb-5 flex items-center gap-2.5 border-b border-slate-200/80 pb-4 dark:border-slate-800">
+          <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
+            <div className="mb-5 flex items-center gap-2.5 border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
               <Building2
                 className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
                 strokeWidth={1.75}
                 aria-hidden="true"
               />
               <div>
-                <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                   Dados Institucionais da Escola
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   Exibidos no login, no menu lateral e no cabeçalho oficial do boletim em PDF.
                 </p>
               </div>
@@ -196,7 +196,7 @@ export function SchoolConfigView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="school-name"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Nome da Escola
                 </label>
@@ -208,7 +208,7 @@ export function SchoolConfigView({
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   placeholder="Ex: Colégio Estadual Machado de Assis"
-                  className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 dark:disabled:bg-slate-800/50"
+                  className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400 dark:disabled:bg-white/[0.03]"
                 />
               </div>
 
@@ -216,7 +216,7 @@ export function SchoolConfigView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="school-city"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Cidade
                   </label>
@@ -227,14 +227,14 @@ export function SchoolConfigView({
                     value={city}
                     onChange={(event) => setCity(event.target.value)}
                     placeholder="Ex: Curitiba"
-                    className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400"
+                    className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400"
                   />
                 </div>
 
                 <div className="space-y-1.5">
                   <label
                     htmlFor="school-state"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Estado (UF)
                   </label>
@@ -243,7 +243,7 @@ export function SchoolConfigView({
                     disabled={isSaving}
                     value={state}
                     onChange={(event) => setState(event.target.value)}
-                    className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                   >
                     {BRAZILIAN_STATES.map((uf) => (
                       <option key={uf} value={uf}>
@@ -258,7 +258,7 @@ export function SchoolConfigView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="school-phone"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Telefone institucional
                   </label>
@@ -269,14 +269,14 @@ export function SchoolConfigView({
                     value={phone}
                     onChange={(event) => setPhone(event.target.value)}
                     placeholder="(41) 3333-0000"
-                    className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400"
+                    className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400"
                   />
                 </div>
 
                 <div className="space-y-1.5">
                   <label
                     htmlFor="school-year"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Ano Letivo
                   </label>
@@ -289,7 +289,7 @@ export function SchoolConfigView({
                     disabled={isSaving}
                     value={schoolYear}
                     onChange={(event) => setSchoolYear(event.target.value)}
-                    className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 font-mono text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 font-mono text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                   />
                 </div>
               </div>
@@ -297,18 +297,18 @@ export function SchoolConfigView({
           </section>
 
           {/* Cor Principal da Escola */}
-          <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-            <div className="mb-5 flex items-center gap-2.5 border-b border-slate-200/80 pb-4 dark:border-slate-800">
+          <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
+            <div className="mb-5 flex items-center gap-2.5 border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
               <Palette
                 className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
                 strokeWidth={1.75}
                 aria-hidden="true"
               />
               <div>
-                <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                   Cor Principal da Escola
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   Aplicada dinamicamente nos botões principais, itens ativos do menu e destaques do
                   painel.
                 </p>
@@ -328,8 +328,8 @@ export function SchoolConfigView({
                       onClick={() => setPrimaryColor(preset.hex)}
                       className={`flex cursor-pointer flex-col items-center gap-2 rounded-xl border p-3 text-center transition-all ${
                         isSelected
-                          ? "border-slate-900 bg-slate-50 ring-2 ring-slate-900/10 dark:border-white dark:bg-slate-800 dark:ring-white/20"
-                          : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/50 dark:hover:border-slate-700 dark:hover:bg-slate-800/60"
+                          ? "border-slate-900 bg-zinc-50 ring-2 ring-zinc-200/90 dark:border-white dark:bg-[#1A1D21] dark:ring-white/20"
+                          : "border-zinc-200 bg-white hover:border-zinc-200/90 hover:bg-zinc-50/70 dark:border-white/[0.08] dark:bg-[#131518]/50 dark:hover:border-slate-700 dark:hover:bg-white/[0.04]"
                       }`}
                     >
                       <span
@@ -340,7 +340,7 @@ export function SchoolConfigView({
                           <Check className="h-4 w-4" strokeWidth={2.5} />
                         ) : null}
                       </span>
-                      <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                      <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">
                         {preset.name}
                       </span>
                     </button>
@@ -348,11 +348,11 @@ export function SchoolConfigView({
                 })}
               </div>
 
-              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-slate-50/70 px-4 py-3 dark:border-slate-800 dark:bg-slate-800/40">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-200/80 bg-zinc-50/70 px-4 py-3 dark:border-white/[0.08] dark:bg-white/[0.02]">
                 <div className="flex items-center gap-3">
                   <label
                     htmlFor="school-primary-color"
-                    className="text-xs font-medium text-slate-700 dark:text-slate-300"
+                    className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
                   >
                     Cor personalizada:
                   </label>
@@ -362,9 +362,9 @@ export function SchoolConfigView({
                     disabled={isSaving}
                     value={primaryColor}
                     onChange={(event) => setPrimaryColor(event.target.value)}
-                    className="h-8 w-12 cursor-pointer rounded border border-slate-300 bg-white p-0.5 dark:border-slate-700 dark:bg-slate-900"
+                    className="h-8 w-12 cursor-pointer rounded border border-zinc-200/90 bg-white p-0.5 dark:border-white/[0.1] dark:bg-[#131518]"
                   />
-                  <span className="font-mono text-xs font-semibold text-slate-700 uppercase dark:text-slate-200">
+                  <span className="font-mono text-xs font-semibold text-zinc-700 uppercase dark:text-zinc-200">
                     {primaryColor}
                   </span>
                 </div>
@@ -381,20 +381,20 @@ export function SchoolConfigView({
         </div>
 
         {/* Logo / Brasao da Escola */}
-        <section className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+        <section className="flex flex-col justify-between rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
           <div>
-            <div className="mb-5 border-b border-slate-200/80 pb-4 dark:border-slate-800">
-              <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            <div className="mb-5 border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
+              <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                 Logo / Brasão da Escola
               </h2>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                 PNG, JPG ou WEBP com tamanho máximo de 500KB.
               </p>
             </div>
 
-            <div className="flex flex-col items-center rounded-xl border border-dashed border-slate-300 bg-slate-50/70 px-4 py-6 text-center dark:border-slate-700 dark:bg-slate-800/40">
+            <div className="flex flex-col items-center rounded-xl border border-dashed border-zinc-200/90 bg-zinc-50/70 px-4 py-6 text-center dark:border-white/[0.1] dark:bg-white/[0.02]">
               {logoUrl ? (
-                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl bg-white p-2 shadow-xs ring-1 ring-slate-200">
+                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl bg-white p-2 shadow-xs ring-1 ring-zinc-200">
                   <img
                     src={logoUrl}
                     alt={`Logo de ${name || "escola"}`}
@@ -403,14 +403,14 @@ export function SchoolConfigView({
                 </div>
               ) : (
                 <div
-                  className="flex h-20 w-20 items-center justify-center rounded-2xl text-white shadow-xs"
+                  className="flex h-20 w-20 items-center justify-center rounded-xl text-white shadow-xs"
                   style={{ backgroundColor: primaryColor }}
                 >
                   <BookOpenCheck className="h-9 w-9" strokeWidth={1.75} aria-hidden="true" />
                 </div>
               )}
 
-              <p className="mt-3 text-xs font-medium text-slate-700 dark:text-slate-300">
+              <p className="mt-3 text-xs font-medium text-zinc-700 dark:text-zinc-300">
                 {logoUrl
                   ? "Pré-visualização do brasão"
                   : "Nenhum logo personalizado enviado"}
@@ -429,7 +429,7 @@ export function SchoolConfigView({
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                 <label
                   htmlFor="school-logo-upload"
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-800 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                 >
                   <Upload className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                   <span>{logoUrl ? "Alterar imagem" : "Selecionar imagem"}</span>
@@ -440,7 +440,7 @@ export function SchoolConfigView({
                     type="button"
                     onClick={handleRemoveLogo}
                     disabled={isSaving}
-                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50 disabled:opacity-50 dark:border-red-500/30 dark:bg-slate-900 dark:text-red-300 dark:hover:bg-red-500/15"
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:bg-red-50 disabled:opacity-50 dark:border-red-500/30 dark:bg-[#131518] dark:text-red-300 dark:hover:bg-red-500/15"
                   >
                     <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                     <span>Remover logo</span>
@@ -450,12 +450,12 @@ export function SchoolConfigView({
             </div>
           </div>
 
-          <div className="mt-6 border-t border-slate-200/80 pt-5 dark:border-slate-800">
+          <div className="mt-6 border-t border-zinc-200/80 pt-5 dark:border-white/[0.08]">
             <button
               type="submit"
               disabled={isSaving}
               style={{ backgroundColor: primaryColor }}
-              className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[filter,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[filter,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isSaving ? (
                 <>

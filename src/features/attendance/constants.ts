@@ -18,24 +18,25 @@ export const ATTENDANCE_STATUS_META: Record<
     shortLabel: "P",
     label: "Presente",
     activeClass:
-      "bg-emerald-600 text-white ring-1 ring-inset ring-emerald-700 shadow-xs",
+      "border border-emerald-600/90 bg-emerald-600 text-white dark:border-emerald-500/80 dark:bg-emerald-600/90 dark:text-white",
     idleClass:
-      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-emerald-50 hover:text-emerald-800 hover:ring-emerald-300 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-emerald-500/15 dark:hover:text-emerald-300 dark:hover:ring-emerald-500/40",
+      "border border-zinc-200/90 bg-white text-zinc-600 hover:border-emerald-300 hover:bg-emerald-50/70 hover:text-emerald-800 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:border-emerald-500/35 dark:hover:bg-emerald-500/12 dark:hover:text-emerald-300",
   },
   FALTA: {
     shortLabel: "F",
     label: "Falta",
-    activeClass: "bg-red-600 text-white ring-1 ring-inset ring-red-700 shadow-xs",
+    activeClass:
+      "border border-red-600/90 bg-red-600 text-white dark:border-red-500/80 dark:bg-red-600/90 dark:text-white",
     idleClass:
-      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-red-50 hover:text-red-800 hover:ring-red-300 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-red-500/15 dark:hover:text-red-300 dark:hover:ring-red-500/40",
+      "border border-zinc-200/90 bg-white text-zinc-600 hover:border-red-300 hover:bg-red-50/70 hover:text-red-800 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:border-red-500/35 dark:hover:bg-red-500/12 dark:hover:text-red-300",
   },
   JUSTIFICADA: {
     shortLabel: "FJ",
     label: "Falta Justificada",
     activeClass:
-      "bg-amber-500 text-slate-950 ring-1 ring-inset ring-amber-600 shadow-xs",
+      "border border-amber-500/90 bg-amber-500/90 text-zinc-950 dark:border-amber-400/80 dark:bg-amber-500/85 dark:text-zinc-950",
     idleClass:
-      "bg-white text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-amber-50 hover:text-amber-900 hover:ring-amber-300 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-amber-500/15 dark:hover:text-amber-300 dark:hover:ring-amber-500/40",
+      "border border-zinc-200/90 bg-white text-zinc-600 hover:border-amber-300 hover:bg-amber-50/70 hover:text-amber-900 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:border-amber-500/35 dark:hover:bg-amber-500/12 dark:hover:text-amber-300",
   },
 };
 

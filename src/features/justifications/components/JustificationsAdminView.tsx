@@ -105,13 +105,13 @@ export function JustificationsAdminView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100">
               Justificativas de Falta
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               Avalie os pedidos enviados pelos responsáveis. Aprovações convertem automaticamente a
               falta para Falta Justificada (FJ).
             </p>
@@ -134,7 +134,7 @@ export function JustificationsAdminView({
         </div>
 
         <div
-          className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-slate-200/80 pt-4 dark:border-slate-800"
+          className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]"
           role="group"
           aria-label="Filtrar justificativas"
         >
@@ -156,7 +156,7 @@ export function JustificationsAdminView({
                 className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   isSelected
                     ? "bg-[var(--school-primary)] text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200/80 dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:bg-white/[0.08]"
                 }`}
               >
                 {tab.label}
@@ -167,14 +167,14 @@ export function JustificationsAdminView({
       </section>
 
       {filtered.length === 0 ? (
-        <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+        <section className="rounded-xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:ring-white/[0.08]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
             <FileCheck2 className="h-6 w-6" strokeWidth={1.75} />
           </div>
-          <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+          <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
             Nenhuma justificativa nesta visualização
           </h3>
-          <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-1.5 max-w-md text-sm text-zinc-600 dark:text-zinc-400">
             Quando um responsável solicitar justificativa de falta pelo Portal da Família, o pedido
             aparecerá aqui.
           </p>
@@ -188,7 +188,7 @@ export function JustificationsAdminView({
             return (
               <article
                 key={item.id}
-                className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800"
+                className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]"
               >
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0 flex-1 space-y-3">
@@ -198,7 +198,7 @@ export function JustificationsAdminView({
                       >
                         {JUSTIFICATION_STATUS_LABELS[item.status]}
                       </span>
-                      <span className="inline-flex items-center gap-1 font-mono text-xs text-slate-500 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 font-mono text-xs text-zinc-500 dark:text-zinc-400">
                         <Calendar className="h-3.5 w-3.5" />
                         Falta em {formatIsoDateBr(item.lessonDate)} ({item.lessonNumber}ª aula)
                       </span>
@@ -207,13 +207,13 @@ export function JustificationsAdminView({
                     <div className="flex items-start gap-3">
                       <Avatar name={item.studentName} size="md" className="mt-0.5" />
                       <div className="min-w-0">
-                        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                           {item.studentName}{" "}
-                          <span className="font-mono text-xs font-normal text-slate-500 dark:text-slate-400">
+                          <span className="font-mono text-xs font-normal text-zinc-500 dark:text-zinc-400">
                             {item.studentRegistration}
                           </span>
                         </h3>
-                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-400">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-600 dark:text-zinc-400">
                           <span className="inline-flex items-center gap-1">
                             <Users className="h-3.5 w-3.5" />
                             {item.classroomName} - {item.classroomSubject}
@@ -226,8 +226,8 @@ export function JustificationsAdminView({
                       </div>
                     </div>
 
-                    <div className="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-800 ring-1 ring-inset ring-slate-200/80 dark:bg-slate-800/60 dark:text-slate-200 dark:ring-slate-700">
-                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    <div className="rounded-xl bg-zinc-50 px-4 py-3 text-sm text-zinc-800 ring-1 ring-inset ring-zinc-200/80 dark:bg-white/[0.04] dark:text-zinc-200 dark:ring-white/[0.1]">
+                      <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                         Motivo informado pela família:
                       </p>
                       <p className="mt-1 leading-relaxed">{item.reason}</p>
@@ -240,7 +240,7 @@ export function JustificationsAdminView({
                       </div>
                     ) : null}
 
-                    <p className="font-mono text-[11px] text-slate-400 dark:text-slate-500">
+                    <p className="font-mono text-[11px] text-zinc-400 dark:text-zinc-500">
                       Solicitado em {formatDateTimeCompactBr(item.createdAt)}
                       {item.reviewedAt
                         ? ` · Avaliado em ${formatDateTimeCompactBr(item.reviewedAt)}`
@@ -261,7 +261,7 @@ export function JustificationsAdminView({
                           }))
                         }
                         placeholder="Parecer opcional para a família..."
-                        className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[var(--school-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-xs text-zinc-900 placeholder:text-zinc-400 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
                       />
                       <div className="flex flex-wrap gap-2">
                         <button

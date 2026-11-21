@@ -21,41 +21,41 @@ export const BADGE_CATEGORY_META: Record<
     label: "Frequência 100%",
     defaultTitle: "Assiduidade Exemplar",
     cardClass:
-      "border-emerald-200/80 bg-emerald-50/60 dark:border-emerald-500/30 dark:bg-emerald-500/10",
+      "border-zinc-200/80 bg-white dark:border-white/[0.08] dark:bg-[#131518]",
     iconWrapClass:
-      "bg-emerald-500/15 text-emerald-700 ring-emerald-500/30 dark:text-emerald-300",
+      "bg-emerald-50/80 text-emerald-700 ring-emerald-200/80 dark:bg-emerald-500/12 dark:text-emerald-300 dark:ring-emerald-500/20",
   },
   DESTAQUE_ACADEMICO: {
     label: "Destaque Acadêmico",
     defaultTitle: "Excelência Acadêmica",
     cardClass:
-      "border-amber-200/80 bg-amber-50/70 dark:border-amber-500/30 dark:bg-amber-500/10",
+      "border-zinc-200/80 bg-white dark:border-white/[0.08] dark:bg-[#131518]",
     iconWrapClass:
-      "bg-amber-500/15 text-amber-700 ring-amber-500/30 dark:text-amber-300",
+      "bg-amber-50/80 text-amber-700 ring-amber-200/80 dark:bg-amber-500/12 dark:text-amber-300 dark:ring-amber-500/20",
   },
   EVOLUCAO: {
     label: "Evolução Contínua",
     defaultTitle: "Superação e Evolução",
     cardClass:
-      "border-blue-200/80 bg-blue-50/60 dark:border-blue-500/30 dark:bg-blue-500/10",
+      "border-zinc-200/80 bg-white dark:border-white/[0.08] dark:bg-[#131518]",
     iconWrapClass:
-      "bg-blue-500/15 text-blue-700 ring-blue-500/30 dark:text-blue-300",
+      "bg-blue-50/80 text-blue-700 ring-blue-200/80 dark:bg-blue-500/12 dark:text-blue-300 dark:ring-blue-500/20",
   },
   COLABORACAO: {
     label: "Colaboração",
     defaultTitle: "Espírito Colaborativo",
     cardClass:
-      "border-purple-200/80 bg-purple-50/60 dark:border-purple-500/30 dark:bg-purple-500/10",
+      "border-zinc-200/80 bg-white dark:border-white/[0.08] dark:bg-[#131518]",
     iconWrapClass:
-      "bg-purple-500/15 text-purple-700 ring-purple-500/30 dark:text-purple-300",
+      "bg-indigo-50/80 text-indigo-700 ring-indigo-200/80 dark:bg-indigo-500/12 dark:text-indigo-300 dark:ring-indigo-500/20",
   },
   LIDERANCA: {
     label: "Liderança Positiva",
     defaultTitle: "Liderança em Sala",
     cardClass:
-      "border-rose-200/80 bg-rose-50/60 dark:border-rose-500/30 dark:bg-rose-500/10",
+      "border-zinc-200/80 bg-white dark:border-white/[0.08] dark:bg-[#131518]",
     iconWrapClass:
-      "bg-rose-500/15 text-rose-700 ring-rose-500/30 dark:text-rose-300",
+      "bg-rose-50/80 text-rose-700 ring-rose-200/80 dark:bg-rose-500/12 dark:text-rose-300 dark:ring-rose-500/20",
   },
 };
 

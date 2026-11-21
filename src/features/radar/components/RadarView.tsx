@@ -26,31 +26,31 @@ const RISK_META: Record<
   RiskLevel,
   {
     label: string;
+    dotClass: string;
     badgeClass: string;
     barClass: string;
-    borderClass: string;
   }
 > = {
   CRITICO: {
     label: "Crítico",
+    dotClass: "bg-red-500",
     badgeClass:
-      "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30",
-    barClass: "bg-red-600",
-    borderClass: "border-red-200/90 dark:border-red-500/30",
+      "border border-red-200/80 bg-red-50/70 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300",
+    barClass: "bg-red-500/85",
   },
   ATENCAO: {
     label: "Em Atenção",
+    dotClass: "bg-amber-500",
     badgeClass:
-      "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30",
-    barClass: "bg-amber-500",
-    borderClass: "border-amber-200/90 dark:border-amber-500/30",
+      "border border-amber-200/80 bg-amber-50/70 text-amber-800 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300",
+    barClass: "bg-amber-500/85",
   },
   ESTAVEL: {
     label: "Estável",
+    dotClass: "bg-emerald-500",
     badgeClass:
-      "bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30",
-    barClass: "bg-emerald-500",
-    borderClass: "border-slate-200/80 dark:border-slate-800",
+      "border border-emerald-200/80 bg-emerald-50/70 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300",
+    barClass: "bg-emerald-500/80",
   },
 };
 
@@ -79,36 +79,47 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
 
   return (
     <div className="space-y-6">
-      {/* 3 cards de destaque por nivel de risco */}
+      <header>
+        <h2 className="text-xl font-semibold tracking-[-0.02em] text-zinc-900 dark:text-zinc-100">
+          Radar de Risco Pedagógico
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          Monitoramento preventivo de frequência, rendimento e ocorrências por estudante.
+        </p>
+      </header>
+
+      {/* Faixa limpa de KPIs clicaveis */}
       <section
         aria-label="Resumo do Radar Pedagógico"
-        className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+        className="grid grid-cols-1 gap-3.5 sm:grid-cols-3"
       >
         <button
           type="button"
           onClick={() =>
             setLevelFilter((prev) => (prev === "CRITICO" ? "ALL" : "CRITICO"))
           }
-          className={`cursor-pointer rounded-2xl border bg-white p-5 text-left shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-900 ${
+          className={`cursor-pointer rounded-xl border bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors dark:bg-[#131518] dark:shadow-none ${
             levelFilter === "CRITICO"
-              ? "border-red-500 ring-2 ring-red-500/20"
-              : "border-slate-200/80 dark:border-slate-800"
+              ? "border-red-500/80 ring-1 ring-red-500/20"
+              : "border-zinc-200/80 hover:border-zinc-300 dark:border-white/[0.08] dark:hover:border-white/[0.15]"
           }`}
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-[11px] font-semibold tracking-wider text-red-600 uppercase dark:text-red-400">
-                Risco Crítico (65–100)
-              </p>
-              <p className="mt-1.5 font-mono text-3xl font-bold text-slate-900 dark:text-white">
-                {data.summary.criticalCount}
-              </p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-500/10 text-red-700 ring-1 ring-inset ring-red-500/20 dark:bg-red-500/15 dark:text-red-300">
-              <AlertOctagon className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Risco Crítico (65–100)
+            </p>
+            <AlertOctagon className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          <p
+            className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${
+              data.summary.criticalCount > 0
+                ? "text-red-600 dark:text-red-400"
+                : "text-zinc-900 dark:text-zinc-100"
+            }`}
+          >
+            {data.summary.criticalCount}
+          </p>
+          <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             Intervenção imediata recomendada
           </p>
         </button>
@@ -118,26 +129,28 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
           onClick={() =>
             setLevelFilter((prev) => (prev === "ATENCAO" ? "ALL" : "ATENCAO"))
           }
-          className={`cursor-pointer rounded-2xl border bg-white p-5 text-left shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-900 ${
+          className={`cursor-pointer rounded-xl border bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors dark:bg-[#131518] dark:shadow-none ${
             levelFilter === "ATENCAO"
-              ? "border-amber-500 ring-2 ring-amber-500/20"
-              : "border-slate-200/80 dark:border-slate-800"
+              ? "border-amber-500/80 ring-1 ring-amber-500/20"
+              : "border-zinc-200/80 hover:border-zinc-300 dark:border-white/[0.08] dark:hover:border-white/[0.15]"
           }`}
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-[11px] font-semibold tracking-wider text-amber-700 uppercase dark:text-amber-400">
-                Em Atenção (35–64)
-              </p>
-              <p className="mt-1.5 font-mono text-3xl font-bold text-slate-900 dark:text-white">
-                {data.summary.attentionCount}
-              </p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-800 ring-1 ring-inset ring-amber-500/20 dark:bg-amber-500/15 dark:text-amber-300">
-              <AlertTriangle className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Em Atenção (35–64)
+            </p>
+            <AlertTriangle className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          <p
+            className={`mt-2 text-2xl font-semibold tracking-tight tabular-nums ${
+              data.summary.attentionCount > 0
+                ? "text-amber-700 dark:text-amber-400"
+                : "text-zinc-900 dark:text-zinc-100"
+            }`}
+          >
+            {data.summary.attentionCount}
+          </p>
+          <p className="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             Acompanhamento preventivo semanal
           </p>
         </button>
@@ -147,37 +160,33 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
           onClick={() =>
             setLevelFilter((prev) => (prev === "ESTAVEL" ? "ALL" : "ESTAVEL"))
           }
-          className={`cursor-pointer rounded-2xl border bg-white p-5 text-left shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-900 ${
+          className={`cursor-pointer rounded-xl border bg-white p-4 text-left shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors dark:bg-[#131518] dark:shadow-none ${
             levelFilter === "ESTAVEL"
-              ? "border-emerald-500 ring-2 ring-emerald-500/20"
-              : "border-slate-200/80 dark:border-slate-800"
+              ? "border-emerald-500/80 ring-1 ring-emerald-500/20"
+              : "border-zinc-200/80 hover:border-zinc-300 dark:border-white/[0.08] dark:hover:border-white/[0.15]"
           }`}
         >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-[11px] font-semibold tracking-wider text-emerald-700 uppercase dark:text-emerald-400">
-                Estáveis (0–34)
-              </p>
-              <p className="mt-1.5 font-mono text-3xl font-bold text-slate-900 dark:text-white">
-                {data.summary.stableCount}
-              </p>
-            </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-700 ring-1 ring-inset ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-300">
-              <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Estáveis (0–34)
+            </p>
+            <CheckCircle2 className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <p className="mt-3 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+          <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums text-zinc-900 dark:text-zinc-100">
+            {data.summary.stableCount}
+          </p>
+          <p className="mt-1.5 text-xs tabular-nums text-zinc-500 dark:text-zinc-400">
             Média geral da escola: {formatScoreBr(data.summary.schoolAverageGrade)}
           </p>
         </button>
       </section>
 
       {/* Filtros e busca */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[var(--shadow-ambient)] sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+      <section className="rounded-xl border border-zinc-200/80 bg-white p-4 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
           <div className="relative md:col-span-5">
             <Search
-              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-400 dark:text-zinc-500"
               strokeWidth={1.75}
               aria-hidden="true"
             />
@@ -186,7 +195,7 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por aluno, matrícula ou turma..."
-              className="w-full rounded-xl border border-slate-300 bg-white py-2 pr-3 pl-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[var(--school-primary)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border border-zinc-200/90 bg-white pr-3 pl-9 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-500"
             />
           </div>
 
@@ -195,7 +204,7 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
               aria-label="Filtrar por turma"
               value={classroomFilter}
               onChange={(e) => setClassroomFilter(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border border-zinc-200/90 bg-white px-3 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               <option value="ALL">Todas as turmas</option>
               {data.classrooms.map((c) => (
@@ -213,7 +222,7 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
               onChange={(e) =>
                 setLevelFilter(e.target.value as "ALL" | RiskLevel)
               }
-              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border border-zinc-200/90 bg-white px-3 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               <option value="ALL">Todos os níveis</option>
               <option value="CRITICO">Crítico (65+)</option>
@@ -226,14 +235,14 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
 
       {/* Lista de alunos analisados */}
       {filteredStudents.length === 0 ? (
-        <section className="rounded-2xl border border-slate-200/80 bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] dark:border-slate-800 dark:bg-slate-900">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-            <Radar className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+        <section className="rounded-xl border border-zinc-200/80 bg-white px-6 py-12 text-center shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
+            <Radar className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
-          <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">
+          <h3 className="mt-3 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
             Nenhum estudante corresponde aos filtros atuais
-          </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          </h3>
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
             Altere a turma ou o nível de risco para visualizar os demais alunos monitorados.
           </p>
         </section>
@@ -247,37 +256,41 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
             return (
               <article
                 key={st.studentId}
-                className={`flex flex-col justify-between rounded-2xl border bg-white p-5 shadow-[var(--shadow-ambient)] dark:bg-slate-900 ${meta.borderClass}`}
+                className="flex flex-col justify-between rounded-xl border border-zinc-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none"
               >
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <Avatar name={st.studentName} size="md" />
+                      <Avatar name={st.studentName} size="sm" />
                       <div className="min-w-0">
-                        <h3 className="truncate text-sm font-semibold text-slate-900 sm:text-base dark:text-white">
+                        <h3 className="truncate text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                           {st.studentName}
                         </h3>
-                        <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-                          {st.classroomName} - {st.classroomSubject} ·{" "}
-                          <span className="font-mono">{st.registration}</span>
+                        <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+                          {st.classroomName} · {st.classroomSubject} ·{" "}
+                          <span className="font-mono tabular-nums">{st.registration}</span>
                         </p>
                       </div>
                     </div>
 
                     <div className="shrink-0 text-right">
                       <span
-                        className={`inline-flex items-center rounded-md px-2.5 py-0.5 text-[11px] font-semibold ${meta.badgeClass}`}
+                        className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium ${meta.badgeClass}`}
                       >
+                        <span
+                          aria-hidden="true"
+                          className={`h-1.5 w-1.5 rounded-full ${meta.dotClass}`}
+                        />
                         {meta.label}
                       </span>
-                      <p className="mt-1 font-mono text-xs font-bold text-slate-700 dark:text-slate-200">
-                        Score {st.riskScore}/100
+                      <p className="mt-1 font-mono text-xs font-medium tabular-nums text-zinc-500 dark:text-zinc-400">
+                        {st.riskScore}/100
                       </p>
                     </div>
                   </div>
 
-                  {/* Medidor visual do score */}
-                  <div className="mt-3.5 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                  {/* Medidor discreto do score */}
+                  <div className="mt-3.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-white/[0.06]">
                     <div
                       className={`h-full rounded-full transition-all duration-300 ${meta.barClass}`}
                       style={{ width: `${Math.max(4, st.riskScore)}%` }}
@@ -286,26 +299,26 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
 
                   {/* Fatores detectados */}
                   {st.factors.length > 0 ? (
-                    <div className="mt-3.5 flex flex-wrap gap-1.5">
+                    <div className="mt-3 flex flex-wrap gap-1.5">
                       {st.factors.map((factor) => (
                         <span
                           key={factor}
-                          className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                          className="inline-flex items-center rounded-md border border-zinc-200/80 bg-zinc-50 px-2 py-0.5 text-xs text-zinc-600 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-300"
                         >
                           {factor}
                         </span>
                       ))}
                     </div>
                   ) : (
-                    <p className="mt-3 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                    <p className="mt-3 text-xs text-zinc-500 dark:text-zinc-400">
                       Nenhum indicador de risco detectado nas aulas e avaliações atuais.
                     </p>
                   )}
 
-                  {/* Recomendacao automatica */}
-                  <div className="mt-3.5 flex items-start gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs text-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
+                  {/* Recomendacao */}
+                  <div className="mt-3 flex items-start gap-2 rounded-lg border border-zinc-200/70 bg-zinc-50/70 px-3 py-2 text-xs text-zinc-600 dark:border-white/[0.06] dark:bg-[#1A1D21]/60 dark:text-zinc-300">
                     <Lightbulb
-                      className="mt-0.5 h-4 w-4 shrink-0 text-[var(--school-primary)] dark:text-blue-400"
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-400 dark:text-zinc-500"
                       strokeWidth={1.75}
                       aria-hidden="true"
                     />
@@ -314,10 +327,10 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
                 </div>
 
                 {/* Atalhos rapidos */}
-                <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3.5 dark:border-slate-800">
+                <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-zinc-200/70 pt-3.5 dark:border-white/[0.07]">
                   <Link
                     href={`/dashboard/alunos/${st.studentId}/ficha`}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-2.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:border-white/[0.09] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                   >
                     <FileText className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                     <span>Abrir Ficha</span>
@@ -328,7 +341,7 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-emerald-200/80 bg-emerald-50/70 px-2.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-100/70 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"
                     >
                       <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                       <span>WhatsApp</span>
@@ -337,7 +350,7 @@ export function RadarView({ data }: RadarViewProps): React.JSX.Element {
 
                   <Link
                     href="/dashboard/ocorrencias"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:bg-slate-700"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-zinc-200/80 bg-zinc-50 px-2.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-zinc-300 dark:hover:bg-white/[0.08]"
                   >
                     <FileWarning className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                     <span>Encaminhamento</span>

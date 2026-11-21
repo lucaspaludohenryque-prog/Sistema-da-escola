@@ -34,7 +34,7 @@ interface AnnouncementsViewProps {
 type ScopeFilter = "ALL" | "SCHOOL" | "CLASSROOM";
 
 const INPUT_CLASS =
-  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400";
+  "block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400";
 
 export function AnnouncementsView({
   initialAnnouncements,
@@ -175,13 +175,13 @@ export function AnnouncementsView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100">
               Mural de Comunicados Oficiais
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               Avisos institucionais da escola e recados direcionados por turma.
             </p>
           </div>
@@ -190,7 +190,7 @@ export function AnnouncementsView({
             <button
               type="button"
               onClick={openModal}
-              className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+              className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)]"
             >
               <Plus className="h-4 w-4" strokeWidth={2} />
               <span>Novo Comunicado</span>
@@ -199,7 +199,7 @@ export function AnnouncementsView({
         </div>
 
         <div
-          className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-slate-200/80 pt-4 dark:border-slate-800"
+          className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]"
           role="group"
           aria-label="Filtrar comunicados"
         >
@@ -220,7 +220,7 @@ export function AnnouncementsView({
                 className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   isSelected
                     ? "bg-[var(--school-primary)] text-white"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200/80 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200/80 dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:bg-white/[0.08]"
                 }`}
               >
                 {tab.label}
@@ -231,14 +231,14 @@ export function AnnouncementsView({
       </section>
 
       {filtered.length === 0 ? (
-        <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+        <section className="rounded-xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:ring-white/[0.08]">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
             <Megaphone className="h-6 w-6" strokeWidth={1.75} />
           </div>
-          <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+          <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
             Nenhum comunicado publicado nesta visualização
           </h3>
-          <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-1.5 max-w-md text-sm text-zinc-600 dark:text-zinc-400">
             Comunicados da direção, coordenação e professores aparecerão automaticamente neste
             mural.
           </p>
@@ -256,17 +256,17 @@ export function AnnouncementsView({
             return (
               <article
                 key={item.id}
-                className={`rounded-2xl border-l-4 bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 sm:p-6 dark:bg-slate-900 ${borderAccent} ${
+                className={`rounded-xl border-l-4 bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 sm:p-6 dark:bg-[#131518] ${borderAccent} ${
                   item.pinned
                     ? "ring-[var(--school-primary-soft-border)] dark:ring-blue-500/40"
-                    : "ring-slate-900/[0.06] dark:ring-slate-800"
+                    : "ring-zinc-200/80 dark:ring-white/[0.08]"
                 }`}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0 flex-1 space-y-2.5">
                     <div className="flex flex-wrap items-center gap-2">
                       {item.pinned ? (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-slate-900 px-2 py-0.5 text-[11px] font-semibold text-white dark:bg-slate-100 dark:text-slate-900">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-slate-900 px-2 py-0.5 text-[11px] font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900">
                           <Pin className="h-3 w-3" strokeWidth={2} />
                           Fixado
                         </span>
@@ -276,21 +276,21 @@ export function AnnouncementsView({
                       >
                         {ANNOUNCEMENT_PRIORITY_LABELS[item.priority]}
                       </span>
-                      <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      <span className="inline-flex items-center gap-1 rounded-md bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-700 dark:bg-[#1A1D21] dark:text-zinc-300">
                         <Users className="h-3 w-3" />
                         {item.classroomLabel ?? "Toda a escola"}
                       </span>
                     </div>
 
-                    <h3 className="text-base font-semibold text-slate-900 sm:text-lg dark:text-slate-100">
+                    <h3 className="text-base font-semibold text-zinc-900 sm:text-lg dark:text-zinc-100">
                       {item.title}
                     </h3>
 
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
                       {item.content}
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-zinc-500 dark:text-zinc-400">
                       <span className="inline-flex items-center gap-1">
                         <User className="h-3.5 w-3.5" />
                         {item.authorName}
@@ -309,7 +309,7 @@ export function AnnouncementsView({
                         disabled={busyId === item.id}
                         onClick={() => void handleTogglePin(item)}
                         title={item.pinned ? "Desafixar" : "Fixar no topo"}
-                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 hover:text-[var(--school-primary)] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-[var(--school-primary)] dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-300 dark:hover:bg-white/[0.08]"
                       >
                         {item.pinned ? (
                           <PinOff className="h-4 w-4" strokeWidth={1.75} />
@@ -322,7 +322,7 @@ export function AnnouncementsView({
                         disabled={busyId === item.id}
                         onClick={() => void handleDelete(item)}
                         title="Excluir comunicado"
-                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-red-500/15 dark:hover:text-red-300"
+                        className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-500 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-400 dark:hover:bg-red-500/15 dark:hover:text-red-300"
                       >
                         <Trash2 className="h-4 w-4" strokeWidth={1.75} />
                       </button>
@@ -344,29 +344,29 @@ export function AnnouncementsView({
           aria-labelledby="announcement-modal-title"
         >
           <div
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
             onClick={() => {
               if (!isSaving) setIsModalOpen(false);
             }}
             aria-hidden="true"
           />
-          <div className="relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
-            <div className="flex items-start justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
+          <div className="relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl ring-1 ring-zinc-200/90 dark:bg-[#131518] dark:ring-white/[0.1]">
+            <div className="flex items-start justify-between border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
               <div>
                 <h3
                   id="announcement-modal-title"
-                  className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                  className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
                 >
                   Novo Comunicado
                 </h3>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
                   Os responsáveis vinculados receberão um aviso automático no sininho.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-[#1A1D21]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -376,7 +376,7 @@ export function AnnouncementsView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="ann-title"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Título
                 </label>
@@ -395,7 +395,7 @@ export function AnnouncementsView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="ann-priority"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Prioridade
                   </label>
@@ -418,7 +418,7 @@ export function AnnouncementsView({
                 <div className="space-y-1.5">
                   <label
                     htmlFor="ann-scope"
-                    className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                    className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                   >
                     Destinatários
                   </label>
@@ -444,7 +444,7 @@ export function AnnouncementsView({
               <div className="space-y-1.5">
                 <label
                   htmlFor="ann-content"
-                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                  className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
                 >
                   Mensagem do Comunicado
                 </label>
@@ -460,7 +460,7 @@ export function AnnouncementsView({
               </div>
 
               {canCreateGlobal ? (
-                <label className="flex cursor-pointer items-center gap-2.5 rounded-lg bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 ring-1 ring-inset ring-slate-200 dark:bg-slate-800/60 dark:text-slate-200 dark:ring-slate-700">
+                <label className="flex cursor-pointer items-center gap-2.5 rounded-lg bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-800 ring-1 ring-inset ring-zinc-200 dark:bg-white/[0.04] dark:text-zinc-200 dark:ring-white/[0.1]">
                   <input
                     type="checkbox"
                     checked={pinned}
@@ -471,12 +471,12 @@ export function AnnouncementsView({
                 </label>
               ) : null}
 
-              <div className="flex justify-end gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+              <div className="flex justify-end gap-2 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSaving}
-                  className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  className="cursor-pointer rounded-lg border border-zinc-200/90 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                 >
                   Cancelar
                 </button>

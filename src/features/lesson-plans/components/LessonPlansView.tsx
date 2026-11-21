@@ -26,7 +26,7 @@ interface LessonPlansViewProps {
 }
 
 const INPUT_CLASS =
-  "block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400";
+  "block w-full rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:placeholder:text-zinc-400";
 
 export function LessonPlansView({
   classrooms,
@@ -173,14 +173,14 @@ export function LessonPlansView({
 
   if (classrooms.length === 0) {
     return (
-      <section className="rounded-2xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+      <section className="rounded-xl bg-white px-6 py-12 text-center shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:ring-white/[0.08]">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-600 dark:bg-[#1A1D21] dark:text-zinc-400">
           <BookMarked className="h-6 w-6" strokeWidth={1.75} />
         </div>
-        <h2 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+        <h2 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
           Nenhuma turma disponível para planejamento
         </h2>
-        <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+        <p className="mx-auto mt-1.5 max-w-md text-sm text-zinc-600 dark:text-zinc-400">
           Cadastre ou vincule uma turma em Turmas para estruturar o plano de ensino.
         </p>
       </section>
@@ -194,12 +194,12 @@ export function LessonPlansView({
   return (
     <div className="space-y-6">
       {/* Seletores + barra de progresso */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1.6fr_1fr]">
           <div className="space-y-1.5">
             <label
               htmlFor="plan-classroom"
-              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+              className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
             >
               Turma
             </label>
@@ -220,7 +220,7 @@ export function LessonPlansView({
           <div className="space-y-1.5">
             <label
               htmlFor="plan-term"
-              className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+              className="block text-sm font-medium text-zinc-800 dark:text-zinc-200"
             >
               Trimestre
             </label>
@@ -239,16 +239,16 @@ export function LessonPlansView({
           </div>
         </div>
 
-        <div className="mt-5 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+        <div className="mt-5 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
           <div className="flex items-center justify-between text-xs font-medium">
-            <span className="text-slate-600 dark:text-slate-400">
+            <span className="text-zinc-600 dark:text-zinc-400">
               Progresso do Plano de Ensino ({TERM_LABELS[selectedTerm]})
             </span>
-            <span className="font-mono font-bold text-slate-900 dark:text-slate-100">
+            <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100">
               {taughtCount}/{plans.length} ministrados ({progressPercent}%)
             </span>
           </div>
-          <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+          <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-[#1A1D21]">
             <div
               className="h-full rounded-full bg-[var(--school-primary)] transition-[width] duration-300"
               style={{ width: `${progressPercent}%` }}
@@ -258,8 +258,8 @@ export function LessonPlansView({
       </section>
 
       {/* Formulario rapido */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
           Adicionar Tópico ao Plano
         </h3>
         <form onSubmit={handleAddTopic} className="mt-4 space-y-3">
@@ -294,7 +294,7 @@ export function LessonPlansView({
             <button
               type="submit"
               disabled={isCreating}
-              className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:opacity-70"
+              className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] disabled:opacity-70"
             >
               {isCreating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -308,24 +308,24 @@ export function LessonPlansView({
       </section>
 
       {/* Lista de topicos */}
-      <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
+      <section className="overflow-hidden rounded-xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 dark:bg-[#131518] dark:ring-white/[0.08]">
         {isLoading ? (
           <ListRowsSkeleton rows={4} />
         ) : plans.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500 dark:bg-[#1A1D21] dark:text-zinc-400">
               <BookMarked className="h-6 w-6" strokeWidth={1.75} />
             </div>
-            <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3 className="mt-4 text-base font-semibold text-zinc-900 dark:text-zinc-100">
               Nenhum tópico planejado para o {TERM_LABELS[selectedTerm]}
             </h3>
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-zinc-600 dark:text-zinc-400">
               Adicione acima os conteúdos previstos para acompanhar o andamento e levar direto para
               a chamada.
             </p>
           </div>
         ) : (
-          <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+          <ul className="divide-y divide-zinc-200/70 dark:divide-white/[0.06]">
             {plans.map((plan) => {
               const isDone = plan.status === "MINISTRADO";
               const isBusy = workingId === plan.id;
@@ -333,7 +333,7 @@ export function LessonPlansView({
               return (
                 <li
                   key={plan.id}
-                  className="flex flex-col gap-3 px-5 py-4 transition-colors hover:bg-slate-50/70 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:hover:bg-slate-800/50"
+                  className="flex flex-col gap-3 px-5 py-4 transition-colors hover:bg-zinc-50/70 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:hover:bg-white/[0.03]"
                 >
                   <div className="flex min-w-0 items-start gap-3">
                     <button
@@ -348,7 +348,7 @@ export function LessonPlansView({
                       className={`mt-0.5 shrink-0 cursor-pointer rounded-full transition-colors ${
                         isDone
                           ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-slate-400 hover:text-[var(--school-primary)] dark:text-slate-500 dark:hover:text-blue-400"
+                          : "text-zinc-400 hover:text-[var(--school-primary)] dark:text-zinc-500 dark:hover:text-blue-400"
                       }`}
                     >
                       {isDone ? (
@@ -363,8 +363,8 @@ export function LessonPlansView({
                         <p
                           className={`text-sm font-semibold ${
                             isDone
-                              ? "text-slate-500 line-through dark:text-slate-400"
-                              : "text-slate-900 dark:text-slate-100"
+                              ? "text-zinc-500 line-through dark:text-zinc-400"
+                              : "text-zinc-900 dark:text-zinc-100"
                           }`}
                         >
                           {plan.topic}
@@ -373,7 +373,7 @@ export function LessonPlansView({
                           className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
                             isDone
                               ? "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
-                              : "bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700"
+                              : "bg-zinc-100 text-zinc-600 ring-1 ring-inset ring-zinc-200 dark:bg-[#1A1D21] dark:text-zinc-300 dark:ring-white/[0.1]"
                           }`}
                         >
                           {isDone ? "Ministrado" : "Planejado"}
@@ -381,13 +381,13 @@ export function LessonPlansView({
                       </div>
 
                       {plan.objectives ? (
-                        <p className="text-xs text-slate-600 dark:text-slate-400">
+                        <p className="text-xs text-zinc-600 dark:text-zinc-400">
                           {plan.objectives}
                         </p>
                       ) : null}
 
                       {plan.plannedDate ? (
-                        <p className="inline-flex items-center gap-1 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                        <p className="inline-flex items-center gap-1 font-mono text-[11px] text-zinc-500 dark:text-zinc-400">
                           <Calendar className="h-3 w-3" />
                           Previsto para {formatIsoDateBr(plan.plannedDate)}
                         </p>
@@ -398,7 +398,7 @@ export function LessonPlansView({
                   <div className="flex shrink-0 flex-wrap items-center gap-2 pl-8 sm:pl-0">
                     <Link
                       href={`/dashboard/chamada?classroomId=${encodeURIComponent(plan.classroomId)}&content=${encodeURIComponent(plan.topic)}`}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-800 transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
                     >
                       <ClipboardCheck className="h-3.5 w-3.5 text-[var(--school-primary)] dark:text-blue-400" />
                       <span>Usar na Chamada</span>
@@ -409,7 +409,7 @@ export function LessonPlansView({
                       disabled={isBusy}
                       onClick={() => void handleDelete(plan.id)}
                       aria-label={`Excluir tópico ${plan.topic}`}
-                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
+                      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
                     >
                       <Trash2 className="h-4 w-4" strokeWidth={1.75} />
                     </button>

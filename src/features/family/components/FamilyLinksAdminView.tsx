@@ -220,20 +220,20 @@ export function FamilyLinksAdminView({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-slate-100">
+            <h2 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl dark:text-zinc-100">
               Vínculos de Responsáveis e Contas de Alunos
             </h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               Associe contas com perfil Responsável ou Aluno às matrículas escolares para habilitar
               os portais e avisos automáticos.
             </p>
           </div>
           <Link
             href="/dashboard/usuarios"
-            className="inline-flex w-fit shrink-0 items-center rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            className="inline-flex w-fit shrink-0 items-center rounded-lg border border-zinc-200/90 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-800 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
           >
             Cadastrar contas em Usuários
           </Link>
@@ -251,14 +251,14 @@ export function FamilyLinksAdminView({
       ) : null}
 
       {/* Secao 1: Vinculos de Responsaveis */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-        <div className="mb-4 flex items-center gap-2 border-b border-slate-200/80 pb-3 dark:border-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
+        <div className="mb-4 flex items-center gap-2 border-b border-zinc-200/80 pb-3 dark:border-white/[0.08]">
           <HeartHandshake
             className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
             strokeWidth={1.75}
             aria-hidden="true"
           />
-          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+          <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
             Responsáveis vinculados a Estudantes ({data.guardianLinks.length})
           </h3>
         </div>
@@ -270,7 +270,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-guardian"
-              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
+              className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
             >
               Responsável (conta)
             </label>
@@ -279,7 +279,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingGuardian || data.availableGuardians.length === 0}
               value={guardianId}
               onChange={(event) => setGuardianId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:disabled:bg-slate-800/50"
+              className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100 dark:disabled:bg-white/[0.03]"
             >
               {data.availableGuardians.length === 0 ? (
                 <option value="">Nenhuma conta RESPONSAVEL ativa</option>
@@ -296,7 +296,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-guardian-student"
-              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
+              className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
             >
               Estudante
             </label>
@@ -305,7 +305,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingGuardian || data.availableStudents.length === 0}
               value={guardianStudentId}
               onChange={(event) => setGuardianStudentId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               {data.availableStudents.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -318,7 +318,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-relationship"
-              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
+              className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
             >
               Parentesco
             </label>
@@ -327,7 +327,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingGuardian}
               value={relationship}
               onChange={(event) => setRelationship(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               {RELATIONSHIP_PRESETS.map((preset) => (
                 <option key={preset} value={preset}>
@@ -355,9 +355,9 @@ export function FamilyLinksAdminView({
           </button>
         </form>
 
-        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-200/80 dark:divide-slate-800 dark:border-slate-800">
+        <div className="mt-5 divide-y divide-zinc-200/70 border-t border-zinc-200/80 dark:divide-white/[0.06] dark:border-white/[0.08]">
           {data.guardianLinks.length === 0 ? (
-            <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+            <p className="py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
               Nenhum vínculo de responsável cadastrado ainda.
             </p>
           ) : (
@@ -369,15 +369,15 @@ export function FamilyLinksAdminView({
                 <div className="flex min-w-0 items-center gap-3 text-sm">
                   <Avatar name={link.guardian.name} size="sm" />
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-900 dark:text-slate-100">
+                    <p className="font-semibold text-zinc-900 dark:text-zinc-100">
                       {link.guardian.name}{" "}
                       <span className="rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30">
                         {link.relationship}
                       </span>
                     </p>
-                    <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
+                    <p className="mt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
                       {link.guardian.email} →{" "}
-                      <strong className="font-medium text-slate-900 dark:text-slate-100">
+                      <strong className="font-medium text-zinc-900 dark:text-zinc-100">
                         {link.student.name}
                       </strong>{" "}
                       ({link.student.classroom.name} ·{" "}
@@ -390,7 +390,7 @@ export function FamilyLinksAdminView({
                   type="button"
                   disabled={removingKey === `g:${link.id}`}
                   onClick={() => handleRemoveGuardianLink(link.id)}
-                  className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-red-300 dark:hover:bg-red-500/15"
+                  className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-red-300 dark:hover:bg-red-500/15"
                 >
                   <Unlink className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                   <span>Desvincular</span>
@@ -402,14 +402,14 @@ export function FamilyLinksAdminView({
       </section>
 
       {/* Secao 2: Contas de Alunos */}
-      <section className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] sm:p-6 dark:bg-slate-900 dark:ring-slate-800">
-        <div className="mb-4 flex items-center gap-2 border-b border-slate-200/80 pb-3 dark:border-slate-800">
+      <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
+        <div className="mb-4 flex items-center gap-2 border-b border-zinc-200/80 pb-3 dark:border-white/[0.08]">
           <GraduationCap
             className="h-5 w-5 text-[var(--school-primary)] dark:text-blue-400"
             strokeWidth={1.75}
             aria-hidden="true"
           />
-          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+          <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
             Contas de Acesso de Estudantes ({data.studentAccounts.length})
           </h3>
         </div>
@@ -421,7 +421,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-student-user"
-              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
+              className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
             >
               Conta com perfil Aluno
             </label>
@@ -430,7 +430,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingStudentLink || data.studentAccounts.length === 0}
               value={studentAccountUserId}
               onChange={(event) => setStudentAccountUserId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               <option value="">Selecione uma conta...</option>
               {data.studentAccounts.map((acc) => (
@@ -445,7 +445,7 @@ export function FamilyLinksAdminView({
           <div className="space-y-1">
             <label
               htmlFor="link-student-record"
-              className="block text-xs font-medium text-slate-700 dark:text-slate-300"
+              className="block text-xs font-medium text-zinc-700 dark:text-zinc-300"
             >
               Matrícula do Estudante
             </label>
@@ -454,7 +454,7 @@ export function FamilyLinksAdminView({
               disabled={isSavingStudentLink || data.availableStudents.length === 0}
               value={studentAccountTargetId}
               onChange={(event) => setStudentAccountTargetId(event.target.value)}
-              className="block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              className="block w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none disabled:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-100"
             >
               <option value="">Selecione o aluno...</option>
               {data.availableStudents.map((s) => (
@@ -482,9 +482,9 @@ export function FamilyLinksAdminView({
           </button>
         </form>
 
-        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-200/80 dark:divide-slate-800 dark:border-slate-800">
+        <div className="mt-5 divide-y divide-zinc-200/70 border-t border-zinc-200/80 dark:divide-white/[0.06] dark:border-white/[0.08]">
           {data.studentAccounts.length === 0 ? (
-            <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+            <p className="py-6 text-center text-sm text-zinc-500 dark:text-zinc-400">
               Nenhuma conta com perfil ALUNO cadastrada.
             </p>
           ) : (
@@ -496,10 +496,10 @@ export function FamilyLinksAdminView({
                 <div className="flex min-w-0 items-center gap-3 text-sm">
                   <Avatar name={acc.userName} size="sm" />
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-900 dark:text-slate-100">
+                    <p className="font-semibold text-zinc-900 dark:text-zinc-100">
                       {acc.userName}
                     </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
                       {acc.userEmail}
                     </p>
                     {acc.linkedStudent ? (
@@ -524,7 +524,7 @@ export function FamilyLinksAdminView({
                       acc.linkedStudent &&
                       handleUnlinkStudentAccount(acc.linkedStudent.id)
                     }
-                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-red-300 dark:hover:bg-red-500/15"
+                    className="inline-flex w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-red-300 dark:hover:bg-red-500/15"
                   >
                     <Unlink className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
                     <span>Desvincular</span>

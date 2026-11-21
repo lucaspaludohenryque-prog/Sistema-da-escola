@@ -39,14 +39,14 @@ interface StudentReportViewProps {
  * mesmo quando o usuario estiver utilizando o Modo Escuro na tela.
  */
 const PRINT_SEVERITY_STYLES: Record<OccurrenceSeverity, string> = {
-  LEVE: "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200",
-  MEDIA: "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200",
-  GRAVE: "bg-red-50 text-red-800 ring-1 ring-inset ring-red-200",
+  LEVE: "border border-zinc-300 bg-zinc-50 text-zinc-700",
+  MEDIA: "border border-amber-300 bg-amber-50 text-amber-900",
+  GRAVE: "border border-red-300 bg-red-50 text-red-800",
 };
 
 const PRINT_STATUS_STYLES: Record<OccurrenceStatus, string> = {
-  PENDENTE: "bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200",
-  RESOLVIDO: "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200",
+  PENDENTE: "border border-zinc-300 bg-zinc-50 text-zinc-700",
+  RESOLVIDO: "border border-emerald-300 bg-emerald-50 text-emerald-800",
 };
 
 function formatDateTimeBr(isoTimestamp: string): string {
@@ -154,44 +154,44 @@ export function StudentReportView({
   const whatsAppUrl = buildWhatsAppUrl(student.guardianPhone, waSummaryText);
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-1 pt-6 pb-12 sm:px-4 print:max-w-none print:p-0">
-      {/* Barra de ferramentas elegante acima da folha A4 (oculta na impressao) */}
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white/95 px-4 py-3.5 shadow-xs sm:flex-row sm:items-center sm:justify-between sm:px-5 dark:border-slate-800 dark:bg-slate-900/95 print:hidden">
+    <div className="mx-auto w-full max-w-4xl px-1 pt-2 pb-12 sm:px-4 print:max-w-none print:p-0">
+      {/* Barra de ferramentas limpa acima da folha A4 (oculta na impressao) */}
+      <div className="mb-6 flex flex-col gap-3 rounded-xl border border-zinc-200/80 bg-white px-4 py-3 shadow-[0_1px_2px_rgba(0,0,0,0.04)] sm:flex-row sm:items-center sm:justify-between dark:border-white/[0.08] dark:bg-[#131518] dark:shadow-none print:hidden">
         <Link
           href={backHref ?? `/dashboard/turmas/${classroom.id}`}
-          className="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900 sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+          className="inline-flex h-9 w-fit items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-zinc-900 sm:text-sm dark:border-white/[0.09] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           <span>{backLabel ?? `Voltar para ${classroom.name}`}</span>
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           {whatsAppUrl ? (
             <a
               href={whatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 sm:text-sm dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
+              className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-emerald-200/90 bg-emerald-50/70 px-3 text-xs font-medium text-emerald-800 transition-colors hover:bg-emerald-100/70 sm:text-sm dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20"
             >
               <MessageCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-              <span>Enviar resumo no WhatsApp</span>
+              <span>Enviar no WhatsApp</span>
             </a>
           ) : (
             <button
               type="button"
               disabled
               title="Telefone do responsável não cadastrado"
-              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-medium text-slate-400 sm:text-sm dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-500"
+              className="inline-flex h-9 cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-zinc-200/80 bg-zinc-50 px-3 text-xs font-medium text-zinc-400 sm:text-sm dark:border-white/[0.06] dark:bg-[#1A1D21]/50 dark:text-zinc-500"
             >
               <MessageCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-              <span>Enviar resumo no WhatsApp</span>
+              <span>Enviar no WhatsApp</span>
             </button>
           )}
 
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[var(--school-primary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] sm:text-sm"
+            className="inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[var(--school-primary)] px-4 text-xs font-medium text-white transition-colors duration-150 hover:bg-[var(--school-primary-hover)] sm:text-sm"
           >
             <Printer className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             <span>Imprimir / Salvar PDF</span>
@@ -199,13 +199,13 @@ export function StudentReportView({
         </div>
       </div>
 
-      {/* Documento A4 imprimivel (sempre folha branca e tinta escura para fidelidade de impressao/PDF) */}
-      <article className="rco-print-sheet mx-auto w-full max-w-4xl rounded-2xl bg-white p-6 text-slate-900 shadow-2xl ring-1 ring-slate-200/80 sm:p-10 dark:ring-slate-700 print:max-w-none print:rounded-none print:bg-white print:p-0 print:text-slate-900 print:shadow-none print:ring-0">
-        {/* Cabecalho institucional formal */}
-        <header className="flex flex-col gap-4 border-b-2 border-slate-900 pb-5 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-start gap-3.5">
+      {/* Documento A4 oficial (sempre papel branco e tinta escura) */}
+      <article className="rco-print-sheet mx-auto w-full max-w-4xl rounded-xl border border-zinc-200/90 bg-white p-6 text-zinc-900 shadow-sm sm:p-10 dark:border-white/10 print:max-w-none print:rounded-none print:border-0 print:bg-white print:p-0 print:text-zinc-900 print:shadow-none">
+        {/* Cabecalho institucional equilibrado: brasao | dados da escola | QR + codigo */}
+        <header className="grid grid-cols-1 items-center gap-4 border-b border-zinc-900 pb-5 sm:grid-cols-[auto_1fr_auto]">
+          <div className="flex items-center justify-start">
             {school.logoUrl ? (
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-200 bg-white p-1.5">
                 <img
                   src={school.logoUrl}
                   alt={`Brasão ${school.name}`}
@@ -213,144 +213,146 @@ export function StudentReportView({
                 />
               </div>
             ) : (
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[var(--school-primary)] text-white print:border print:border-slate-900">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-zinc-900 bg-zinc-900 text-white">
                 <BookOpenCheck className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
               </div>
             )}
-            <div>
-              <p className="text-xs font-bold tracking-wide text-[var(--school-primary)] uppercase">
-                {school.name}
-              </p>
-              <h1 className="mt-0.5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-                Ficha Individual e Boletim Escolar
-              </h1>
-              <p className="mt-0.5 text-xs text-slate-600">
-                {schoolMetaParts.join(" · ")}
-              </p>
-              <p className="mt-0.5 text-[11px] text-slate-500">
-                Emitido em {formatDateTimeBr(report.generatedAt)}
-              </p>
-            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-left sm:text-right">
-              <p className="text-[11px] font-medium text-slate-500">Matrícula / CGM</p>
-              <p className="font-mono text-sm font-bold text-slate-900">
-                {student.registration}
-              </p>
-            </div>
+          <div className="text-left sm:text-center">
+            <p className="text-xs font-semibold tracking-wider text-zinc-600 uppercase">
+              {school.name}
+            </p>
+            <h1 className="mt-0.5 text-lg font-bold tracking-[-0.02em] text-zinc-900 sm:text-xl">
+              Ficha Individual e Boletim Escolar
+            </h1>
+            <p className="mt-0.5 text-xs text-zinc-600 tabular-nums">
+              {schoolMetaParts.join(" · ")}
+            </p>
+            <p className="mt-0.5 font-mono text-[11px] text-zinc-500 tabular-nums">
+              Matrícula {student.registration} · Emitido em {formatDateTimeBr(report.generatedAt)}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-start sm:justify-end">
             {qrCodeDataUrl ? (
-              <div className="flex flex-col items-center rounded-lg border border-slate-200 bg-white p-1.5 text-center">
+              <div className="flex flex-col items-center rounded border border-zinc-300 bg-white p-1.5 text-center">
                 <img
                   src={qrCodeDataUrl}
                   alt={`QR Code de validação antifraude de ${student.name}`}
-                  width={76}
-                  height={76}
-                  className="h-[76px] w-[76px]"
+                  width={68}
+                  height={68}
+                  className="h-[68px] w-[68px]"
                 />
                 {verificationCode ? (
-                  <span className="mt-1 font-mono text-[8.5px] font-bold tracking-tight text-slate-900">
+                  <span className="mt-1 font-mono text-[8.5px] font-semibold tracking-tight text-zinc-900">
                     {verificationCode}
                   </span>
                 ) : null}
-                <span className="mt-0.5 max-w-[92px] text-[8.5px] leading-tight text-slate-500">
-                  Validação antifraude
+                <span className="text-[8px] text-zinc-500">
+                  Validação digital
                 </span>
               </div>
-            ) : null}
+            ) : (
+              <div className="rounded border border-zinc-200 bg-zinc-50 px-3 py-2 text-right">
+                <p className="text-[10px] font-medium text-zinc-500 uppercase">Matrícula</p>
+                <p className="font-mono text-xs font-semibold text-zinc-900 tabular-nums">
+                  {student.registration}
+                </p>
+              </div>
+            )}
           </div>
         </header>
 
         {/* 1. Dados do estudante e turma */}
         <section className="print-avoid-break mt-6">
-          <h2 className="border-b border-slate-200 pb-2 text-xs font-bold tracking-wider text-slate-700 uppercase">
+          <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
             1. Identificação do Estudante e Turma
           </h2>
 
-          <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+          <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2.5 text-xs sm:grid-cols-2">
             <div>
-              <dt className="text-xs text-slate-500">Estudante</dt>
-              <dd className="font-semibold text-slate-900">
+              <dt className="text-[11px] text-zinc-500">Estudante</dt>
+              <dd className="mt-0.5 text-sm font-semibold text-zinc-900">
                 {student.name}
                 {!student.active ? (
-                  <span className="ml-2 inline-flex rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700">
+                  <span className="ml-2 inline-flex rounded border border-zinc-300 bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-700">
                     Inativo
                   </span>
                 ) : null}
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-slate-500">Turma e Disciplina</dt>
-              <dd className="font-semibold text-slate-900">
-                {classroom.name} - {classroom.subject} ({SHIFT_LABELS[classroom.shift]})
+              <dt className="text-[11px] text-zinc-500">Turma e Disciplina</dt>
+              <dd className="mt-0.5 text-sm font-semibold text-zinc-900">
+                {classroom.name} · {classroom.subject} ({SHIFT_LABELS[classroom.shift]})
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-slate-500">Responsável Legal</dt>
-              <dd className="font-medium text-slate-800">{student.guardianName}</dd>
+              <dt className="text-[11px] text-zinc-500">Responsável Legal</dt>
+              <dd className="mt-0.5 font-medium text-zinc-800">{student.guardianName}</dd>
             </div>
             <div>
-              <dt className="text-xs text-slate-500">Telefone de Contato</dt>
-              <dd className="font-mono text-xs font-medium text-slate-800">
+              <dt className="text-[11px] text-zinc-500">Telefone de Contato</dt>
+              <dd className="mt-0.5 font-mono text-xs font-medium text-zinc-800 tabular-nums">
                 {student.guardianPhone}
               </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-xs text-slate-500">Professor(a) Responsável</dt>
-              <dd className="font-medium text-slate-800">{classroom.teacherName}</dd>
+              <dt className="text-[11px] text-zinc-500">Professor(a) Responsável</dt>
+              <dd className="mt-0.5 font-medium text-zinc-800">{classroom.teacherName}</dd>
             </div>
           </dl>
         </section>
 
         {/* 2. Resumo de Frequencia */}
-        <section className="print-avoid-break mt-7">
-          <h2 className="border-b border-slate-200 pb-2 text-xs font-bold tracking-wider text-slate-700 uppercase">
+        <section className="print-avoid-break mt-6">
+          <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
             2. Resumo de Frequência
           </h2>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
-            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <p className="text-[11px] text-slate-500">Aulas registradas</p>
-              <p className="mt-1 font-mono text-lg font-bold text-slate-900">
-                {attendance.totalLessons}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <p className="text-[11px] text-slate-500">Presenças</p>
-              <p className="mt-1 font-mono text-lg font-bold text-emerald-700">
-                {attendance.presentCount}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <p className="text-[11px] text-slate-500">Faltas</p>
-              <p className="mt-1 font-mono text-lg font-bold text-red-700">
-                {attendance.absentCount}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-3">
-              <p className="text-[11px] text-slate-500">Justificadas</p>
-              <p className="mt-1 font-mono text-lg font-bold text-amber-800">
-                {attendance.justifiedCount}
-              </p>
-            </div>
-            <div
-              className={`col-span-2 rounded-xl border p-3 sm:col-span-1 ${
-                isLowAttendance
-                  ? "border-red-300 bg-red-50"
-                  : "border-slate-200 bg-slate-50/70"
-              }`}
-            >
-              <p className="text-[11px] text-slate-600">Frequência Geral</p>
-              <p
-                className={`mt-1 font-mono text-lg font-bold ${
-                  isLowAttendance ? "text-red-700" : "text-slate-900"
+          <div className="mt-3 overflow-hidden rounded border border-zinc-300">
+            <div className="grid grid-cols-2 divide-x divide-y divide-zinc-300 text-center sm:grid-cols-5 sm:divide-y-0">
+              <div className="px-3 py-2.5">
+                <p className="text-[10px] font-medium text-zinc-500 uppercase">Aulas</p>
+                <p className="mt-1 font-mono text-base font-semibold text-zinc-900 tabular-nums">
+                  {attendance.totalLessons}
+                </p>
+              </div>
+              <div className="px-3 py-2.5">
+                <p className="text-[10px] font-medium text-zinc-500 uppercase">Presenças</p>
+                <p className="mt-1 font-mono text-base font-semibold text-zinc-900 tabular-nums">
+                  {attendance.presentCount}
+                </p>
+              </div>
+              <div className="px-3 py-2.5">
+                <p className="text-[10px] font-medium text-zinc-500 uppercase">Faltas</p>
+                <p className="mt-1 font-mono text-base font-semibold text-red-700 tabular-nums">
+                  {attendance.absentCount}
+                </p>
+              </div>
+              <div className="px-3 py-2.5">
+                <p className="text-[10px] font-medium text-zinc-500 uppercase">Justificadas</p>
+                <p className="mt-1 font-mono text-base font-semibold text-zinc-800 tabular-nums">
+                  {attendance.justifiedCount}
+                </p>
+              </div>
+              <div
+                className={`col-span-2 px-3 py-2.5 sm:col-span-1 ${
+                  isLowAttendance ? "bg-red-50/70" : "bg-zinc-50"
                 }`}
               >
-                {attendance.attendanceRate !== null
-                  ? `${attendance.attendanceRate}%`
-                  : "-"}
-              </p>
+                <p className="text-[10px] font-medium text-zinc-600 uppercase">Frequência</p>
+                <p
+                  className={`mt-1 font-mono text-base font-bold tabular-nums ${
+                    isLowAttendance ? "text-red-700" : "text-zinc-900"
+                  }`}
+                >
+                  {attendance.attendanceRate !== null
+                    ? `${attendance.attendanceRate}%`
+                    : "-"}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -362,25 +364,25 @@ export function StudentReportView({
         </section>
 
         {/* 3. Notas e Medias por Trimestre */}
-        <section className="mt-7">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
-            <h2 className="text-xs font-bold tracking-wider text-slate-700 uppercase">
+        <section className="mt-6">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-zinc-300 pb-1">
+            <h2 className="text-xs font-semibold tracking-wider text-zinc-700 uppercase">
               3. Aproveitamento Acadêmico por Trimestre
             </h2>
             <span
-              className={`inline-flex items-center rounded-md px-2.5 py-0.5 font-mono text-xs font-bold ${
+              className={`font-mono text-xs font-semibold tabular-nums ${
                 annualAverage === null
-                  ? "bg-slate-100 text-slate-600"
+                  ? "text-zinc-600"
                   : isLowAnnualAverage
-                    ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200"
-                    : "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200"
+                    ? "text-red-700"
+                    : "text-zinc-900"
               }`}
             >
               Média Geral: {formatScoreBr(annualAverage)}
             </span>
           </div>
 
-          <div className="mt-4 space-y-4">
+          <div className="mt-3 space-y-4">
             {terms.map((termData) => {
               const isLowTerm =
                 termData.termAverage !== null &&
@@ -389,19 +391,19 @@ export function StudentReportView({
               return (
                 <div
                   key={termData.term}
-                  className="print-avoid-break overflow-hidden rounded-xl border border-slate-200"
+                  className="print-avoid-break overflow-hidden rounded border border-zinc-300"
                 >
-                  <div className="flex items-center justify-between bg-slate-50 px-4 py-2.5">
-                    <h3 className="text-xs font-bold text-slate-800">
+                  <div className="flex items-center justify-between border-b border-zinc-300 bg-zinc-50 px-3.5 py-2">
+                    <h3 className="text-xs font-semibold text-zinc-800">
                       {TERM_LABELS[termData.term]}
                     </h3>
                     <span
-                      className={`font-mono text-xs font-bold ${
+                      className={`font-mono text-xs font-semibold tabular-nums ${
                         termData.termAverage === null
-                          ? "text-slate-500"
+                          ? "text-zinc-500"
                           : isLowTerm
                             ? "text-red-700"
-                            : "text-emerald-700"
+                            : "text-zinc-900"
                       }`}
                     >
                       Média: {formatScoreBr(termData.termAverage)}
@@ -409,47 +411,47 @@ export function StudentReportView({
                   </div>
 
                   {termData.assessments.length === 0 ? (
-                    <p className="px-4 py-3 text-xs text-slate-500">
+                    <p className="px-3.5 py-2.5 text-xs text-zinc-500">
                       Nenhuma avaliação registrada neste trimestre.
                     </p>
                   ) : (
                     <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-                        <thead className="bg-white text-slate-500">
+                      <table className="min-w-full divide-y divide-zinc-200 text-left text-xs">
+                        <thead className="bg-white text-[11px] font-medium tracking-wider text-zinc-500 uppercase">
                           <tr>
-                            <th scope="col" className="px-4 py-2 font-semibold">
+                            <th scope="col" className="px-3.5 py-2 font-medium">
                               Avaliação
                             </th>
-                            <th scope="col" className="px-3 py-2 font-semibold">
+                            <th scope="col" className="px-3 py-2 font-medium">
                               Data
                             </th>
-                            <th scope="col" className="px-3 py-2 text-center font-semibold">
+                            <th scope="col" className="px-3 py-2 text-center font-medium">
                               Valor Máx.
                             </th>
-                            <th scope="col" className="px-3 py-2 text-center font-semibold">
+                            <th scope="col" className="px-3 py-2 text-center font-medium">
                               Peso
                             </th>
-                            <th scope="col" className="px-4 py-2 text-right font-semibold">
+                            <th scope="col" className="px-3.5 py-2 text-right font-medium">
                               Nota
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 bg-white">
+                        <tbody className="divide-y divide-zinc-200 bg-white">
                           {termData.assessments.map((assessment) => (
                             <tr key={assessment.assessmentId}>
-                              <td className="px-4 py-2 font-medium text-slate-900">
+                              <td className="px-3.5 py-2 font-medium text-zinc-900">
                                 {assessment.title}
                               </td>
-                              <td className="px-3 py-2 font-mono text-slate-600">
+                              <td className="px-3 py-2 font-mono text-zinc-600 tabular-nums">
                                 {formatIsoDateBr(assessment.date)}
                               </td>
-                              <td className="px-3 py-2 text-center font-mono text-slate-600">
+                              <td className="px-3 py-2 text-center font-mono text-zinc-600 tabular-nums">
                                 {assessment.maxScore.toFixed(1).replace(".", ",")}
                               </td>
-                              <td className="px-3 py-2 text-center font-mono text-slate-600">
+                              <td className="px-3 py-2 text-center font-mono text-zinc-600 tabular-nums">
                                 {assessment.weight}
                               </td>
-                              <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">
+                              <td className="px-3.5 py-2 text-right font-mono font-semibold text-zinc-900 tabular-nums">
                                 {formatScoreBr(assessment.score)}
                               </td>
                             </tr>
@@ -465,59 +467,56 @@ export function StudentReportView({
         </section>
 
         {/* 4. Historico de Ocorrencias */}
-        <section className="mt-7">
-          <h2 className="border-b border-slate-200 pb-2 text-xs font-bold tracking-wider text-slate-700 uppercase">
+        <section className="mt-6">
+          <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
             4. Histórico de Ocorrências e Encaminhamentos ({occurrences.length})
           </h2>
 
           {occurrences.length === 0 ? (
-            <p className="mt-3 text-xs text-slate-500">
+            <p className="mt-2.5 text-xs text-zinc-500">
               Nenhuma ocorrência disciplinar ou pedagógica registrada para este estudante.
             </p>
           ) : (
-            <ul className="mt-3 space-y-3">
+            <ul className="mt-3 divide-y divide-zinc-200 rounded border border-zinc-300">
               {occurrences.map((item) => {
                 const isPraise = item.type === "ELOGIO";
 
                 return (
-                  <li
-                    key={item.id}
-                    className="print-avoid-break rounded-xl border border-slate-200 p-3.5 text-xs"
-                  >
+                  <li key={item.id} className="print-avoid-break p-3 text-xs">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span
-                          className={`inline-flex items-center rounded px-2 py-0.5 font-semibold ${
+                          className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium ${
                             isPraise
-                              ? "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200"
-                              : "bg-slate-100 text-slate-800 ring-1 ring-inset ring-slate-200"
+                              ? "border border-emerald-300 bg-emerald-50 text-emerald-800"
+                              : "border border-zinc-300 bg-zinc-50 text-zinc-800"
                           }`}
                         >
                           {OCCURRENCE_TYPE_LABELS[item.type]}
                         </span>
                         {!isPraise ? (
                           <span
-                            className={`inline-flex items-center rounded px-2 py-0.5 font-semibold ${PRINT_SEVERITY_STYLES[item.severity]}`}
+                            className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium ${PRINT_SEVERITY_STYLES[item.severity]}`}
                           >
                             {OCCURRENCE_SEVERITY_LABELS[item.severity]}
                           </span>
                         ) : null}
                         <span
-                          className={`inline-flex items-center rounded px-2 py-0.5 font-medium ${PRINT_STATUS_STYLES[item.status]}`}
+                          className={`inline-flex items-center rounded px-2 py-0.5 text-[11px] font-medium ${PRINT_STATUS_STYLES[item.status]}`}
                         >
                           {OCCURRENCE_STATUS_LABELS[item.status]}
                         </span>
                       </div>
-                      <span className="font-mono text-slate-500">
+                      <span className="font-mono text-[11px] text-zinc-500 tabular-nums">
                         {formatIsoDateBr(item.date)} · {item.authorName}
                       </span>
                     </div>
 
-                    <p className="mt-2 leading-relaxed text-slate-800">{item.description}</p>
+                    <p className="mt-1.5 leading-relaxed text-zinc-800">{item.description}</p>
 
                     {item.resolutionNote ? (
-                      <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50/70 px-3 py-2 text-emerald-950">
-                        <span className="font-semibold text-emerald-800">Encaminhamento: </span>
+                      <div className="mt-1.5 rounded border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-zinc-800">
+                        <span className="font-semibold text-zinc-900">Encaminhamento: </span>
                         <span>{item.resolutionNote}</span>
                       </div>
                     ) : null}
@@ -530,15 +529,15 @@ export function StudentReportView({
 
         {/* 5. Conquistas e Medalhas (quando houver) */}
         {badges.length > 0 ? (
-          <section className="print-avoid-break mt-7">
-            <h2 className="border-b border-slate-200 pb-2 text-xs font-bold tracking-wider text-slate-700 uppercase">
-              5. Conquistas e Medalhas de Mérito ({badges.length})
+          <section className="print-avoid-break mt-6">
+            <h2 className="border-b border-zinc-300 pb-1 text-xs font-semibold tracking-wider text-zinc-700 uppercase">
+              5. Reconhecimentos de Mérito ({badges.length})
             </h2>
             <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {badges.map((badge) => (
                 <div
                   key={badge.id}
-                  className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-xs"
+                  className="flex items-start gap-2.5 rounded border border-zinc-300 bg-zinc-50/70 p-3 text-xs"
                 >
                   <Award
                     className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
@@ -546,15 +545,15 @@ export function StudentReportView({
                     aria-hidden="true"
                   />
                   <div className="min-w-0">
-                    <p className="font-bold text-slate-900">
+                    <p className="font-semibold text-zinc-900">
                       {badge.title}{" "}
-                      <span className="font-normal text-amber-800">
+                      <span className="font-normal text-zinc-600">
                         ({BADGE_CATEGORY_META[badge.category].label})
                       </span>
                     </p>
-                    <p className="mt-0.5 text-slate-700">{badge.reason}</p>
-                    <p className="mt-1 text-[10px] text-slate-500">
-                      Concedida por {badge.awardedByName}
+                    <p className="mt-0.5 text-zinc-700">{badge.reason}</p>
+                    <p className="mt-1 text-[10px] text-zinc-500">
+                      Concedido por {badge.awardedByName}
                     </p>
                   </div>
                 </div>
@@ -563,22 +562,22 @@ export function StudentReportView({
           </section>
         ) : null}
 
-        {/* Assinaturas formais */}
-        <footer className="print-avoid-break mt-12 grid grid-cols-1 gap-8 border-t border-slate-200 pt-8 text-center text-xs text-slate-600 sm:grid-cols-3">
+        {/* Assinaturas formais (Direcao / Coordenacao / Responsavel) */}
+        <footer className="print-avoid-break mt-12 grid grid-cols-1 gap-8 border-t border-zinc-300 pt-8 text-center text-xs text-zinc-600 sm:grid-cols-3">
           <div>
-            <div className="mx-auto mb-2 w-48 border-b border-slate-400" />
-            <p className="font-medium text-slate-800">{classroom.teacherName}</p>
-            <p>Professor(a) Responsável</p>
+            <div className="mx-auto mb-2 w-48 border-b border-zinc-400" />
+            <p className="font-semibold text-zinc-900">Direção Escolar</p>
+            <p className="text-[11px] text-zinc-500">Assinatura / Carimbo</p>
           </div>
           <div>
-            <div className="mx-auto mb-2 w-48 border-b border-slate-400" />
-            <p className="font-medium text-slate-800">Coordenação Pedagógica</p>
-            <p>Assinatura / Carimbo</p>
+            <div className="mx-auto mb-2 w-48 border-b border-zinc-400" />
+            <p className="font-semibold text-zinc-900">Coordenação Pedagógica</p>
+            <p className="text-[11px] text-zinc-500">Assinatura / Carimbo</p>
           </div>
           <div>
-            <div className="mx-auto mb-2 w-48 border-b border-slate-400" />
-            <p className="font-medium text-slate-800">{student.guardianName}</p>
-            <p>Ciência do Responsável</p>
+            <div className="mx-auto mb-2 w-48 border-b border-zinc-400" />
+            <p className="font-semibold text-zinc-900">{student.guardianName}</p>
+            <p className="text-[11px] text-zinc-500">Ciência do Responsável Legal</p>
           </div>
         </footer>
       </article>

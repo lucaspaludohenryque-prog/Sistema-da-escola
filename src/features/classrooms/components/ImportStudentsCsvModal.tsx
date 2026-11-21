@@ -182,22 +182,22 @@ export function ImportStudentsCsvModal({
       aria-labelledby="import-csv-title"
     >
       <div
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+        className="fixed inset-0 bg-black/50 backdrop-blur-[1px]"
         onClick={() => {
           if (!isImporting) onClose();
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
-        <div className="flex items-start justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
+      <div className="relative z-10 max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl ring-1 ring-zinc-200/90 dark:bg-[#131518] dark:ring-white/[0.1]">
+        <div className="flex items-start justify-between border-b border-zinc-200/80 pb-4 dark:border-white/[0.08]">
           <div>
             <h2
               id="import-csv-title"
-              className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+              className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
             >
               Importar Alunos por CSV
             </h2>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+            <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
               Colunas esperadas: <span className="font-mono">nome;matricula;responsavel;telefone</span>.
               Matrículas já cadastradas serão ignoradas automaticamente.
             </p>
@@ -206,23 +206,23 @@ export function ImportStudentsCsvModal({
             type="button"
             onClick={onClose}
             disabled={isImporting}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-[#1A1D21]"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <div className="mt-4 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-dashed border-zinc-200/90 bg-zinc-50/70 p-4 dark:border-white/[0.1] dark:bg-white/[0.02]">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[var(--school-primary)] dark:bg-blue-500/15 dark:text-blue-300">
                 <FileSpreadsheet className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                   {fileName ?? "Selecione um arquivo .csv"}
                 </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   {rows.length > 0
                     ? `${rows.length} linha(s) pronta(s) para pré-visualização`
                     : "Separado por ponto-e-vírgula (;) ou vírgula (,)"}
@@ -234,7 +234,7 @@ export function ImportStudentsCsvModal({
               <button
                 type="button"
                 onClick={handleDownloadTemplate}
-                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
               >
                 <Download className="h-3.5 w-3.5" />
                 <span>Baixar Modelo CSV</span>
@@ -259,9 +259,9 @@ export function ImportStudentsCsvModal({
           </div>
 
           {rows.length > 0 ? (
-            <div className="max-h-64 overflow-auto rounded-xl border border-slate-200 dark:border-slate-800">
-              <table className="min-w-full divide-y divide-slate-200 text-left text-xs dark:divide-slate-800">
-                <thead className="sticky top-0 bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+            <div className="max-h-64 overflow-auto rounded-xl border border-zinc-200 dark:border-white/[0.08]">
+              <table className="min-w-full divide-y divide-zinc-200/80 text-left text-xs dark:divide-white/[0.06]">
+                <thead className="sticky top-0 bg-zinc-50 text-zinc-600 dark:bg-[#1A1D21] dark:text-zinc-300">
                   <tr>
                     <th className="px-3 py-2 font-semibold">Nome</th>
                     <th className="px-3 py-2 font-semibold">Matrícula</th>
@@ -269,19 +269,19 @@ export function ImportStudentsCsvModal({
                     <th className="px-3 py-2 font-semibold">Telefone</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
+                <tbody className="divide-y divide-zinc-200/70 bg-white dark:divide-white/[0.06] dark:bg-[#131518]">
                   {rows.slice(0, 50).map((row, idx) => (
                     <tr key={`${row.registration}-${idx}`}>
-                      <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">
+                      <td className="px-3 py-2 font-medium text-zinc-900 dark:text-zinc-100">
                         {row.name || "-"}
                       </td>
-                      <td className="px-3 py-2 font-mono text-slate-700 dark:text-slate-300">
+                      <td className="px-3 py-2 font-mono text-zinc-700 dark:text-zinc-300">
                         {row.registration || "-"}
                       </td>
-                      <td className="px-3 py-2 text-slate-600 dark:text-slate-400">
+                      <td className="px-3 py-2 text-zinc-600 dark:text-zinc-400">
                         {row.guardianName || "-"}
                       </td>
-                      <td className="px-3 py-2 font-mono text-slate-600 dark:text-slate-400">
+                      <td className="px-3 py-2 font-mono text-zinc-600 dark:text-zinc-400">
                         {row.guardianPhone || "-"}
                       </td>
                     </tr>
@@ -291,12 +291,12 @@ export function ImportStudentsCsvModal({
             </div>
           ) : null}
 
-          <div className="flex justify-end gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+          <div className="flex justify-end gap-2 border-t border-zinc-200/80 pt-4 dark:border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
               disabled={isImporting}
-              className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              className="cursor-pointer rounded-lg border border-zinc-200/90 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-white/[0.1] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
             >
               Cancelar
             </button>
