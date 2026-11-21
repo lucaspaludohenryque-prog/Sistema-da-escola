@@ -94,6 +94,17 @@ export async function getStudentReportForUser(
           },
         },
       },
+      badges: {
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          category: true,
+          title: true,
+          reason: true,
+          createdAt: true,
+          awardedBy: { select: { name: true } },
+        },
+      },
     },
   });
 
@@ -204,6 +215,14 @@ export async function getStudentReportForUser(
         description: item.description,
         resolutionNote: item.resolutionNote,
         authorName: item.author.name,
+      })),
+      badges: student.badges.map((b) => ({
+        id: b.id,
+        category: b.category,
+        title: b.title,
+        reason: b.reason,
+        awardedByName: b.awardedBy.name,
+        createdAt: b.createdAt.toISOString(),
       })),
     },
   };

@@ -1,3 +1,4 @@
+import type { BadgeCategory } from "@/features/badges/types";
 import type { ClassroomShift } from "@/features/classrooms/types";
 import type { AcademicTerm } from "@/features/grades/types";
 import type {
@@ -33,6 +34,15 @@ export interface ReportOccurrenceEntry {
   authorName: string;
 }
 
+export interface ReportBadgeEntry {
+  id: string;
+  category: BadgeCategory;
+  title: string;
+  reason: string;
+  awardedByName: string;
+  createdAt: string;
+}
+
 export interface StudentReportData {
   generatedAt: string;
   school: SchoolConfigData;
@@ -63,4 +73,5 @@ export interface StudentReportData {
   terms: ReportTermSummary[];
   annualAverage: number | null;
   occurrences: ReportOccurrenceEntry[];
+  badges: ReportBadgeEntry[];
 }

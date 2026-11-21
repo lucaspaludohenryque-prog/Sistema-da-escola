@@ -2,6 +2,7 @@ import type { AttendanceStatus } from "@/features/attendance/types";
 import type { ClassroomShift } from "@/features/classrooms/types";
 import type { JustificationStatus } from "@/features/justifications/types";
 import type {
+  ReportBadgeEntry,
   ReportOccurrenceEntry,
   ReportTermSummary,
 } from "@/features/reports/types";
@@ -52,6 +53,7 @@ export interface FamilyStudentOverview {
   terms: ReportTermSummary[];
   annualAverage: number | null;
   occurrences: ReportOccurrenceEntry[];
+  badges: ReportBadgeEntry[];
 }
 
 export interface FamilyOverviewData {

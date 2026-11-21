@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
+  Award,
   Bell,
   BookOpen,
   Calendar,
@@ -12,11 +13,13 @@ import {
   FileWarning,
   GraduationCap,
   Loader2,
+  Medal,
   Printer,
   UserCheck,
   Users,
   X,
 } from "lucide-react";
+import { BADGE_CATEGORY_META } from "@/features/badges/types";
 import {
   LOW_ATTENDANCE_THRESHOLD,
   formatIsoDateBr,
@@ -86,7 +89,7 @@ export function FamilyPortalView({
     );
   }
 
-  const { student, classroom, attendance, terms, annualAverage, occurrences } =
+  const { student, classroom, attendance, terms, annualAverage, occurrences, badges } =
     activeStudent;
 
   const isLowAttendance =
@@ -384,6 +387,62 @@ export function FamilyPortalView({
           </p>
         </div>
       </section>
+
+      {/* Estante de Conquistas e Medalhas */}
+      {badges.length > 0 ? (
+        <section
+          aria-label="Conquistas e Medalhas"
+          className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/70 via-white to-white p-5 shadow-[var(--shadow-ambient)] sm:p-6 dark:border-amber-500/30 dark:from-amber-500/10 dark:via-slate-900 dark:to-slate-900"
+        >
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 ring-1 ring-inset ring-amber-500/30 dark:text-amber-300">
+                <Award className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-slate-900 dark:text-white">
+                  Conquistas e Medalhas ({badges.length})
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Reconhecimentos de mérito concedidos pela equipe pedagógica
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {badges.map((badge) => {
+              const meta = BADGE_CATEGORY_META[badge.category];
+              return (
+                <div
+                  key={badge.id}
+                  className={`flex items-start gap-3 rounded-xl border p-3.5 ${meta.cardClass}`}
+                >
+                  <div
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ${meta.iconWrapClass}`}
+                  >
+                    <Medal className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
+                      {meta.label}
+                    </p>
+                    <p className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                      {badge.title}
+                    </p>
+                    <p className="mt-0.5 line-clamp-2 text-xs text-slate-600 dark:text-slate-300">
+                      {badge.reason}
+                    </p>
+                    <p className="mt-1.5 text-[10px] text-slate-500 dark:text-slate-400">
+                      Por {badge.awardedByName}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       {/* Grafico de Evolucao Trimestral */}
       <TermEvolutionChart terms={terms} />

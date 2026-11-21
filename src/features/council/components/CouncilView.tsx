@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import QRCode from "qrcode";
 import {
   AlertTriangle,
   BookOpenCheck,
@@ -54,6 +55,9 @@ export function CouncilView({
   const [summary, setSummary] = useState("");
   const [decisions, setDecisions] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
+  const [isPreparingPrint, setIsPreparingPrint] = useState(false);
 
   const fetchCouncil = useCallback(
     async (classroomId: string, term: AcademicTerm) => {
@@ -83,8 +87,58 @@ export function CouncilView({
 
   useEffect(() => {
     if (!selectedClassroomId) return;
+    setVerificationCode(null);
+    setQrCodeDataUrl(null);
     void fetchCouncil(selectedClassroomId, selectedTerm);
   }, [selectedClassroomId, selectedTerm, fetchCouncil]);
+
+  async function handlePrintWithVerification(): Promise<void> {
+    if (!data || isPreparingPrint) return;
+    setIsPreparingPrint(true);
+    try {
+      let currentCode = verificationCode;
+      if (!currentCode) {
+        const res = await fetch("/api/verifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            docType: "ATA_CONSELHO",
+            title: `Ata de Conselho de Classe - ${TERM_LABELS[selectedTerm]}`,
+            subjectName: data.classroom.name,
+            classroomName: `${data.classroom.name} - ${data.classroom.subject}`,
+            summary: {
+              schoolYear: data.classroom.year,
+              termLabel: TERM_LABELS[selectedTerm],
+              totalStudents: data.metrics.totalStudents,
+              belowAverageCount: data.metrics.belowAverageCount,
+              lowAttendanceCount: data.metrics.lowAttendanceCount,
+            },
+          }),
+        });
+        if (res.ok) {
+          const payload = (await res.json()) as {
+            code: string;
+            verificationUrl: string;
+          };
+          currentCode = payload.code;
+          setVerificationCode(payload.code);
+          const dataUrl = await QRCode.toDataURL(payload.verificationUrl, {
+            width: 144,
+            margin: 1,
+            color: { dark: "#0f172a", light: "#ffffff" },
+          });
+          setQrCodeDataUrl(dataUrl);
+          // Aguarda um frame para garantir que a imagem do QR Code esteja no DOM antes do print
+          await new Promise((resolve) => window.requestAnimationFrame(() => resolve(undefined)));
+        }
+      }
+    } catch {
+      // Prossegue para impressao mesmo se offline.
+    } finally {
+      setIsPreparingPrint(false);
+      window.print();
+    }
+  }
 
   async function handleSave(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -201,12 +255,18 @@ export function CouncilView({
 
           <button
             type="button"
-            disabled={!data || isLoading}
-            onClick={() => window.print()}
+            disabled={!data || isLoading || isPreparingPrint}
+            onClick={() => void handlePrintWithVerification()}
             className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
-            <Printer className="h-4 w-4" strokeWidth={1.75} />
-            <span>Imprimir / Salvar Ata em PDF</span>
+            {isPreparingPrint ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Printer className="h-4 w-4" strokeWidth={1.75} />
+            )}
+            <span>
+              {isPreparingPrint ? "Gerando selo..." : "Imprimir / Salvar Ata em PDF"}
+            </span>
           </button>
         </div>
       </section>
@@ -496,11 +556,32 @@ export function CouncilView({
                   </p>
                 </div>
               </div>
-              <div className="text-right text-xs text-slate-600">
-                <p className="font-semibold text-slate-900">
-                  Data: {formatIsoDateBr(date)}
-                </p>
-                <p>Prof. {data.classroom.teacherName}</p>
+              <div className="flex items-start gap-3">
+                <div className="text-right text-xs text-slate-600">
+                  <p className="font-semibold text-slate-900">
+                    Data: {formatIsoDateBr(date)}
+                  </p>
+                  <p>Prof. {data.classroom.teacherName}</p>
+                </div>
+                {qrCodeDataUrl ? (
+                  <div className="flex flex-col items-center rounded-lg border border-slate-300 bg-white p-1.5 text-center">
+                    <img
+                      src={qrCodeDataUrl}
+                      alt="QR Code de validação antifraude da Ata"
+                      width={72}
+                      height={72}
+                      className="h-[72px] w-[72px]"
+                    />
+                    {verificationCode ? (
+                      <span className="mt-1 font-mono text-[8.5px] font-bold text-slate-900">
+                        {verificationCode}
+                      </span>
+                    ) : null}
+                    <span className="text-[8px] text-slate-500">
+                      Validação antifraude
+                    </span>
+                  </div>
+                ) : null}
               </div>
             </header>
 

@@ -93,6 +93,19 @@ enum HomeworkSubmissionStatus {
   CONFERIDO
 }
 
+enum BadgeCategory {
+  FREQUENCIA_100
+  DESTAQUE_ACADEMICO
+  EVOLUCAO
+  COLABORACAO
+  LIDERANCA
+}
+
+enum VerificationDocType {
+  BOLETIM
+  ATA_CONSELHO
+}
+
 model User {
   id                      String                 @id @default(cuid())
   name                    String
@@ -110,6 +123,7 @@ model User {
   announcements           Announcement[]
   submittedJustifications AbsenceJustification[]
   homeworks               Homework[]
+  awardedBadges           StudentBadge[]
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
 
@@ -155,6 +169,7 @@ model Classroom {
   announcements   Announcement[]
   seatAssignments SeatAssignment[]
   homeworks       Homework[]
+  studentBadges   StudentBadge[]
   createdAt       DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
@@ -183,6 +198,7 @@ model Student {
   absenceJustifications AbsenceJustification[]
   seatAssignments       SeatAssignment[]
   homeworkSubmissions   HomeworkSubmission[]
+  badges                StudentBadge[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
@@ -497,4 +513,37 @@ model HomeworkSubmission {
   @@unique([homeworkId, studentId])
   @@index([studentId, status])
   @@map("homework_submissions")
+}
+
+model StudentBadge {
+  id          String        @id @default(cuid())
+  studentId   String
+  student     Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomId String
+  classroom   Classroom     @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  category    BadgeCategory
+  title       String
+  reason      String
+  awardedById String
+  awardedBy   User          @relation(fields: [awardedById], references: [id], onDelete: Restrict)
+  createdAt   DateTime      @default(now())
+
+  @@index([studentId, createdAt])
+  @@index([classroomId, createdAt])
+  @@map("student_badges")
+}
+
+model DocumentVerification {
+  id            String              @id @default(cuid())
+  code          String              @unique
+  docType       VerificationDocType
+  title         String
+  subjectName   String
+  classroomName String
+  summaryJson   String
+  issuedByName  String
+  issuedAt      DateTime            @default(now())
+
+  @@index([issuedAt])
+  @@map("document_verifications")
 }

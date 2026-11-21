@@ -1,4 +1,5 @@
 import {
+  Award,
   Bell,
   BookMarked,
   BookOpenText,
@@ -14,6 +15,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Megaphone,
+  Radar,
   ScrollText,
   Settings,
   UserCog,
@@ -73,6 +75,13 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     href: "/dashboard/turmas",
     description: "Gestão de turmas, disciplinas e alunos matriculados",
     icon: Users,
+    section: "PRINCIPAL",
+  },
+  {
+    label: "Radar Pedagógico",
+    href: "/dashboard/radar",
+    description: "Score determinístico de risco pedagógico e recomendações",
+    icon: Radar,
     section: "PRINCIPAL",
   },
   {
@@ -136,6 +145,13 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     href: "/dashboard/conselho",
     description: "Indicadores da turma e Ata de Conselho de Classe em PDF",
     icon: ScrollText,
+    section: "ROTINA PEDAGÓGICA",
+  },
+  {
+    label: "Mérito & Medalhas",
+    href: "/dashboard/merito",
+    description: "Reconhecimento escolar e sugestões automáticas de medalhas",
+    icon: Award,
     section: "ROTINA PEDAGÓGICA",
   },
   {
@@ -365,6 +381,12 @@ export function getMobileBottomNavItems(role: UserRole): MobileBottomNavItem[] {
 export function resolveDashboardSectionTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/alunos/")) {
     return "Ficha do Aluno";
+  }
+  if (pathname.startsWith("/dashboard/radar")) {
+    return "Radar Pedagógico";
+  }
+  if (pathname.startsWith("/dashboard/merito")) {
+    return "Medalhas & Mérito";
   }
   if (pathname.startsWith("/dashboard/mapa-sala")) {
     return "Mapa de Sala";

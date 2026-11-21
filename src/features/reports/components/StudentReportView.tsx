@@ -4,7 +4,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
-import { ArrowLeft, BookOpenCheck, MessageCircle, Printer } from "lucide-react";
+import { ArrowLeft, Award, BookOpenCheck, MessageCircle, Printer } from "lucide-react";
+import { BADGE_CATEGORY_META } from "@/features/badges/types";
 import {
   LOW_ATTENDANCE_THRESHOLD,
   formatIsoDateBr,
@@ -61,7 +62,7 @@ export function StudentReportView({
   backHref,
   backLabel,
 }: StudentReportViewProps): React.JSX.Element {
-  const { school, student, classroom, attendance, terms, annualAverage, occurrences } =
+  const { school, student, classroom, attendance, terms, annualAverage, occurrences, badges } =
     report;
 
   const schoolLocation = [school.city, school.state]
@@ -81,30 +82,71 @@ export function StudentReportView({
     annualAverage !== null && annualAverage < PASSING_GRADE_THRESHOLD;
 
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    const targetUrl =
-      typeof window !== "undefined"
-        ? window.location.href
-        : `https://rcolasalle.vercel.app/dashboard/alunos/${student.id}/ficha`;
 
-    QRCode.toDataURL(targetUrl, {
-      width: 152,
-      margin: 1,
-      color: { dark: "#0f172a", light: "#ffffff" },
-    })
-      .then((url) => {
+    async function registerAndGenerateQr(): Promise<void> {
+      let qrTarget =
+        typeof window !== "undefined"
+          ? window.location.href
+          : `https://rcolasalle.vercel.app/dashboard/alunos/${student.id}/ficha`;
+
+      try {
+        const res = await fetch("/api/verifications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            docType: "BOLETIM",
+            title: "Ficha Individual e Boletim Escolar",
+            subjectName: student.name,
+            classroomName: `${classroom.name} - ${classroom.subject}`,
+            summary: {
+              schoolYear: school.schoolYear,
+              attendanceRate: attendance.attendanceRate,
+              overallAverage: annualAverage,
+            },
+          }),
+        });
+        if (res.ok && active) {
+          const payload = (await res.json()) as {
+            code: string;
+            verificationUrl: string;
+          };
+          setVerificationCode(payload.code);
+          qrTarget = payload.verificationUrl;
+        }
+      } catch {
+        // Fallback silencioso para URL atual em caso de falha de rede.
+      }
+
+      try {
+        const url = await QRCode.toDataURL(qrTarget, {
+          width: 152,
+          margin: 1,
+          color: { dark: "#0f172a", light: "#ffffff" },
+        });
         if (active) setQrCodeDataUrl(url);
-      })
-      .catch(() => {
+      } catch {
         // Ignora erro de geracao de QR em ambientes restritos.
-      });
+      }
+    }
+
+    void registerAndGenerateQr();
 
     return () => {
       active = false;
     };
-  }, [student.id]);
+  }, [
+    student.id,
+    student.name,
+    classroom.name,
+    classroom.subject,
+    school.schoolYear,
+    attendance.attendanceRate,
+    annualAverage,
+  ]);
 
   const waSummaryText = `Olá, ${student.guardianName}! Resumo escolar enviado por ${school.name}:\nEstudante: ${student.name} (${classroom.name} - ${classroom.subject})\nFrequência Geral: ${
     attendance.attendanceRate !== null ? `${attendance.attendanceRate}%` : "Sem registros"
@@ -202,13 +244,18 @@ export function StudentReportView({
               <div className="flex flex-col items-center rounded-lg border border-slate-200 bg-white p-1.5 text-center">
                 <img
                   src={qrCodeDataUrl}
-                  alt={`QR Code de consulta digital de ${student.name}`}
+                  alt={`QR Code de validação antifraude de ${student.name}`}
                   width={76}
                   height={76}
                   className="h-[76px] w-[76px]"
                 />
-                <span className="mt-1 max-w-[82px] text-[9px] leading-tight text-slate-500">
-                  Consulta digital do documento
+                {verificationCode ? (
+                  <span className="mt-1 font-mono text-[8.5px] font-bold tracking-tight text-slate-900">
+                    {verificationCode}
+                  </span>
+                ) : null}
+                <span className="mt-0.5 max-w-[92px] text-[8.5px] leading-tight text-slate-500">
+                  Validação antifraude
                 </span>
               </div>
             ) : null}
@@ -480,6 +527,41 @@ export function StudentReportView({
             </ul>
           )}
         </section>
+
+        {/* 5. Conquistas e Medalhas (quando houver) */}
+        {badges.length > 0 ? (
+          <section className="print-avoid-break mt-7">
+            <h2 className="border-b border-slate-200 pb-2 text-xs font-bold tracking-wider text-slate-700 uppercase">
+              5. Conquistas e Medalhas de Mérito ({badges.length})
+            </h2>
+            <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              {badges.map((badge) => (
+                <div
+                  key={badge.id}
+                  className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/60 p-3 text-xs"
+                >
+                  <Award
+                    className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
+                    strokeWidth={1.75}
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0">
+                    <p className="font-bold text-slate-900">
+                      {badge.title}{" "}
+                      <span className="font-normal text-amber-800">
+                        ({BADGE_CATEGORY_META[badge.category].label})
+                      </span>
+                    </p>
+                    <p className="mt-0.5 text-slate-700">{badge.reason}</p>
+                    <p className="mt-1 text-[10px] text-slate-500">
+                      Concedida por {badge.awardedByName}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {/* Assinaturas formais */}
         <footer className="print-avoid-break mt-12 grid grid-cols-1 gap-8 border-t border-slate-200 pt-8 text-center text-xs text-slate-600 sm:grid-cols-3">

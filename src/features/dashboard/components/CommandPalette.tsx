@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
+  Award,
   Bell,
   BookMarked,
   BookOpen,
@@ -16,6 +17,7 @@ import {
   GraduationCap,
   LayoutGrid,
   Megaphone,
+  Radar,
   ScrollText,
   Search,
   Users,
@@ -139,6 +141,18 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
       description: "Registrar frequência e diário de conteúdo",
       href: "/dashboard/chamada",
       icon: ClipboardCheck,
+    },
+    {
+      label: "Radar Pedagógico",
+      description: "Análise de risco de evasão, notas e ocorrências",
+      href: "/dashboard/radar",
+      icon: Radar,
+    },
+    {
+      label: "Mérito & Medalhas",
+      description: "Conceder medalhas e ver sugestões automáticas",
+      href: "/dashboard/merito",
+      icon: Award,
     },
     {
       label: "Mapa de Sala",

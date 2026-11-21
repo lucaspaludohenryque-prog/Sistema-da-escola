@@ -441,13 +441,19 @@ export default async function HomePage(): Promise<React.JSX.Element> {
                 resumo de frequência, aproveitamento por trimestre e QR Code para conferência
                 direta no portal autenticado.
               </p>
-              <div className="pt-1">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
                 <Link
-                  href={primaryHref}
+                  href="/validar"
                   className="inline-flex items-center gap-2 rounded-xl bg-[var(--school-primary)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
                 >
-                  <span>{user ? "Abrir meu Painel" : "Entrar para consultar documentos"}</span>
+                  <span>Validar Documento por Código</span>
                   <ArrowRight className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                </Link>
+                <Link
+                  href={primaryHref}
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                  <span>{user ? "Abrir meu Painel" : "Acessar Sistema"}</span>
                 </Link>
               </div>
             </div>

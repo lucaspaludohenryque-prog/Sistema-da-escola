@@ -12,8 +12,10 @@ const LOGIN_PATH = "/login";
 
 const STAFF_ONLY_PREFIXES = [
   "/dashboard/turmas",
+  "/dashboard/radar",
   "/dashboard/chamada",
   "/dashboard/mapa-sala",
+  "/dashboard/merito",
   "/dashboard/ocorrencias",
   "/dashboard/notas",
   "/dashboard/planejamento",
