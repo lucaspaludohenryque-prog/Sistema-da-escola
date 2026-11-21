@@ -276,17 +276,17 @@ export function FamilyPortalView({
         aria-label="Resumo escolar"
         className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
       >
-        <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                 Frequência Geral
               </p>
               <p
-                className={`mt-1 font-mono text-3xl font-bold ${
+                className={`font-mono text-3xl font-bold tracking-tight sm:text-[2rem] ${
                   isLowAttendance
                     ? "text-red-700 dark:text-red-400"
-                    : "text-slate-900 dark:text-slate-100"
+                    : "text-slate-900 dark:text-white"
                 }`}
               >
                 {attendance.attendanceRate !== null
@@ -295,31 +295,31 @@ export function FamilyPortalView({
               </p>
             </div>
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-xl ring-1 ring-inset ${
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ${
                 isLowAttendance
-                  ? "bg-red-50 text-red-700 ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
-                  : "bg-blue-50 text-[var(--school-primary)] ring-blue-100 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/30"
+                  ? "bg-red-500/10 text-red-700 ring-red-500/20 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/25"
+                  : "bg-blue-500/10 text-[var(--school-primary)] ring-blue-500/20 dark:bg-blue-500/15 dark:text-blue-300 dark:ring-blue-400/25"
               }`}
             >
               <ClipboardCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
           </div>
-          <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
             {attendance.totalLessons}{" "}
             {attendance.totalLessons === 1 ? "aula registrada" : "aulas registradas"}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                 Média Geral
               </p>
               <p
-                className={`mt-1 font-mono text-3xl font-bold ${
+                className={`font-mono text-3xl font-bold tracking-tight sm:text-[2rem] ${
                   annualAverage === null
-                    ? "text-slate-900 dark:text-slate-100"
+                    ? "text-slate-900 dark:text-white"
                     : isLowAverage
                       ? "text-red-700 dark:text-red-400"
                       : "text-emerald-700 dark:text-emerald-400"
@@ -329,57 +329,57 @@ export function FamilyPortalView({
               </p>
             </div>
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-xl ring-1 ring-inset ${
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ${
                 annualAverage === null
-                  ? "bg-slate-100 text-slate-600 ring-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700"
+                  ? "bg-slate-500/10 text-slate-600 ring-slate-500/20 dark:bg-slate-800 dark:text-slate-400 dark:ring-slate-700"
                   : isLowAverage
-                    ? "bg-red-50 text-red-700 ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
-                    : "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
+                    ? "bg-red-500/10 text-red-700 ring-red-500/20 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/25"
+                    : "bg-emerald-500/10 text-emerald-700 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/25"
               }`}
             >
               <GraduationCap className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
           </div>
-          <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
             Mínimo para aprovação: 6,0
           </p>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                 Total de Faltas
               </p>
-              <p className="mt-1 font-mono text-3xl font-bold text-slate-900 dark:text-slate-100">
+              <p className="font-mono text-3xl font-bold tracking-tight text-slate-900 sm:text-[2rem] dark:text-white">
                 {attendance.absentCount}
               </p>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-800 ring-1 ring-inset ring-amber-500/20 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/25">
               <Calendar className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
           </div>
-          <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
             {attendance.justifiedCount}{" "}
             {attendance.justifiedCount === 1 ? "justificada" : "justificadas"}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[var(--shadow-ambient)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase dark:text-slate-400">
                 Ocorrências
               </p>
-              <p className="mt-1 font-mono text-3xl font-bold text-slate-900 dark:text-slate-100">
+              <p className="font-mono text-3xl font-bold tracking-tight text-slate-900 sm:text-[2rem] dark:text-white">
                 {occurrences.length}
               </p>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-500/10 text-slate-700 ring-1 ring-inset ring-slate-500/20 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
               <FileWarning className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
             </div>
           </div>
-          <p className="mt-2.5 text-xs text-slate-500 dark:text-slate-400">
+          <p className="mt-3.5 border-t border-slate-100 pt-2.5 text-xs text-slate-500 dark:border-slate-800/80 dark:text-slate-400">
             Registros disciplinares e elogios
           </p>
         </div>

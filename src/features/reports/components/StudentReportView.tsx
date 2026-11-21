@@ -112,12 +112,12 @@ export function StudentReportView({
   const whatsAppUrl = buildWhatsAppUrl(student.guardianPhone, waSummaryText);
 
   return (
-    <div className="space-y-5">
-      {/* Barra de acoes oculta na impressao */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
+    <div className="mx-auto w-full max-w-4xl px-1 pt-6 pb-12 sm:px-4 print:max-w-none print:p-0">
+      {/* Barra de ferramentas elegante acima da folha A4 (oculta na impressao) */}
+      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white/95 px-4 py-3.5 shadow-xs sm:flex-row sm:items-center sm:justify-between sm:px-5 dark:border-slate-800 dark:bg-slate-900/95 print:hidden">
         <Link
           href={backHref ?? `/dashboard/turmas/${classroom.id}`}
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-[var(--school-primary)] dark:text-slate-300 dark:hover:text-blue-400"
+          className="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-900 sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           <span>{backLabel ?? `Voltar para ${classroom.name}`}</span>
@@ -129,27 +129,27 @@ export function StudentReportView({
               href={whatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 sm:text-sm dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
             >
               <MessageCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-              <span>WhatsApp</span>
+              <span>Enviar resumo no WhatsApp</span>
             </a>
           ) : (
             <button
               type="button"
               disabled
               title="Telefone do responsável não cadastrado"
-              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-400 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-500"
+              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-medium text-slate-400 sm:text-sm dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-500"
             >
               <MessageCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-              <span>WhatsApp</span>
+              <span>Enviar resumo no WhatsApp</span>
             </button>
           )}
 
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[var(--school-primary)] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] sm:text-sm"
           >
             <Printer className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
             <span>Imprimir / Salvar PDF</span>
@@ -158,7 +158,7 @@ export function StudentReportView({
       </div>
 
       {/* Documento A4 imprimivel (sempre folha branca e tinta escura para fidelidade de impressao/PDF) */}
-      <article className="rco-print-sheet mx-auto max-w-4xl rounded-2xl bg-white p-6 text-slate-900 shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.08] sm:p-10 dark:ring-slate-700 print:max-w-none print:rounded-none print:bg-white print:p-0 print:text-slate-900 print:shadow-none print:ring-0">
+      <article className="rco-print-sheet mx-auto w-full max-w-4xl rounded-2xl bg-white p-6 text-slate-900 shadow-2xl ring-1 ring-slate-200/80 sm:p-10 dark:ring-slate-700 print:max-w-none print:rounded-none print:bg-white print:p-0 print:text-slate-900 print:shadow-none print:ring-0">
         {/* Cabecalho institucional formal */}
         <header className="flex flex-col gap-4 border-b-2 border-slate-900 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3.5">

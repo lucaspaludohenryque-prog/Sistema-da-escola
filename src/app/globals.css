@@ -45,6 +45,33 @@
   background-size: 32px 32px;
 }
 
+.rco-thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+}
+
+.rco-thin-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.rco-thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rco-thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.45);
+  border-radius: 9999px;
+}
+
+.dark .rco-thin-scrollbar {
+  scrollbar-color: rgba(71, 85, 105, 0.65) transparent;
+}
+
+.dark .rco-thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(71, 85, 105, 0.65);
+}
+
 @keyframes rco-toast-enter {
   from {
     opacity: 0;

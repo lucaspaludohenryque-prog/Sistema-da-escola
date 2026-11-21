@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { AppProviders } from "@/shared/components/AppProviders";
 import "./globals.css";
 
@@ -9,8 +9,25 @@ const SITE_DESCRIPTION =
 
 const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem("rco-theme");if(t==="dark"){document.documentElement.classList.add("dark");}else{document.documentElement.classList.remove("dark");}}catch(e){}})();`;
 
+export const viewport: Viewport = {
+  themeColor: "#1d4ed8",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-512.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/icons/icon-192.svg", type: "image/svg+xml" }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "RCO La Salle",
+  },
   title: {
     default: SITE_TITLE,
     template: "%s | RCO La Salle Curitiba",
