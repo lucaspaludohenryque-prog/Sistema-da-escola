@@ -8,6 +8,7 @@ import {
   Calendar,
   Download,
   FileText,
+  IdCard,
   Pencil,
   Phone,
   Plus,
@@ -335,6 +336,14 @@ export function ClassroomDetailView({
                       <td className="whitespace-nowrap py-3.5 pr-6 pl-3 text-right">
                         <div className="inline-flex items-center gap-1">
                           <Link
+                            href={`/dashboard/carteirinha?studentId=${student.id}`}
+                            aria-label={`Abrir carteirinha digital de ${student.name}`}
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
+                          >
+                            <IdCard className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                            <span>Carteirinha</span>
+                          </Link>
+                          <Link
                             href={`/dashboard/alunos/${student.id}/ficha`}
                             aria-label={`Abrir ficha e boletim em PDF de ${student.name}`}
                             className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[var(--school-primary)] transition-colors hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-500/15"
@@ -396,6 +405,14 @@ export function ClassroomDetailView({
                     </div>
 
                     <div className="flex shrink-0 items-center gap-1">
+                      <Link
+                        href={`/dashboard/carteirinha?studentId=${student.id}`}
+                        aria-label={`Abrir carteirinha digital de ${student.name}`}
+                        title="Carteirinha Digital"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
+                      >
+                        <IdCard className="h-4 w-4" strokeWidth={1.75} />
+                      </Link>
                       <Link
                         href={`/dashboard/alunos/${student.id}/ficha`}
                         aria-label={`Abrir ficha e boletim em PDF de ${student.name}`}

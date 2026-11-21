@@ -124,6 +124,12 @@ enum MeetingStatus {
   CANCELADA
 }
 
+enum GateCheckInType {
+  ENTRADA
+  ATRASO
+  SAIDA
+}
+
 model User {
   id                      String                 @id @default(cuid())
   name                    String
@@ -147,6 +153,7 @@ model User {
   sentMessages            DirectMessage[]
   guardianMeetings        Meeting[]              @relation("GuardianMeetings")
   organizedMeetings       Meeting[]              @relation("OrganizerMeetings")
+  gateCheckIns            GateCheckIn[]
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
 
@@ -194,6 +201,7 @@ model Classroom {
   seatAssignments SeatAssignment[]
   homeworks       Homework[]
   studentBadges   StudentBadge[]
+  gateCheckIns    GateCheckIn[]
   createdAt       DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
@@ -225,6 +233,7 @@ model Student {
   badges                StudentBadge[]
   messageThreads        MessageThread[]
   meetings              Meeting[]
+  gateCheckIns          GateCheckIn[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
@@ -648,4 +657,24 @@ model AuditLog {
   @@index([action, createdAt])
   @@index([userRole, createdAt])
   @@map("audit_logs")
+}
+
+model GateCheckIn {
+  id           String          @id @default(cuid())
+  studentId    String
+  student      Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomId  String
+  classroom    Classroom       @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  recordedById String
+  recordedBy   User            @relation(fields: [recordedById], references: [id], onDelete: Restrict)
+  date         String
+  time         String
+  type         GateCheckInType @default(ENTRADA)
+  notes        String?
+  createdAt    DateTime        @default(now())
+
+  @@index([date, createdAt])
+  @@index([studentId, date, type])
+  @@index([classroomId, date])
+  @@map("gate_check_ins")
 }

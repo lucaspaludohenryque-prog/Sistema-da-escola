@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import QRCode from "qrcode";
-import { ArrowLeft, Award, BookOpenCheck, MessageCircle, Printer } from "lucide-react";
+import { ArrowLeft, Award, BookOpenCheck, IdCard, MessageCircle, Printer } from "lucide-react";
 import { BADGE_CATEGORY_META } from "@/features/badges/types";
 import {
   LOW_ATTENDANCE_THRESHOLD,
@@ -166,6 +166,14 @@ export function StudentReportView({
         </Link>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href={`/dashboard/carteirinha?studentId=${student.id}`}
+            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-zinc-200/90 bg-white px-3 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 hover:text-zinc-900 sm:text-sm dark:border-white/[0.09] dark:bg-[#1A1D21] dark:text-zinc-200 dark:hover:bg-white/[0.08]"
+          >
+            <IdCard className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            <span>Carteirinha</span>
+          </Link>
+
           {whatsAppUrl ? (
             <a
               href={whatsAppUrl}

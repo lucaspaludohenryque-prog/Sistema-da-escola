@@ -78,6 +78,7 @@ function resolveSafeNextPath(nextPath: string | undefined, role: UserRole): stri
       nextPath.startsWith("/dashboard/tarefas") ||
       nextPath.startsWith("/dashboard/horarios") ||
       nextPath.startsWith("/dashboard/calendario") ||
+      nextPath.startsWith("/dashboard/carteirinha") ||
       nextPath.startsWith("/dashboard/ajuda") ||
       nextPath.startsWith("/dashboard/alunos/") ||
       (role === "RESPONSAVEL" &&

@@ -17,10 +17,12 @@ import {
   FileWarning,
   GraduationCap,
   HelpCircle,
+  IdCard,
   LayoutGrid,
   Megaphone,
   MessageSquare,
   Radar,
+  ScanLine,
   ScrollText,
   Search,
   ShieldCheck,
@@ -64,6 +66,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         description: "Notas, frequência e boletim dos estudantes",
         href: "/dashboard/familia",
         icon: GraduationCap,
+      },
+      {
+        label: "Carteirinha Digital",
+        description: "Carteirinha estudantil com QR Code dos filhos",
+        href: "/dashboard/carteirinha",
+        icon: IdCard,
       },
       {
         label: "Grade de Horários",
@@ -125,6 +133,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         icon: GraduationCap,
       },
       {
+        label: "Carteirinha Digital",
+        description: "Minha carteirinha estudantil com QR Code",
+        href: "/dashboard/carteirinha",
+        icon: IdCard,
+      },
+      {
         label: "Tarefas & Materiais",
         description: "Prazos, entregas e materiais de apoio",
         href: "/dashboard/tarefas",
@@ -169,6 +183,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
       description: "Registrar frequência e diário de conteúdo",
       href: "/dashboard/chamada",
       icon: ClipboardCheck,
+    },
+    {
+      label: "Leitor QR / Portaria",
+      description: "Ler Carteirinha Digital para entrada, atraso ou saída",
+      href: "/dashboard/portaria",
+      icon: ScanLine,
     },
     {
       label: "Radar Pedagógico",

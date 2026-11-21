@@ -15,6 +15,7 @@ const STAFF_ONLY_PREFIXES = [
   "/dashboard/turmas",
   "/dashboard/radar",
   "/dashboard/chamada",
+  "/dashboard/portaria",
   "/dashboard/mapa-sala",
   "/dashboard/merito",
   "/dashboard/ocorrencias",

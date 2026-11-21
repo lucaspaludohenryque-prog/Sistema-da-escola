@@ -14,11 +14,13 @@ import {
   HeartHandshake,
   HelpCircle,
   Home,
+  IdCard,
   LayoutDashboard,
   LayoutGrid,
   Megaphone,
   MessageSquare,
   Radar,
+  ScanLine,
   ScrollText,
   Settings,
   ShieldCheck,
@@ -118,6 +120,13 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     href: "/dashboard/chamada",
     description: "Registro diário de frequência e justificativas",
     icon: ClipboardCheck,
+    section: "ROTINA PEDAGÓGICA",
+  },
+  {
+    label: "Leitor QR / Portaria",
+    href: "/dashboard/portaria",
+    description: "Leitura de Carteirinha Digital para entradas, atrasos e saídas",
+    icon: ScanLine,
     section: "ROTINA PEDAGÓGICA",
   },
   {
@@ -253,6 +262,13 @@ const GUARDIAN_NAV_ITEMS: DashboardNavItem[] = [
     exact: true,
   },
   {
+    label: "Carteirinha Digital",
+    href: "/dashboard/carteirinha",
+    description: "Carteirinha estudantil oficial com QR Code dos filhos",
+    icon: IdCard,
+    section: "PRINCIPAL",
+  },
+  {
     label: "Horários",
     href: "/dashboard/horarios",
     description: "Grade semanal de aulas dos estudantes acompanhados",
@@ -329,6 +345,13 @@ const STUDENT_NAV_ITEMS: DashboardNavItem[] = [
     icon: FileWarning,
     section: "PRINCIPAL",
     exact: true,
+  },
+  {
+    label: "Carteirinha Digital",
+    href: "/dashboard/carteirinha",
+    description: "Minha carteirinha estudantil com QR Code para portaria",
+    icon: IdCard,
+    section: "PRINCIPAL",
   },
   {
     label: "Horários",
@@ -493,6 +516,12 @@ export function resolveDashboardSectionTitle(pathname: string): string {
   }
   if (pathname.startsWith("/dashboard/ajuda")) {
     return "Central de Ajuda";
+  }
+  if (pathname.startsWith("/dashboard/carteirinha")) {
+    return "Carteirinha Digital";
+  }
+  if (pathname.startsWith("/dashboard/portaria")) {
+    return "Portaria & Leitor QR";
   }
 
   const matched = DASHBOARD_NAV_ITEMS.find((item) =>
