@@ -19,6 +19,7 @@ import {
 import { ROLE_BADGE_STYLES, ROLE_LABELS } from "@/features/auth/constants";
 import { getDefaultDashboardPath, type PublicUser } from "@/features/auth/types";
 import { JUSTIFICATIONS_UPDATED_EVENT } from "@/features/justifications/types";
+import { MESSAGES_UPDATED_EVENT } from "@/features/messages/types";
 import { NOTIFICATIONS_UPDATED_EVENT } from "@/features/notifications/constants";
 import { buildSchoolThemeStyle } from "@/features/school-config/constants";
 import type { SchoolConfigData } from "@/features/school-config/types";
@@ -38,6 +39,7 @@ interface DashboardShellProps {
   schoolConfig: SchoolConfigData;
   initialUnacknowledgedCount: number;
   initialPendingJustificationsCount?: number;
+  initialUnreadMessagesCount?: number;
   children: React.ReactNode;
 }
 
@@ -48,6 +50,7 @@ export function DashboardShell({
   schoolConfig,
   initialUnacknowledgedCount,
   initialPendingJustificationsCount = 0,
+  initialUnreadMessagesCount = 0,
   children,
 }: DashboardShellProps): React.JSX.Element {
   const pathname = usePathname();
@@ -63,6 +66,9 @@ export function DashboardShell({
   );
   const [pendingJustificationsCount, setPendingJustificationsCount] = useState(
     initialPendingJustificationsCount
+  );
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(
+    initialUnreadMessagesCount
   );
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -107,6 +113,23 @@ export function DashboardShell({
   useEffect(() => {
     setPendingJustificationsCount(initialPendingJustificationsCount);
   }, [initialPendingJustificationsCount]);
+
+  useEffect(() => {
+    setUnreadMessagesCount(initialUnreadMessagesCount);
+  }, [initialUnreadMessagesCount]);
+
+  useEffect(() => {
+    function handleMessagesUpdated(event: Event): void {
+      const customEvent = event as CustomEvent<{ unreadThreadsCount: number }>;
+      if (typeof customEvent.detail?.unreadThreadsCount === "number") {
+        setUnreadMessagesCount(customEvent.detail.unreadThreadsCount);
+      }
+    }
+
+    window.addEventListener(MESSAGES_UPDATED_EVENT, handleMessagesUpdated);
+    return () =>
+      window.removeEventListener(MESSAGES_UPDATED_EVENT, handleMessagesUpdated);
+  }, []);
 
   useEffect(() => {
     function handleJustificationsUpdated(event: Event): void {
@@ -247,6 +270,7 @@ export function DashboardShell({
           schoolConfig={schoolConfig}
           unacknowledgedCount={unacknowledgedCount}
           pendingJustificationsCount={pendingJustificationsCount}
+          unreadMessagesCount={unreadMessagesCount}
           collapsed={isSidebarCollapsed}
           onToggleCollapse={handleToggleSidebarCollapse}
         />
@@ -271,6 +295,7 @@ export function DashboardShell({
               schoolConfig={schoolConfig}
               unacknowledgedCount={unacknowledgedCount}
               pendingJustificationsCount={pendingJustificationsCount}
+              unreadMessagesCount={unreadMessagesCount}
               onNavigate={() => setIsMobileMenuOpen(false)}
               onCloseMobile={() => setIsMobileMenuOpen(false)}
             />

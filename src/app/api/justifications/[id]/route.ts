@@ -10,6 +10,7 @@ import { getAuthenticatedUser } from "@/features/auth";
 import { canManageClassrooms, type ApiErrorPayload } from "@/features/classrooms";
 import { countPendingJustifications } from "@/features/justifications/queries";
 import type { AbsenceJustificationItem } from "@/features/justifications/types";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -173,6 +174,17 @@ export async function PATCH(
     });
 
     const pendingCount = await countPendingJustifications();
+
+    await recordAuditLog({
+      user,
+      action:
+        status === "APROVADA"
+          ? "APROVAR_JUSTIFICATIVA"
+          : "RECUSAR_JUSTIFICATIVA",
+      entity: "AbsenceJustification",
+      entityId: existing.id,
+      details: `${status === "APROVADA" ? "Aprovou" : "Recusou"} justificativa de falta de ${existing.student.name} (${existing.attendance.lesson.date}, ${existing.attendance.lesson.lessonNumber}ª aula).`,
+    });
 
     const justification: AbsenceJustificationItem = {
       id: updated.id,

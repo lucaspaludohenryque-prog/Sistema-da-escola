@@ -106,6 +106,24 @@ enum VerificationDocType {
   ATA_CONSELHO
 }
 
+enum ThreadStatus {
+  ABERTO
+  ENCERRADO
+}
+
+enum MeetingMode {
+  PRESENCIAL
+  ONLINE
+}
+
+enum MeetingStatus {
+  CONVOCADA
+  CONFIRMADA
+  REMARCAR
+  CONCLUIDA
+  CANCELADA
+}
+
 model User {
   id                      String                 @id @default(cuid())
   name                    String
@@ -124,6 +142,11 @@ model User {
   submittedJustifications AbsenceJustification[]
   homeworks               Homework[]
   awardedBadges           StudentBadge[]
+  guardianThreads         MessageThread[]        @relation("GuardianThreads")
+  staffThreads            MessageThread[]        @relation("StaffThreads")
+  sentMessages            DirectMessage[]
+  guardianMeetings        Meeting[]              @relation("GuardianMeetings")
+  organizedMeetings       Meeting[]              @relation("OrganizerMeetings")
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
 
@@ -199,6 +222,8 @@ model Student {
   seatAssignments       SeatAssignment[]
   homeworkSubmissions   HomeworkSubmission[]
   badges                StudentBadge[]
+  messageThreads        MessageThread[]
+  meetings              Meeting[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
@@ -546,4 +571,80 @@ model DocumentVerification {
 
   @@index([issuedAt])
   @@map("document_verifications")
+}
+
+model MessageThread {
+  id         String          @id @default(cuid())
+  subject    String
+  studentId  String
+  student    Student         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  guardianId String
+  guardian   User            @relation("GuardianThreads", fields: [guardianId], references: [id], onDelete: Cascade)
+  staffId    String?
+  staff      User?           @relation("StaffThreads", fields: [staffId], references: [id], onDelete: SetNull)
+  status     ThreadStatus    @default(ABERTO)
+  messages   DirectMessage[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([guardianId, updatedAt])
+  @@index([studentId, updatedAt])
+  @@index([status, updatedAt])
+  @@map("message_threads")
+}
+
+model DirectMessage {
+  id        String        @id @default(cuid())
+  threadId  String
+  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content   String
+  readAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([threadId, createdAt])
+  @@map("direct_messages")
+}
+
+model Meeting {
+  id             String        @id @default(cuid())
+  title          String
+  studentId      String
+  student        Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  guardianId     String
+  guardian       User          @relation("GuardianMeetings", fields: [guardianId], references: [id], onDelete: Cascade)
+  organizerId    String
+  organizer      User          @relation("OrganizerMeetings", fields: [organizerId], references: [id], onDelete: Restrict)
+  date           String
+  time           String
+  mode           MeetingMode   @default(PRESENCIAL)
+  locationOrLink String
+  notes          String?
+  status         MeetingStatus @default(CONVOCADA)
+  guardianNote   String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([guardianId, date])
+  @@index([organizerId, date])
+  @@index([studentId, date])
+  @@map("meetings")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userName  String
+  userRole  String
+  action    String
+  entity    String
+  entityId  String?
+  details   String
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action, createdAt])
+  @@index([userRole, createdAt])
+  @@map("audit_logs")
 }

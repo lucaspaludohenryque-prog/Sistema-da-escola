@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { BCRYPT_COST, getAuthenticatedUser } from "@/features/auth";
 import type { ApiErrorPayload } from "@/features/classrooms";
 import { updateUserSchema, type ManagedUser } from "@/features/users";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -153,6 +154,14 @@ export async function PUT(
       createdAt: updated.createdAt.toISOString(),
     };
 
+    await recordAuditLog({
+      user: currentUser,
+      action: active ? "EDITAR_USUARIO" : "DESATIVAR_USUARIO",
+      entity: "User",
+      entityId: updated.id,
+      details: `${active ? "Atualizou" : "Desativou"} a conta de ${updated.name} (${updated.email}, perfil ${updated.role}).`,
+    });
+
     return NextResponse.json(
       { user },
       { status: 200, headers: NO_STORE_HEADERS }
@@ -255,6 +264,14 @@ export async function DELETE(
     }
 
     await prisma.user.delete({ where: { id } });
+
+    await recordAuditLog({
+      user: currentUser,
+      action: "EXCLUIR_USUARIO",
+      entity: "User",
+      entityId: id,
+      details: `Excluiu o usuário de ID ${id}.`,
+    });
 
     return NextResponse.json(
       { success: true },

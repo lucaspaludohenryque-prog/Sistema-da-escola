@@ -20,6 +20,7 @@ interface SidebarNavProps {
   schoolConfig: SchoolConfigData;
   unacknowledgedCount: number;
   pendingJustificationsCount?: number;
+  unreadMessagesCount?: number;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
   onNavigate?: () => void;
@@ -31,6 +32,7 @@ export function SidebarNav({
   schoolConfig,
   unacknowledgedCount,
   pendingJustificationsCount = 0,
+  unreadMessagesCount = 0,
   collapsed = false,
   onToggleCollapse,
   onNavigate,
@@ -173,7 +175,9 @@ export function SidebarNav({
                           : item.showJustificationsBadge &&
                               pendingJustificationsCount > 0
                             ? pendingJustificationsCount
-                            : 0;
+                            : item.showMessagesBadge && unreadMessagesCount > 0
+                              ? unreadMessagesCount
+                              : 0;
 
                       return (
                         <li key={item.href}>

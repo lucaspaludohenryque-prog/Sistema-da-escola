@@ -5,6 +5,7 @@ import {
   type ApiErrorPayload,
 } from "@/features/classrooms";
 import { toggleTermLockSchema } from "@/features/grades";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -89,6 +90,14 @@ export async function PATCH(
         locked: true,
         lockedAt: true,
       },
+    });
+
+    await recordAuditLog({
+      user,
+      action: locked ? "TRANCAR_TRIMESTRE" : "DESTRANCAR_TRIMESTRE",
+      entity: "TermLock",
+      entityId: `${classroomId}:${term}`,
+      details: `${locked ? "Trancou" : "Destrancou"} o ${term}º trimestre da turma ${classroomId}.`,
     });
 
     return NextResponse.json(

@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/features/auth";
 import { canManageClassrooms } from "@/features/classrooms/constants";
 import { DashboardShell } from "@/features/dashboard";
 import { countPendingJustifications } from "@/features/justifications/queries";
+import { countUnreadThreadsForUser } from "@/features/messages/queries";
 import { countUnacknowledgedNotifications } from "@/features/notifications";
 import { getSchoolConfig } from "@/features/school-config";
 
@@ -22,15 +23,19 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  const [initialUnacknowledgedCount, initialPendingJustificationsCount] =
-    await Promise.all([
-      user.role === "RESPONSAVEL" || user.role === "ALUNO"
-        ? countUnacknowledgedNotifications(user.id)
-        : Promise.resolve(0),
-      canManageClassrooms(user.role)
-        ? countPendingJustifications()
-        : Promise.resolve(0),
-    ]);
+  const [
+    initialUnacknowledgedCount,
+    initialPendingJustificationsCount,
+    initialUnreadMessagesCount,
+  ] = await Promise.all([
+    user.role === "RESPONSAVEL" || user.role === "ALUNO"
+      ? countUnacknowledgedNotifications(user.id)
+      : Promise.resolve(0),
+    canManageClassrooms(user.role)
+      ? countPendingJustifications()
+      : Promise.resolve(0),
+    user.role !== "ALUNO" ? countUnreadThreadsForUser(user) : Promise.resolve(0),
+  ]);
 
   return (
     <DashboardShell
@@ -38,6 +43,7 @@ export default async function DashboardLayout({
       schoolConfig={schoolConfig}
       initialUnacknowledgedCount={initialUnacknowledgedCount}
       initialPendingJustificationsCount={initialPendingJustificationsCount}
+      initialUnreadMessagesCount={initialUnreadMessagesCount}
     >
       {children}
     </DashboardShell>

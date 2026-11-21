@@ -3,6 +3,7 @@ import {
   Bell,
   BookMarked,
   BookOpenText,
+  CalendarClock,
   CalendarDays,
   ClipboardCheck,
   Clock,
@@ -15,9 +16,11 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Megaphone,
+  MessageSquare,
   Radar,
   ScrollText,
   Settings,
+  ShieldCheck,
   UserCog,
   Users,
   type LucideIcon,
@@ -39,6 +42,7 @@ export interface DashboardNavItem {
   exact?: boolean;
   showNotificationBadge?: boolean;
   showJustificationsBadge?: boolean;
+  showMessagesBadge?: boolean;
 }
 
 export interface DashboardNavGroup {
@@ -161,6 +165,21 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     icon: Megaphone,
     section: "COMUNICAÇÃO",
   },
+  {
+    label: "Atendimento",
+    href: "/dashboard/mensagens",
+    description: "Chat direto entre equipe escolar e responsáveis",
+    icon: MessageSquare,
+    section: "COMUNICAÇÃO",
+    showMessagesBadge: true,
+  },
+  {
+    label: "Reuniões",
+    href: "/dashboard/reunioes",
+    description: "Agendamento e confirmação de reuniões pedagógicas",
+    icon: CalendarClock,
+    section: "COMUNICAÇÃO",
+  },
 ];
 
 const MANAGER_EXTRA_ITEMS: DashboardNavItem[] = [
@@ -194,6 +213,13 @@ const ADMIN_EXTRA_ITEMS: DashboardNavItem[] = [
     href: "/dashboard/configuracoes",
     description: "Identidade institucional, cor principal, brasão e ano letivo",
     icon: Settings,
+    section: "GESTÃO",
+  },
+  {
+    label: "Auditoria & Backup",
+    href: "/dashboard/auditoria",
+    description: "Logs de segurança LGPD e exportação completa de backup JSON",
+    icon: ShieldCheck,
     section: "GESTÃO",
   },
 ];
@@ -250,6 +276,21 @@ const GUARDIAN_NAV_ITEMS: DashboardNavItem[] = [
     icon: Bell,
     section: "COMUNICAÇÃO",
     showNotificationBadge: true,
+  },
+  {
+    label: "Atendimento",
+    href: "/dashboard/mensagens",
+    description: "Conversar diretamente com a coordenação e professores",
+    icon: MessageSquare,
+    section: "COMUNICAÇÃO",
+    showMessagesBadge: true,
+  },
+  {
+    label: "Reuniões",
+    href: "/dashboard/reunioes",
+    description: "Confirmar presença ou solicitar remarcação de reuniões",
+    icon: CalendarClock,
+    section: "COMUNICAÇÃO",
   },
 ];
 
@@ -381,6 +422,15 @@ export function getMobileBottomNavItems(role: UserRole): MobileBottomNavItem[] {
 export function resolveDashboardSectionTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/alunos/")) {
     return "Ficha do Aluno";
+  }
+  if (pathname.startsWith("/dashboard/mensagens")) {
+    return "Atendimento & Mensagens";
+  }
+  if (pathname.startsWith("/dashboard/reunioes")) {
+    return "Reuniões Pedagógicas";
+  }
+  if (pathname.startsWith("/dashboard/auditoria")) {
+    return "Auditoria & Backup";
   }
   if (pathname.startsWith("/dashboard/radar")) {
     return "Radar Pedagógico";

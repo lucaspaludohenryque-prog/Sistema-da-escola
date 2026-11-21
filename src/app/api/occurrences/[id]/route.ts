@@ -9,6 +9,7 @@ import {
   updateOccurrenceSchema,
   type OccurrenceItem,
 } from "@/features/occurrences";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -230,6 +231,14 @@ export async function DELETE(
       }),
       prisma.occurrence.delete({ where: { id } }),
     ]);
+
+    await recordAuditLog({
+      user,
+      action: "EXCLUIR_OCORRENCIA",
+      entity: "Occurrence",
+      entityId: id,
+      details: `Excluiu o registro de ocorrência ${id}.`,
+    });
 
     return NextResponse.json(
       { success: true },

@@ -31,8 +31,10 @@ function resolveSafeNextPath(nextPath: string | undefined, role: UserRole): stri
       nextPath.startsWith("/dashboard/calendario") ||
       nextPath.startsWith("/dashboard/alunos/") ||
       (role === "RESPONSAVEL" &&
-        nextPath.startsWith("/dashboard/familia") &&
-        !nextPath.startsWith("/dashboard/familia-vinculos")) ||
+        (nextPath.startsWith("/dashboard/mensagens") ||
+          nextPath.startsWith("/dashboard/reunioes") ||
+          (nextPath.startsWith("/dashboard/familia") &&
+            !nextPath.startsWith("/dashboard/familia-vinculos")))) ||
       (role === "ALUNO" && nextPath.startsWith("/dashboard/aluno"))
     ) {
       return nextPath;

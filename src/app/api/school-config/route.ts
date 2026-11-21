@@ -8,6 +8,7 @@ import {
   updateSchoolConfigSchema,
   type SchoolConfigData,
 } from "@/features/school-config";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -126,6 +127,14 @@ export async function PUT(
       primaryColor: normalizeHexColor(updated.primaryColor),
       updatedAt: updated.updatedAt.toISOString(),
     };
+
+    await recordAuditLog({
+      user: currentUser,
+      action: "ALTERAR_CONFIG",
+      entity: "SchoolConfig",
+      entityId: "1",
+      details: `Atualizou configurações da escola (${config.name}, ano letivo ${config.schoolYear}, cor ${config.primaryColor}).`,
+    });
 
     return NextResponse.json(
       { config },

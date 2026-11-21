@@ -23,6 +23,7 @@ const STAFF_ONLY_PREFIXES = [
   "/dashboard/justificativas",
   "/dashboard/usuarios",
   "/dashboard/configuracoes",
+  "/dashboard/auditoria",
   "/dashboard/familia-vinculos",
 ];
 
@@ -43,7 +44,8 @@ function resolveRoleRedirect(pathname: string, role: UserRole): string | null {
     }
     if (
       (pathname.startsWith("/dashboard/usuarios") ||
-        pathname.startsWith("/dashboard/configuracoes")) &&
+        pathname.startsWith("/dashboard/configuracoes") ||
+        pathname.startsWith("/dashboard/auditoria")) &&
       role !== "ADMIN"
     ) {
       return "/dashboard";
@@ -72,6 +74,15 @@ function resolveRoleRedirect(pathname: string, role: UserRole): string | null {
 
   if (pathname.startsWith("/dashboard/avisos")) {
     if (role !== "RESPONSAVEL" && role !== "ALUNO") {
+      return homePath;
+    }
+  }
+
+  if (
+    pathname.startsWith("/dashboard/mensagens") ||
+    pathname.startsWith("/dashboard/reunioes")
+  ) {
+    if (role === "ALUNO") {
       return homePath;
     }
   }

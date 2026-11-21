@@ -11,6 +11,7 @@ import {
   saveGradesBatchSchema,
   type GradeSheetData,
 } from "@/features/grades";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -233,6 +234,14 @@ export async function POST(
           });
         }
       }
+    });
+
+    await recordAuditLog({
+      user,
+      action: "LANCAR_NOTAS",
+      entity: "Grade",
+      entityId: `${classroomId}:${term}`,
+      details: `Salvou ${entries.length} lançamento(s) de nota no ${term}º trimestre da turma ${classroomId}.`,
     });
 
     const refreshed = await getGradeSheetForUser({

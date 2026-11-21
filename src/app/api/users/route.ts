@@ -8,6 +8,7 @@ import {
   listManagedUsers,
   type ManagedUser,
 } from "@/features/users";
+import { recordAuditLog } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -149,6 +150,14 @@ export async function POST(
       occurrenceCount: created._count.occurrences,
       createdAt: created.createdAt.toISOString(),
     };
+
+    await recordAuditLog({
+      user: currentUser,
+      action: "CRIAR_USUARIO",
+      entity: "User",
+      entityId: created.id,
+      details: `Cadastrou o usuário ${created.name} (${created.email}) com perfil ${created.role}.`,
+    });
 
     return NextResponse.json(
       { user },

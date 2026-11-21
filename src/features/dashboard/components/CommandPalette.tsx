@@ -9,6 +9,7 @@ import {
   BookMarked,
   BookOpen,
   BookOpenText,
+  CalendarClock,
   CalendarDays,
   ClipboardCheck,
   Clock,
@@ -17,9 +18,11 @@ import {
   GraduationCap,
   LayoutGrid,
   Megaphone,
+  MessageSquare,
   Radar,
   ScrollText,
   Search,
+  ShieldCheck,
   Users,
   X,
 } from "lucide-react";
@@ -84,6 +87,18 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         description: "Avisos oficiais da escola e das turmas",
         href: "/dashboard/comunicados",
         icon: Megaphone,
+      },
+      {
+        label: "Atendimento / Mensagens",
+        description: "Conversar com a escola ou professores",
+        href: "/dashboard/mensagens",
+        icon: MessageSquare,
+      },
+      {
+        label: "Reuniões Pedagógicas",
+        description: "Confirmar presença ou sugerir novo horário",
+        href: "/dashboard/reunioes",
+        icon: CalendarClock,
       },
       {
         label: "Central de Avisos",
@@ -172,6 +187,28 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
       href: "/dashboard/comunicados",
       icon: Megaphone,
     },
+    {
+      label: "Atendimento / Mensagens",
+      description: "Chat direto com responsáveis",
+      href: "/dashboard/mensagens",
+      icon: MessageSquare,
+    },
+    {
+      label: "Reuniões Pedagógicas",
+      description: "Agendar e acompanhar reuniões com famílias",
+      href: "/dashboard/reunioes",
+      icon: CalendarClock,
+    },
+    ...(role === "ADMIN"
+      ? [
+          {
+            label: "Auditoria & Backup",
+            description: "Logs de segurança LGPD e exportação JSON",
+            href: "/dashboard/auditoria",
+            icon: ShieldCheck,
+          },
+        ]
+      : []),
     ...(role === "ADMIN" || role === "COORDENACAO"
       ? [
           {
