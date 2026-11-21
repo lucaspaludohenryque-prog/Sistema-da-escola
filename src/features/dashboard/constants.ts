@@ -50,6 +50,9 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
 ];
 
 export function resolveDashboardSectionTitle(pathname: string): string {
+  if (pathname.startsWith("/dashboard/alunos")) {
+    return "Ficha do Aluno";
+  }
   const matched = DASHBOARD_NAV_ITEMS.find((item) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href)
   );

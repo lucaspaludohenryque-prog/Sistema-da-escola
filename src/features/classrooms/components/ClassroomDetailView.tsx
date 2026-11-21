@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   BookOpen,
   Calendar,
+  FileText,
   Pencil,
   Phone,
   Plus,
@@ -291,6 +292,14 @@ export function ClassroomDetailView({
                       </td>
                       <td className="whitespace-nowrap py-3.5 pr-6 pl-3 text-right">
                         <div className="inline-flex items-center gap-1">
+                          <Link
+                            href={`/dashboard/alunos/${student.id}/ficha`}
+                            aria-label={`Abrir ficha e boletim em PDF de ${student.name}`}
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#1E40AF] transition-colors hover:bg-blue-50"
+                          >
+                            <FileText className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                            <span>Ficha / PDF</span>
+                          </Link>
                           <button
                             type="button"
                             onClick={() => openEditModal(student)}
@@ -340,6 +349,14 @@ export function ClassroomDetailView({
                     </div>
 
                     <div className="flex shrink-0 items-center gap-1">
+                      <Link
+                        href={`/dashboard/alunos/${student.id}/ficha`}
+                        aria-label={`Abrir ficha e boletim em PDF de ${student.name}`}
+                        title="Ficha / PDF"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#1E40AF] hover:bg-blue-50"
+                      >
+                        <FileText className="h-4 w-4" strokeWidth={1.75} />
+                      </Link>
                       <button
                         type="button"
                         onClick={() => openEditModal(student)}

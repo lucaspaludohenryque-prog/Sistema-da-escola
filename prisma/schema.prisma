@@ -71,6 +71,7 @@ model Classroom {
   students    Student[]
   lessons     Lesson[]
   occurrences Occurrence[]
+  assessments Assessment[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -90,6 +91,7 @@ model Student {
   classroom     Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   attendances   Attendance[]
   occurrences   Occurrence[]
+  grades        Grade[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -150,4 +152,35 @@ model Occurrence {
   @@index([studentId])
   @@index([status, severity])
   @@map("occurrences")
+}
+
+model Assessment {
+  id          String    @id @default(cuid())
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  title       String
+  term        Int
+  maxScore    Float     @default(10.0)
+  weight      Float     @default(1.0)
+  date        String
+  grades      Grade[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([classroomId, term, date])
+  @@map("assessments")
+}
+
+model Grade {
+  id           String     @id @default(cuid())
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  score        Float
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([assessmentId, studentId])
+  @@index([studentId])
+  @@map("grades")
 }

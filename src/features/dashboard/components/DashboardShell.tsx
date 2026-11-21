@@ -59,23 +59,23 @@ export function DashboardShell({
   }
 
   return (
-    <div className="flex min-h-[100dvh] bg-[#F6F8FA]">
+    <div className="flex min-h-[100dvh] bg-[#F6F8FA] print:block print:min-h-0 print:bg-white">
       <a
         href="#conteudo-principal"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[#1E40AF] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-[#1E40AF] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white print:hidden"
       >
         Ir para o conteúdo principal
       </a>
 
       {/* Sidebar fixa no desktop */}
-      <aside className="hidden w-64 shrink-0 border-r border-slate-200/80 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:block">
+      <aside className="hidden w-64 shrink-0 border-r border-slate-200/80 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:block print:hidden">
         <SidebarNav />
       </aside>
 
       {/* Drawer lateral responsivo no mobile */}
       {isMobileMenuOpen ? (
         <div
-          className="fixed inset-0 z-40 lg:hidden"
+          className="fixed inset-0 z-40 lg:hidden print:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Menu de navegação"
@@ -94,8 +94,8 @@ export function DashboardShell({
         </div>
       ) : null}
 
-      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-sm sm:px-6 lg:px-8">
+      <div className="flex min-w-0 flex-1 flex-col lg:pl-64 print:pl-0">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-sm sm:px-6 lg:px-8 print:hidden">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
@@ -153,9 +153,9 @@ export function DashboardShell({
 
         <main
           id="conteudo-principal"
-          className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8"
+          className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 print:max-w-none print:p-0"
         >
-          <div className="mb-4 rounded-xl bg-white px-4 py-3 ring-1 ring-slate-900/[0.06] sm:hidden">
+          <div className="mb-4 rounded-xl bg-white px-4 py-3 ring-1 ring-slate-900/[0.06] sm:hidden print:hidden">
             <p className="truncate text-sm font-medium text-slate-900">{user.name}</p>
             <p className="truncate text-xs text-slate-500">{user.email}</p>
           </div>
