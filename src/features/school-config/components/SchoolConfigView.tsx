@@ -8,6 +8,7 @@ import {
   BookOpenCheck,
   Building2,
   Check,
+  FlaskConical,
   Loader2,
   Palette,
   Save,
@@ -44,6 +45,9 @@ export function SchoolConfigView({
   const [logoUrl, setLogoUrl] = useState<string | null>(initialConfig.logoUrl);
   const [primaryColor, setPrimaryColor] = useState<string>(
     normalizeHexColor(initialConfig.primaryColor)
+  );
+  const [demoModeEnabled, setDemoModeEnabled] = useState<boolean>(
+    initialConfig.demoModeEnabled
   );
 
   const [isSaving, setIsSaving] = useState(false);
@@ -119,6 +123,7 @@ export function SchoolConfigView({
           schoolYear: Number(schoolYear),
           logoUrl,
           primaryColor: normalizeHexColor(primaryColor),
+          demoModeEnabled,
         }),
       });
 
@@ -145,6 +150,7 @@ export function SchoolConfigView({
       setSchoolYear(String(payload.config.schoolYear));
       setLogoUrl(payload.config.logoUrl);
       setPrimaryColor(normalizeHexColor(payload.config.primaryColor));
+      setDemoModeEnabled(payload.config.demoModeEnabled);
 
       toast.success(
         "Identidade e cor principal da escola atualizadas com sucesso.",
@@ -376,6 +382,60 @@ export function SchoolConfigView({
                   Prévia do Botão
                 </span>
               </div>
+            </div>
+          </section>
+
+          {/* Modo Demonstracao (Acesso Rapido no Login) */}
+          <section className="rounded-xl bg-white p-5 shadow-[var(--shadow-ambient)] ring-1 ring-zinc-200/80 sm:p-6 dark:bg-[#131518] dark:ring-white/[0.08]">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-2.5">
+                <FlaskConical
+                  className="mt-0.5 h-5 w-5 shrink-0 text-[var(--school-primary)] dark:text-blue-400"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                      Modo Demonstração (Acesso Rápido no Login)
+                    </h2>
+                    <span
+                      className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-medium ${
+                        demoModeEnabled
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300"
+                          : "border-zinc-200 bg-zinc-50 text-zinc-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-zinc-400"
+                      }`}
+                    >
+                      {demoModeEnabled ? "Ativo" : "Desativado"}
+                    </span>
+                  </div>
+                  <p className="text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">
+                    Quando ativo, exibe botões de acesso de teste na tela de login para
+                    apresentações. Desative ao colocar em uso oficial com dados reais da escola.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                role="switch"
+                aria-checked={demoModeEnabled}
+                aria-label="Alternar Modo Demonstração no Login"
+                disabled={isSaving}
+                onClick={() => setDemoModeEnabled((prev) => !prev)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[var(--school-primary-ring)] focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 ${
+                  demoModeEnabled
+                    ? "border-transparent bg-[var(--school-primary)]"
+                    : "border-zinc-300 bg-zinc-200 dark:border-white/15 dark:bg-white/10"
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none inline-block h-4.5 w-4.5 transform rounded-full bg-white shadow-xs transition-transform duration-150 ${
+                    demoModeEnabled ? "translate-x-5.5" : "translate-x-0.5"
+                  }`}
+                />
+              </button>
             </div>
           </section>
         </div>

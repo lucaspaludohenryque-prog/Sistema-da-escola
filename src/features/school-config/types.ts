@@ -7,5 +7,6 @@ export interface SchoolConfigData {
   schoolYear: number;
   logoUrl: string | null;
   primaryColor: string;
+  demoModeEnabled: boolean;
   updatedAt: string;
 }

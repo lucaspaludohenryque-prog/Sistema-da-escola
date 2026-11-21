@@ -17,6 +17,7 @@ export function getDefaultSchoolConfig(): SchoolConfigData {
     schoolYear: new Date().getFullYear(),
     logoUrl: null,
     primaryColor: DEFAULT_SCHOOL_PRIMARY_COLOR,
+    demoModeEnabled: true,
     updatedAt: new Date(0).toISOString(),
   };
 }
@@ -42,6 +43,7 @@ export async function getSchoolConfig(): Promise<SchoolConfigData> {
         schoolYear: true,
         logoUrl: true,
         primaryColor: true,
+        demoModeEnabled: true,
         updatedAt: true,
       },
     });

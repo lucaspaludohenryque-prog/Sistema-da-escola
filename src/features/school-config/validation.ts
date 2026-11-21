@@ -66,6 +66,7 @@ export const updateSchoolConfigSchema = z.object({
     .refine((value) => HEX_COLOR_REGEX.test(value), {
       message: "Selecione uma cor principal válida no formato hexadecimal (#RRGGBB).",
     }),
+  demoModeEnabled: z.boolean().optional().default(true),
 });
 
 export type UpdateSchoolConfigInput = z.infer<typeof updateSchoolConfigSchema>;

@@ -85,7 +85,16 @@ export async function PUT(
     );
   }
 
-  const { name, city, state, phone, schoolYear, logoUrl, primaryColor } = parsed.data;
+  const {
+    name,
+    city,
+    state,
+    phone,
+    schoolYear,
+    logoUrl,
+    primaryColor,
+    demoModeEnabled,
+  } = parsed.data;
 
   try {
     const updated = await prisma.schoolConfig.upsert({
@@ -98,6 +107,7 @@ export async function PUT(
         schoolYear,
         logoUrl,
         primaryColor,
+        demoModeEnabled,
       },
       create: {
         id: 1,
@@ -108,6 +118,7 @@ export async function PUT(
         schoolYear,
         logoUrl,
         primaryColor,
+        demoModeEnabled,
       },
       select: {
         id: true,
@@ -118,6 +129,7 @@ export async function PUT(
         schoolYear: true,
         logoUrl: true,
         primaryColor: true,
+        demoModeEnabled: true,
         updatedAt: true,
       },
     });
@@ -133,7 +145,7 @@ export async function PUT(
       action: "ALTERAR_CONFIG",
       entity: "SchoolConfig",
       entityId: "1",
-      details: `Atualizou configurações da escola (${config.name}, ano letivo ${config.schoolYear}, cor ${config.primaryColor}).`,
+      details: `Atualizou configurações da escola (${config.name}, ano letivo ${config.schoolYear}, cor ${config.primaryColor}, modo demonstração ${config.demoModeEnabled ? "ativo" : "desativado"}).`,
     });
 
     return NextResponse.json(

@@ -187,7 +187,10 @@ export default async function LoginPage({
               </p>
             </div>
 
-            <LoginForm redirectTo={params.next} />
+            <LoginForm
+              redirectTo={params.next}
+              demoModeEnabled={schoolConfig.demoModeEnabled}
+            />
           </section>
 
           <div className="mt-6 flex flex-col gap-2 border-t border-zinc-200/70 pt-5 text-xs text-zinc-500 dark:border-white/[0.08] dark:text-zinc-400">
