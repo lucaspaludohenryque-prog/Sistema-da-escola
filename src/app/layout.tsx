@@ -1,20 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-  weight: ["400", "500"],
-});
 
 const SITE_URL = "https://rcolasalle.vercel.app";
 const SITE_TITLE = "RCO La Salle Curitiba | Registro de Classe Online";
@@ -47,10 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.JSX.Element {
   return (
-    <html
-      lang="pt-BR"
-      className={`${plusJakartaSans.variable} ${jetBrainsMono.variable}`}
-    >
+    <html lang="pt-BR">
       <body className="min-h-[100dvh] bg-[#F6F8FA] font-sans text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900">
         {children}
       </body>
