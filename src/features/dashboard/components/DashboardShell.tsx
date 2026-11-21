@@ -7,6 +7,7 @@ import {
   Bell,
   ChevronDown,
   ChevronRight,
+  HelpCircle,
   Loader2,
   LogOut,
   Menu,
@@ -463,6 +464,16 @@ export function DashboardShell({
                         <span>Configurações da Escola</span>
                       </Link>
                     ) : null}
+
+                    <Link
+                      href="/dashboard/ajuda"
+                      role="menuitem"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-[#1A1D21] dark:hover:text-zinc-100"
+                    >
+                      <HelpCircle className="h-4 w-4 text-zinc-400 dark:text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
+                      <span>Central de Ajuda</span>
+                    </Link>
 
                     <button
                       type="button"

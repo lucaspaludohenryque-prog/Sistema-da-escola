@@ -392,7 +392,7 @@ export default async function HomePage(): Promise<React.JSX.Element> {
             {locationLine ? ` · ${locationLine}` : ""} · Ano letivo {schoolConfig.schoolYear}
           </p>
 
-          <div className="flex items-center gap-5">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a
               href="#perfis"
               className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -404,6 +404,24 @@ export default async function HomePage(): Promise<React.JSX.Element> {
               className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
             >
               Validar documento
+            </Link>
+            <Link
+              href="/termos"
+              className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+            >
+              Termos de Uso
+            </Link>
+            <Link
+              href="/privacidade"
+              className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+            >
+              Privacidade (LGPD)
+            </Link>
+            <Link
+              href="/cookies"
+              className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+            >
+              Cookies
             </Link>
             <Link
               href={primaryHref}

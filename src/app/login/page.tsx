@@ -101,8 +101,8 @@ export default async function LoginPage({
             </div>
           </div>
 
-          {/* Rodape da coluna com link discreto para validacao */}
-          <div className="border-t border-zinc-200/80 pt-5 dark:border-white/[0.08]">
+          {/* Rodape da coluna com link discreto para validacao e documentos legais */}
+          <div className="space-y-3 border-t border-zinc-200/80 pt-5 dark:border-white/[0.08]">
             <Link
               href="/validar"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
@@ -110,6 +110,26 @@ export default async function LoginPage({
               <span>Validar documento emitido</span>
               <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
             </Link>
+            <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] text-zinc-500 dark:text-zinc-400">
+              <Link
+                href="/termos"
+                className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+              >
+                Termos de Uso
+              </Link>
+              <Link
+                href="/privacidade"
+                className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+              >
+                Privacidade (LGPD)
+              </Link>
+              <Link
+                href="/cookies"
+                className="transition-colors hover:text-zinc-900 dark:hover:text-zinc-100"
+              >
+                Cookies
+              </Link>
+            </div>
           </div>
         </div>
       </aside>
@@ -184,8 +204,30 @@ export default async function LoginPage({
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-sm text-xs text-zinc-400 tabular-nums dark:text-zinc-500">
-          {schoolConfig.name} · Ano letivo {schoolConfig.schoolYear}
+        <div className="mx-auto flex w-full max-w-sm flex-col gap-2 text-xs text-zinc-400 tabular-nums dark:text-zinc-500">
+          <p>
+            {schoolConfig.name} · Ano letivo {schoolConfig.schoolYear}
+          </p>
+          <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-[11px] lg:hidden">
+            <Link
+              href="/termos"
+              className="transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
+            >
+              Termos de Uso
+            </Link>
+            <Link
+              href="/privacidade"
+              className="transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
+            >
+              Privacidade (LGPD)
+            </Link>
+            <Link
+              href="/cookies"
+              className="transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
+            >
+              Cookies
+            </Link>
+          </div>
         </div>
       </main>
     </div>

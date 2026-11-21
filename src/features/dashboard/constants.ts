@@ -12,6 +12,7 @@ import {
   FileWarning,
   GraduationCap,
   HeartHandshake,
+  HelpCircle,
   Home,
   LayoutDashboard,
   LayoutGrid,
@@ -31,7 +32,8 @@ export type DashboardNavSection =
   | "PRINCIPAL"
   | "ROTINA PEDAGÓGICA"
   | "COMUNICAÇÃO"
-  | "GESTÃO";
+  | "GESTÃO"
+  | "SUPORTE";
 
 export interface DashboardNavItem {
   label: string;
@@ -63,7 +65,16 @@ const SECTION_ORDER: readonly DashboardNavSection[] = [
   "ROTINA PEDAGÓGICA",
   "COMUNICAÇÃO",
   "GESTÃO",
+  "SUPORTE",
 ] as const;
+
+const HELP_NAV_ITEM: DashboardNavItem = {
+  label: "Ajuda e Tutorial",
+  href: "/dashboard/ajuda",
+  description: "Guias passo a passo, primeiros passos e perguntas frequentes",
+  icon: HelpCircle,
+  section: "SUPORTE",
+};
 
 const STAFF_BASE_ITEMS: DashboardNavItem[] = [
   {
@@ -361,22 +372,28 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
   ...STAFF_BASE_ITEMS,
   ...MANAGER_EXTRA_ITEMS,
   ...ADMIN_EXTRA_ITEMS,
+  HELP_NAV_ITEM,
 ];
 
 export function getDashboardNavItems(role: UserRole): DashboardNavItem[] {
   if (role === "RESPONSAVEL") {
-    return GUARDIAN_NAV_ITEMS;
+    return [...GUARDIAN_NAV_ITEMS, HELP_NAV_ITEM];
   }
   if (role === "ALUNO") {
-    return STUDENT_NAV_ITEMS;
+    return [...STUDENT_NAV_ITEMS, HELP_NAV_ITEM];
   }
   if (role === "ADMIN") {
-    return [...STAFF_BASE_ITEMS, ...MANAGER_EXTRA_ITEMS, ...ADMIN_EXTRA_ITEMS];
+    return [
+      ...STAFF_BASE_ITEMS,
+      ...MANAGER_EXTRA_ITEMS,
+      ...ADMIN_EXTRA_ITEMS,
+      HELP_NAV_ITEM,
+    ];
   }
   if (role === "COORDENACAO") {
-    return [...STAFF_BASE_ITEMS, ...MANAGER_EXTRA_ITEMS];
+    return [...STAFF_BASE_ITEMS, ...MANAGER_EXTRA_ITEMS, HELP_NAV_ITEM];
   }
-  return STAFF_BASE_ITEMS;
+  return [...STAFF_BASE_ITEMS, HELP_NAV_ITEM];
 }
 
 export function getDashboardNavGroups(role: UserRole): DashboardNavGroup[] {
@@ -474,6 +491,9 @@ export function resolveDashboardSectionTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/avisos")) {
     return "Avisos";
   }
+  if (pathname.startsWith("/dashboard/ajuda")) {
+    return "Central de Ajuda";
+  }
 
   const matched = DASHBOARD_NAV_ITEMS.find((item) =>
     item.exact ? pathname === item.href : pathname.startsWith(item.href)
@@ -514,7 +534,9 @@ export function resolveDashboardBreadcrumb(
           ? "Rotina Pedagógica"
           : matched.section === "COMUNICAÇÃO"
             ? "Comunicação"
-            : "Gestão";
+            : matched.section === "SUPORTE"
+              ? "Suporte"
+              : "Gestão";
     return { parent: sectionName, current };
   }
 

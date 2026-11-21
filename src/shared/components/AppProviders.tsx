@@ -1,5 +1,6 @@
 "use client";
 
+import { CookieConsentBanner } from "./CookieConsentBanner";
 import { ThemeProvider } from "./ThemeProvider";
 import { ToastProvider } from "./ToastProvider";
 
@@ -10,7 +11,10 @@ export function AppProviders({
 }): React.JSX.Element {
   return (
     <ThemeProvider>
-      <ToastProvider>{children}</ToastProvider>
+      <ToastProvider>
+        {children}
+        <CookieConsentBanner />
+      </ToastProvider>
     </ThemeProvider>
   );
 }

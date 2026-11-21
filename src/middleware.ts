@@ -9,6 +9,7 @@ import {
 
 const DASHBOARD_PREFIX = "/dashboard";
 const LOGIN_PATH = "/login";
+const PUBLIC_LEGAL_PATHS = ["/termos", "/privacidade", "/cookies"] as const;
 
 const STAFF_ONLY_PREFIXES = [
   "/dashboard/turmas",
@@ -92,6 +93,16 @@ function resolveRoleRedirect(pathname: string, role: UserRole): string | null {
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname, search } = request.nextUrl;
+
+  if (
+    PUBLIC_LEGAL_PATHS.some(
+      (publicPath) =>
+        pathname === publicPath || pathname.startsWith(`${publicPath}/`)
+    )
+  ) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const session = token ? await verifySessionToken(token) : null;
 

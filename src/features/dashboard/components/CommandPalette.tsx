@@ -16,6 +16,7 @@ import {
   FileCheck2,
   FileWarning,
   GraduationCap,
+  HelpCircle,
   LayoutGrid,
   Megaphone,
   MessageSquare,
@@ -106,6 +107,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         href: "/dashboard/avisos",
         icon: Bell,
       },
+      {
+        label: "Central de Ajuda & Tutorial",
+        description: "Guias passo a passo e perguntas frequentes",
+        href: "/dashboard/ajuda",
+        icon: HelpCircle,
+      },
     ];
   }
 
@@ -146,6 +153,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         description: "Comunicados e notificações escolares",
         href: "/dashboard/avisos",
         icon: Bell,
+      },
+      {
+        label: "Central de Ajuda & Tutorial",
+        description: "Guias passo a passo e perguntas frequentes",
+        href: "/dashboard/ajuda",
+        icon: HelpCircle,
       },
     ];
   }
@@ -260,6 +273,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
       description: "Acessar listagem completa de turmas",
       href: "/dashboard/turmas",
       icon: Users,
+    },
+    {
+      label: "Central de Ajuda & Tutorial",
+      description: "Guias passo a passo, primeiros passos e FAQ",
+      href: "/dashboard/ajuda",
+      icon: HelpCircle,
     },
   ];
 
