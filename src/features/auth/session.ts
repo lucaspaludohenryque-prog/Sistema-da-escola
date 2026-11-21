@@ -28,11 +28,12 @@ export async function getAuthenticatedUser(): Promise<PublicUser | null> {
       name: true,
       email: true,
       role: true,
+      active: true,
       createdAt: true,
     },
   });
 
-  if (!user) {
+  if (!user || !user.active) {
     return null;
   }
 

@@ -1,6 +1,11 @@
+/* eslint-disable @next/next/no-img-element -- Exibe brasao/logo da escola em Base64 ou URL configuravel. */
+
 import type { Metadata } from "next";
 import { BookOpenCheck, ShieldCheck } from "lucide-react";
 import { LoginForm } from "@/features/auth/components/LoginForm";
+import { getSchoolConfig } from "@/features/school-config";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Acesso ao Sistema",
@@ -25,18 +30,40 @@ const SYSTEM_PILLARS = [
 export default async function LoginPage({
   searchParams,
 }: LoginPageProps): Promise<React.JSX.Element> {
-  const params = await searchParams;
+  const [params, schoolConfig] = await Promise.all([
+    searchParams,
+    getSchoolConfig(),
+  ]);
+
+  const locationLine = [schoolConfig.city, schoolConfig.state]
+    .filter((part) => part.trim().length > 0)
+    .join(" - ");
 
   return (
     <div className="grid min-h-[100dvh] grid-cols-1 lg:grid-cols-[1.08fr_1fr]">
       <aside className="rco-grid-pattern relative hidden flex-col justify-between bg-[#0F172A] px-12 py-12 text-slate-100 lg:flex">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1E40AF] text-white ring-1 ring-white/15">
-            <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-          </div>
-          <div>
-            <p className="text-base font-semibold tracking-tight text-white">RCO Escolar</p>
-            <p className="text-xs text-slate-400">Registro de Classe Online</p>
+        <div className="flex items-center gap-3.5">
+          {schoolConfig.logoUrl ? (
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-white/20">
+              <img
+                src={schoolConfig.logoUrl}
+                alt={`Logo ${schoolConfig.name}`}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white ring-1 ring-white/15">
+              <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+          )}
+          <div className="min-w-0">
+            <p className="truncate text-base font-semibold tracking-tight text-white">
+              {schoolConfig.name}
+            </p>
+            <p className="truncate text-xs text-slate-400">
+              Registro de Classe Online
+              {locationLine ? ` · ${locationLine}` : ""}
+            </p>
           </div>
         </div>
 
@@ -64,19 +91,36 @@ export default async function LoginPage({
 
         <div className="flex items-center gap-2.5 text-xs text-slate-400">
           <ShieldCheck className="h-4 w-4 text-blue-400" strokeWidth={1.75} aria-hidden="true" />
-          <span>Autenticação protegida por cookie HTTP-only e criptografia de credenciais.</span>
+          <span>
+            Ano letivo {schoolConfig.schoolYear} · Autenticação protegida por cookie HTTP-only.
+          </span>
         </div>
       </aside>
 
       <main className="flex flex-col justify-center bg-[#F6F8FA] px-4 py-10 sm:px-8 lg:px-14">
         <div className="mx-auto w-full max-w-[420px]">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1E40AF] text-white">
-              <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-base font-semibold tracking-tight text-slate-900">RCO Escolar</p>
-              <p className="text-xs text-slate-600">Registro de Classe Online</p>
+            {schoolConfig.logoUrl ? (
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1.5 ring-1 ring-slate-200">
+                <img
+                  src={schoolConfig.logoUrl}
+                  alt={`Logo ${schoolConfig.name}`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+            ) : (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white">
+                <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+              </div>
+            )}
+            <div className="min-w-0">
+              <p className="truncate text-base font-semibold tracking-tight text-slate-900">
+                {schoolConfig.name}
+              </p>
+              <p className="truncate text-xs text-slate-600">
+                Registro de Classe Online
+                {locationLine ? ` · ${locationLine}` : ""}
+              </p>
             </div>
           </div>
 

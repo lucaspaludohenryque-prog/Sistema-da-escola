@@ -26,5 +26,10 @@ export interface AuthUserResponse {
 
 export interface AuthErrorResponse {
   error: string;
-  code: "VALIDATION_ERROR" | "INVALID_CREDENTIALS" | "UNAUTHORIZED" | "INTERNAL_ERROR";
+  code:
+    | "VALIDATION_ERROR"
+    | "INVALID_CREDENTIALS"
+    | "ACCOUNT_DISABLED"
+    | "UNAUTHORIZED"
+    | "INTERNAL_ERROR";
 }

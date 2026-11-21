@@ -3,6 +3,8 @@ import {
   FileWarning,
   GraduationCap,
   LayoutDashboard,
+  Settings,
+  UserCog,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -13,6 +15,7 @@ export interface DashboardNavItem {
   description: string;
   icon: LucideIcon;
   exact?: boolean;
+  adminOnly?: boolean;
 }
 
 export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
@@ -44,8 +47,22 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
   {
     label: "Notas",
     href: "/dashboard/notas",
-    description: "Lançamento de avaliações, médias e fechamento bimestral",
+    description: "Lançamento de avaliações, médias e fechamento trimestral",
     icon: GraduationCap,
+  },
+  {
+    label: "Usuários",
+    href: "/dashboard/usuarios",
+    description: "Gestão de contas, perfis de acesso e redefinição de senhas",
+    icon: UserCog,
+    adminOnly: true,
+  },
+  {
+    label: "Configurações",
+    href: "/dashboard/configuracoes",
+    description: "Identidade institucional, brasão e ano letivo da escola",
+    icon: Settings,
+    adminOnly: true,
   },
 ];
 

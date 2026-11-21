@@ -58,6 +58,7 @@ export async function POST(
         email: true,
         password: true,
         role: true,
+        active: true,
         createdAt: true,
       },
     });
@@ -72,6 +73,16 @@ export async function POST(
           code: "INVALID_CREDENTIALS",
         },
         { status: 401, headers: NO_STORE_HEADERS }
+      );
+    }
+
+    if (!userRecord.active) {
+      return NextResponse.json<AuthErrorResponse>(
+        {
+          error: "Usuário desativado. Procure a administração da escola.",
+          code: "ACCOUNT_DISABLED",
+        },
+        { status: 403, headers: NO_STORE_HEADERS }
       );
     }
 

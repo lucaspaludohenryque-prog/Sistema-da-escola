@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Exibe brasao da escola em Base64 com suporte direto a impressao A4. */
 
 import Link from "next/link";
 import { ArrowLeft, BookOpenCheck, Printer } from "lucide-react";
@@ -37,8 +38,17 @@ function formatDateTimeBr(isoTimestamp: string): string {
 export function StudentReportView({
   report,
 }: StudentReportViewProps): React.JSX.Element {
-  const { student, classroom, attendance, terms, annualAverage, occurrences } =
+  const { school, student, classroom, attendance, terms, annualAverage, occurrences } =
     report;
+
+  const schoolLocation = [school.city, school.state]
+    .filter((part) => part.trim().length > 0)
+    .join(" - ");
+  const schoolMetaParts = [
+    schoolLocation,
+    school.phone ? `Tel.: ${school.phone}` : "",
+    `Ano Letivo ${school.schoolYear}`,
+  ].filter((part) => part.length > 0);
 
   const isLowAttendance =
     attendance.attendanceRate !== null &&
@@ -74,18 +84,31 @@ export function StudentReportView({
         {/* Cabecalho institucional formal */}
         <header className="flex flex-col gap-4 border-b-2 border-slate-900 pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3.5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white print:border print:border-blue-900">
-              <BookOpenCheck className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
-            </div>
+            {school.logoUrl ? (
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5">
+                <img
+                  src={school.logoUrl}
+                  alt={`Brasão ${school.name}`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+            ) : (
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1E40AF] text-white print:border print:border-blue-900">
+                <BookOpenCheck className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+              </div>
+            )}
             <div>
-              <p className="text-xs font-semibold tracking-wide text-[#1E40AF]">
-                RCO ESCOLAR · REGISTRO DE CLASSE ONLINE
+              <p className="text-xs font-bold tracking-wide text-[#1E40AF] uppercase">
+                {school.name}
               </p>
               <h1 className="mt-0.5 text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
                 Ficha Individual e Boletim Escolar
               </h1>
               <p className="mt-0.5 text-xs text-slate-600">
-                Ano Letivo {classroom.year} · Emitido em {formatDateTimeBr(report.generatedAt)}
+                {schoolMetaParts.join(" · ")}
+              </p>
+              <p className="mt-0.5 text-[11px] text-slate-500">
+                Emitido em {formatDateTimeBr(report.generatedAt)}
               </p>
             </div>
           </div>

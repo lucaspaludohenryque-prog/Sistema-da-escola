@@ -151,10 +151,10 @@ export async function getClassroomDetailForUser(
   };
 }
 
-/** Retorna todos os usuarios com perfil PROFESSOR para selecao em cadastro de turmas. */
+/** Retorna todos os usuarios ativos com perfil PROFESSOR para selecao em cadastro de turmas. */
 export async function listTeachers(): Promise<TeacherSummary[]> {
   return prisma.user.findMany({
-    where: { role: UserRole.PROFESSOR },
+    where: { role: UserRole.PROFESSOR, active: true },
     select: {
       id: true,
       name: true,

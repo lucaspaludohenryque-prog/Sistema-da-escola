@@ -1,35 +1,55 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Exibe logo da escola em Base64 ou URL configuravel. */
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpenCheck, X } from "lucide-react";
+import type { UserRole } from "@/features/auth/types";
+import type { SchoolConfigData } from "@/features/school-config/types";
 import { DASHBOARD_NAV_ITEMS } from "../constants";
 
 interface SidebarNavProps {
+  userRole: UserRole;
+  schoolConfig: SchoolConfigData;
   onNavigate?: () => void;
   onCloseMobile?: () => void;
 }
 
 export function SidebarNav({
+  userRole,
+  schoolConfig,
   onNavigate,
   onCloseMobile,
 }: SidebarNavProps): React.JSX.Element {
   const pathname = usePathname();
+  const visibleItems = DASHBOARD_NAV_ITEMS.filter(
+    (item) => !item.adminOnly || userRole === "ADMIN"
+  );
 
   return (
     <div className="flex h-full flex-col bg-white">
-      <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-5">
+      <div className="flex h-16 items-center justify-between border-b border-slate-200/80 px-4">
         <Link
           href="/dashboard"
           onClick={onNavigate}
-          className="flex items-center gap-3 rounded-lg py-1 focus-visible:outline-none"
+          className="flex min-w-0 items-center gap-3 rounded-lg py-1 focus-visible:outline-none"
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1E40AF] text-white">
-            <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
-          </div>
+          {schoolConfig.logoUrl ? (
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-50 p-1 ring-1 ring-slate-200">
+              <img
+                src={schoolConfig.logoUrl}
+                alt={`Logo ${schoolConfig.name}`}
+                className="max-h-full max-w-full object-contain"
+              />
+            </div>
+          ) : (
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#1E40AF] text-white">
+              <BookOpenCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+            </div>
+          )}
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold tracking-tight text-slate-900">
-              RCO Escolar
+              {schoolConfig.name}
             </p>
             <p className="truncate text-xs text-slate-500">Registro de Classe</p>
           </div>
@@ -40,7 +60,7 @@ export function SidebarNav({
             type="button"
             onClick={onCloseMobile}
             aria-label="Fechar menu de navegação"
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 lg:hidden"
           >
             <X className="h-5 w-5" strokeWidth={1.75} />
           </button>
@@ -49,7 +69,7 @@ export function SidebarNav({
 
       <nav aria-label="Navegação principal" className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
-          {DASHBOARD_NAV_ITEMS.map((item) => {
+          {visibleItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.exact
               ? pathname === item.href
@@ -91,8 +111,17 @@ export function SidebarNav({
       </nav>
 
       <div className="border-t border-slate-200/80 px-5 py-4">
-        <p className="font-mono text-[11px] text-slate-500">RCO · Gestão Escolar</p>
-        <p className="mt-0.5 text-xs text-slate-500">Ano letivo ativo</p>
+        <p className="font-mono text-[11px] text-slate-500">
+          Ano letivo {schoolConfig.schoolYear}
+        </p>
+        {schoolConfig.city ? (
+          <p className="mt-0.5 truncate text-xs text-slate-500">
+            {schoolConfig.city}
+            {schoolConfig.state ? ` - ${schoolConfig.state}` : ""}
+          </p>
+        ) : (
+          <p className="mt-0.5 text-xs text-slate-500">RCO · Gestão Escolar</p>
+        )}
       </div>
     </div>
   );

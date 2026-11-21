@@ -6,6 +6,7 @@ import {
   calculateWeightedTermAverage,
 } from "@/features/grades/calculations";
 import { ACADEMIC_TERMS } from "@/features/grades/types";
+import { getSchoolConfig } from "@/features/school-config";
 import { prisma } from "@/lib/prisma";
 import type { ReportTermSummary, StudentReportData } from "./types";
 
@@ -151,11 +152,13 @@ export async function getStudentReportForUser(
   const annualAverage = calculateAnnualAverage(
     terms.map((item) => item.termAverage)
   );
+  const school = await getSchoolConfig();
 
   return {
     status: "ok",
     report: {
       generatedAt: new Date().toISOString(),
+      school,
       student: {
         id: student.id,
         name: student.name,

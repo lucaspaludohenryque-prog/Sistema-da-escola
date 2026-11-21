@@ -5,16 +5,19 @@ import { usePathname, useRouter } from "next/navigation";
 import { Loader2, LogOut, Menu } from "lucide-react";
 import { ROLE_BADGE_STYLES, ROLE_LABELS } from "@/features/auth/constants";
 import type { PublicUser } from "@/features/auth/types";
+import type { SchoolConfigData } from "@/features/school-config/types";
 import { resolveDashboardSectionTitle } from "../constants";
 import { SidebarNav } from "./SidebarNav";
 
 interface DashboardShellProps {
   user: PublicUser;
+  schoolConfig: SchoolConfigData;
   children: React.ReactNode;
 }
 
 export function DashboardShell({
   user,
+  schoolConfig,
   children,
 }: DashboardShellProps): React.JSX.Element {
   const pathname = usePathname();
@@ -69,7 +72,7 @@ export function DashboardShell({
 
       {/* Sidebar fixa no desktop */}
       <aside className="hidden w-64 shrink-0 border-r border-slate-200/80 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:block print:hidden">
-        <SidebarNav />
+        <SidebarNav userRole={user.role} schoolConfig={schoolConfig} />
       </aside>
 
       {/* Drawer lateral responsivo no mobile */}
@@ -87,6 +90,8 @@ export function DashboardShell({
           />
           <aside className="fixed inset-y-0 left-0 z-50 w-72 max-w-[82vw] border-r border-slate-200 bg-white shadow-xl">
             <SidebarNav
+              userRole={user.role}
+              schoolConfig={schoolConfig}
               onNavigate={() => setIsMobileMenuOpen(false)}
               onCloseMobile={() => setIsMobileMenuOpen(false)}
             />

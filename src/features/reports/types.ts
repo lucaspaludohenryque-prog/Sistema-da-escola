@@ -5,6 +5,7 @@ import type {
   OccurrenceStatus,
   OccurrenceType,
 } from "@/features/occurrences/types";
+import type { SchoolConfigData } from "@/features/school-config/types";
 
 export interface ReportAssessmentGrade {
   assessmentId: string;
@@ -34,6 +35,7 @@ export interface ReportOccurrenceEntry {
 
 export interface StudentReportData {
   generatedAt: string;
+  school: SchoolConfigData;
   student: {
     id: string;
     name: string;
