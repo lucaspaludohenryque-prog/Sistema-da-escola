@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAuthenticatedUser } from "@/features/auth";
-import { listClassroomsForUser } from "@/features/classrooms";
+import { canManageClassrooms, listClassroomsForUser } from "@/features/classrooms";
 import { GradesView } from "@/features/grades/components/GradesView";
 
 export const metadata: Metadata = {
   title: "Notas",
-  description: "Planilha de avaliações, lançamento de notas e médias por trimestre.",
+  description: "Planilha de avaliações, recuperação paralela, fechamento de trimestre e situação final.",
 };
 
 export default async function NotasPage(): Promise<React.JSX.Element> {
@@ -18,5 +18,10 @@ export default async function NotasPage(): Promise<React.JSX.Element> {
 
   const classrooms = await listClassroomsForUser(user);
 
-  return <GradesView classrooms={classrooms} />;
+  return (
+    <GradesView
+      classrooms={classrooms}
+      canLockTerms={canManageClassrooms(user.role)}
+    />
+  );
 }

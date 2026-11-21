@@ -5,9 +5,12 @@ const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const termSchema = z.coerce
   .number({ invalid_type_error: "Trimestre inválido." })
   .int("Trimestre deve ser 1, 2 ou 3.")
-  .refine((value): value is 1 | 2 | 3 => value === 1 || value === 2 || value === 3, {
-    message: "Selecione o 1º, 2º ou 3º trimestre.",
-  });
+  .refine(
+    (value): value is 1 | 2 | 3 => value === 1 || value === 2 || value === 3,
+    {
+      message: "Selecione o 1º, 2º ou 3º trimestre.",
+    }
+  );
 
 export const gradeQuerySchema = z.object({
   classroomId: z
@@ -63,5 +66,37 @@ export const saveGradesBatchSchema = z.object({
     .max(2000, "Lote de notas excede o limite permitido."),
 });
 
+export const saveRecoveryBatchSchema = z.object({
+  classroomId: z
+    .string({ required_error: "Selecione uma turma." })
+    .trim()
+    .min(1, "Selecione uma turma."),
+  term: termSchema,
+  entries: z
+    .array(
+      z.object({
+        studentId: z.string().trim().min(1, "Aluno inválido."),
+        score: z
+          .number({ invalid_type_error: "Nota de recuperação inválida." })
+          .finite("Nota de recuperação inválida.")
+          .min(0, "A nota de recuperação não pode ser negativa.")
+          .max(10, "A nota de recuperação deve estar entre 0 e 10.")
+          .nullable(),
+      })
+    )
+    .max(500, "Lote de recuperação excede o limite permitido."),
+});
+
+export const toggleTermLockSchema = z.object({
+  classroomId: z
+    .string({ required_error: "Selecione uma turma." })
+    .trim()
+    .min(1, "Selecione uma turma."),
+  term: termSchema,
+  locked: z.boolean({ required_error: "Informe o estado de trancamento." }),
+});
+
 export type CreateAssessmentInput = z.infer<typeof createAssessmentSchema>;
 export type SaveGradesBatchInput = z.infer<typeof saveGradesBatchSchema>;
+export type SaveRecoveryBatchInput = z.infer<typeof saveRecoveryBatchSchema>;
+export type ToggleTermLockInput = z.infer<typeof toggleTermLockSchema>;

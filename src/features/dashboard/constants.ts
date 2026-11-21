@@ -1,12 +1,16 @@
 import {
   Bell,
+  BookMarked,
+  CalendarDays,
   ClipboardCheck,
+  Clock,
   FileText,
   FileWarning,
   GraduationCap,
   HeartHandshake,
   Home,
   LayoutDashboard,
+  ScrollText,
   Settings,
   UserCog,
   Users,
@@ -38,10 +42,34 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     icon: Users,
   },
   {
+    label: "Horários",
+    href: "/dashboard/horarios",
+    description: "Grade semanal de aulas por turma e turno",
+    icon: Clock,
+  },
+  {
+    label: "Calendário",
+    href: "/dashboard/calendario",
+    description: "Provas, trabalhos, reuniões, feriados e eventos escolares",
+    icon: CalendarDays,
+  },
+  {
     label: "Chamada",
     href: "/dashboard/chamada",
     description: "Registro diário de frequência e justificativas",
     icon: ClipboardCheck,
+  },
+  {
+    label: "Planejamento",
+    href: "/dashboard/planejamento",
+    description: "Plano de ensino e acompanhamento de temas ministrados",
+    icon: BookMarked,
+  },
+  {
+    label: "Notas",
+    href: "/dashboard/notas",
+    description: "Avaliações, recuperação paralela, médias e fechamento trimestral",
+    icon: GraduationCap,
   },
   {
     label: "Ocorrências",
@@ -50,10 +78,10 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     icon: FileWarning,
   },
   {
-    label: "Notas",
-    href: "/dashboard/notas",
-    description: "Lançamento de avaliações, médias e fechamento trimestral",
-    icon: GraduationCap,
+    label: "Conselho",
+    href: "/dashboard/conselho",
+    description: "Indicadores da turma e Ata de Conselho de Classe em PDF",
+    icon: ScrollText,
   },
 ];
 
@@ -76,7 +104,7 @@ const ADMIN_EXTRA_ITEMS: DashboardNavItem[] = [
   {
     label: "Configurações",
     href: "/dashboard/configuracoes",
-    description: "Identidade institucional, brasão e ano letivo da escola",
+    description: "Identidade institucional, cor principal, brasão e ano letivo",
     icon: Settings,
   },
 ];
@@ -97,6 +125,18 @@ const GUARDIAN_NAV_ITEMS: DashboardNavItem[] = [
     showNotificationBadge: true,
   },
   {
+    label: "Horários",
+    href: "/dashboard/horarios",
+    description: "Grade semanal de aulas dos estudantes acompanhados",
+    icon: Clock,
+  },
+  {
+    label: "Calendário",
+    href: "/dashboard/calendario",
+    description: "Calendário de provas, entregas e eventos da escola",
+    icon: CalendarDays,
+  },
+  {
     label: "Boletim & Ocorrências",
     href: "/dashboard/familia#boletim",
     description: "Notas trimestrais, frequência e ocorrências",
@@ -112,6 +152,18 @@ const STUDENT_NAV_ITEMS: DashboardNavItem[] = [
     description: "Resumo do meu desempenho escolar",
     icon: LayoutDashboard,
     exact: true,
+  },
+  {
+    label: "Horários",
+    href: "/dashboard/horarios",
+    description: "Grade semanal de aulas da minha turma",
+    icon: Clock,
+  },
+  {
+    label: "Calendário",
+    href: "/dashboard/calendario",
+    description: "Datas de provas, trabalhos e eventos escolares",
+    icon: CalendarDays,
   },
   {
     label: "Minhas Notas & Frequência",
@@ -161,6 +213,18 @@ export function getDashboardNavItems(role: UserRole): DashboardNavItem[] {
 export function resolveDashboardSectionTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/alunos/")) {
     return "Ficha do Aluno";
+  }
+  if (pathname.startsWith("/dashboard/horarios")) {
+    return "Grade de Horários";
+  }
+  if (pathname.startsWith("/dashboard/calendario")) {
+    return "Calendário Escolar";
+  }
+  if (pathname.startsWith("/dashboard/planejamento")) {
+    return "Planejamento de Aulas";
+  }
+  if (pathname.startsWith("/dashboard/conselho")) {
+    return "Conselho de Classe";
   }
   if (pathname.startsWith("/dashboard/familia-vinculos")) {
     return "Vínculos Família";

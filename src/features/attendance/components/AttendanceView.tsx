@@ -34,19 +34,36 @@ import { LessonHistoryList } from "./LessonHistoryList";
 
 interface AttendanceViewProps {
   classrooms: ClassroomSummary[];
+  initialClassroomId?: string;
+  initialLessonNumber?: number;
+  initialPrefillContent?: string;
 }
 
 type ActiveTab = "sheet" | "history";
 
 export function AttendanceView({
   classrooms,
+  initialClassroomId,
+  initialLessonNumber,
+  initialPrefillContent,
 }: AttendanceViewProps): React.JSX.Element {
   const toast = useToast();
-  const [selectedClassroomId, setSelectedClassroomId] = useState(
-    () => classrooms[0]?.id ?? ""
-  );
+  const [selectedClassroomId, setSelectedClassroomId] = useState(() => {
+    if (
+      initialClassroomId &&
+      classrooms.some((c) => c.id === initialClassroomId)
+    ) {
+      return initialClassroomId;
+    }
+    return classrooms[0]?.id ?? "";
+  });
   const [selectedDate, setSelectedDate] = useState<string>(() => getTodayIsoDate());
-  const [lessonNumber, setLessonNumber] = useState<number>(1);
+  const [lessonNumber, setLessonNumber] = useState<number>(
+    () => initialLessonNumber ?? 1
+  );
+  const [prefillContent, setPrefillContent] = useState<string>(
+    () => initialPrefillContent?.trim() ?? ""
+  );
   const [activeTab, setActiveTab] = useState<ActiveTab>("sheet");
 
   const [sheet, setSheet] = useState<AttendanceSheetData | null>(null);
@@ -62,16 +79,26 @@ export function AttendanceView({
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const applySheetState = useCallback((data: AttendanceSheetData) => {
-    setSheet(data);
-    const nextMap: Record<string, AttendanceStatus> = {};
-    for (const student of data.students) {
-      nextMap[student.studentId] = student.status;
-    }
-    setStatusMap(nextMap);
-    setContent(data.lesson?.content ?? "");
-    setObservations(data.lesson?.observations ?? "");
-  }, []);
+  const applySheetState = useCallback(
+    (data: AttendanceSheetData) => {
+      setSheet(data);
+      const nextMap: Record<string, AttendanceStatus> = {};
+      for (const student of data.students) {
+        nextMap[student.studentId] = student.status;
+      }
+      setStatusMap(nextMap);
+      if (data.lesson?.content) {
+        setContent(data.lesson.content);
+      } else if (prefillContent) {
+        setContent(prefillContent);
+        setPrefillContent("");
+      } else {
+        setContent("");
+      }
+      setObservations(data.lesson?.observations ?? "");
+    },
+    [prefillContent]
+  );
 
   const fetchHistory = useCallback(async (classroomId: string) => {
     if (!classroomId) {

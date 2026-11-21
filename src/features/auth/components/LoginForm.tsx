@@ -25,6 +25,8 @@ function resolveSafeNextPath(nextPath: string | undefined, role: UserRole): stri
   if (role === "RESPONSAVEL" || role === "ALUNO") {
     if (
       nextPath.startsWith("/dashboard/avisos") ||
+      nextPath.startsWith("/dashboard/horarios") ||
+      nextPath.startsWith("/dashboard/calendario") ||
       nextPath.startsWith("/dashboard/alunos/") ||
       (role === "RESPONSAVEL" &&
         nextPath.startsWith("/dashboard/familia") &&

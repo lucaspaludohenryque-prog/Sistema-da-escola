@@ -4,6 +4,7 @@ import {
   canManageClassrooms,
   type ApiErrorPayload,
 } from "@/features/classrooms";
+import { isClassroomTermLocked } from "@/features/grades";
 import { prisma } from "@/lib/prisma";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store" };
@@ -41,6 +42,8 @@ export async function DELETE(
       where: { id },
       select: {
         id: true,
+        classroomId: true,
+        term: true,
         classroom: {
           select: { teacherId: true },
         },
@@ -58,6 +61,17 @@ export async function DELETE(
       return NextResponse.json<ApiErrorPayload>(
         {
           error: "Você não tem permissão para excluir avaliações desta turma.",
+          code: "FORBIDDEN",
+        },
+        { status: 403, headers: NO_STORE_HEADERS }
+      );
+    }
+
+    if (await isClassroomTermLocked(existing.classroomId, existing.term)) {
+      return NextResponse.json<ApiErrorPayload>(
+        {
+          error:
+            "Este trimestre está trancado. Destranque o trimestre antes de excluir avaliações.",
           code: "FORBIDDEN",
         },
         { status: 403, headers: NO_STORE_HEADERS }

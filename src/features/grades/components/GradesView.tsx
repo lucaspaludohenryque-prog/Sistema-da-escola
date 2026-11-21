@@ -4,23 +4,34 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AlertCircle,
+  Award,
   FileSpreadsheet,
   GraduationCap,
   Loader2,
+  Lock,
+  LockOpen,
   Plus,
   Save,
   Trash2,
   Users,
 } from "lucide-react";
-import { formatIsoDateBr } from "@/features/attendance/constants";
+import {
+  LOW_ATTENDANCE_THRESHOLD,
+  formatIsoDateBr,
+} from "@/features/attendance/constants";
 import { DeleteConfirmModal } from "@/features/classrooms/components/DeleteConfirmModal";
 import { SHIFT_LABELS } from "@/features/classrooms/constants";
 import type { ApiErrorPayload, ClassroomSummary } from "@/features/classrooms/types";
 import { Avatar } from "@/shared/components/Avatar";
 import { TableSkeleton } from "@/shared/components/Skeleton";
 import { useToast } from "@/shared/components/ToastProvider";
-import { calculateWeightedTermAverage } from "../calculations";
 import {
+  calculateFinalTermAverage,
+  calculateWeightedTermAverage,
+} from "../calculations";
+import {
+  FINAL_STATUS_LABELS,
+  FINAL_STATUS_STYLES,
   PASSING_GRADE_THRESHOLD,
   TERM_LABELS,
   formatScoreBr,
@@ -35,7 +46,10 @@ import { CreateAssessmentModal } from "./CreateAssessmentModal";
 
 interface GradesViewProps {
   classrooms: ClassroomSummary[];
+  canLockTerms: boolean;
 }
+
+type GradesTab = "term" | "annual";
 
 function buildCellKey(studentId: string, assessmentId: string): string {
   return `${studentId}:${assessmentId}`;
@@ -53,14 +67,20 @@ function parseCellValue(raw: string): number | null | "INVALID" {
   return num;
 }
 
-export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
+export function GradesView({
+  classrooms,
+  canLockTerms,
+}: GradesViewProps): React.JSX.Element {
   const toast = useToast();
   const [selectedClassroomId, setSelectedClassroomId] = useState(
     () => classrooms[0]?.id ?? ""
   );
   const [selectedTerm, setSelectedTerm] = useState<AcademicTerm>(1);
+  const [activeTab, setActiveTab] = useState<GradesTab>("term");
+
   const [sheet, setSheet] = useState<GradeSheetData | null>(null);
   const [cellValues, setCellValues] = useState<Record<string, string>>({});
+  const [recoveryValues, setRecoveryValues] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -71,12 +91,17 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
+  const [isTogglingLock, setIsTogglingLock] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const hydrateSheet = useCallback((data: GradeSheetData) => {
     setSheet(data);
     const nextValues: Record<string, string> = {};
+    const nextRecoveries: Record<string, string> = {};
+
     for (const student of data.students) {
+      nextRecoveries[student.studentId] =
+        student.recoveryScore !== null ? String(student.recoveryScore) : "";
       for (const assessment of data.assessments) {
         const score = student.scores[assessment.id];
         nextValues[buildCellKey(student.studentId, assessment.id)] =
@@ -84,6 +109,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
       }
     }
     setCellValues(nextValues);
+    setRecoveryValues(nextRecoveries);
   }, []);
 
   const fetchGradeSheet = useCallback(
@@ -144,10 +170,76 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
     setErrorMessage(null);
   }
 
+  function handleRecoveryChange(studentId: string, value: string): void {
+    setRecoveryValues((prev) => ({
+      ...prev,
+      [studentId]: value,
+    }));
+    setErrorMessage(null);
+  }
+
   function handleAssessmentCreated(created: AssessmentItem): void {
     setIsCreateModalOpen(false);
     toast.success(`Avaliação "${created.title}" criada no ${TERM_LABELS[selectedTerm]}.`);
     void fetchGradeSheet(selectedClassroomId, selectedTerm);
+  }
+
+  async function handleToggleLock(): Promise<void> {
+    if (!sheet || !canLockTerms || isTogglingLock) return;
+
+    setIsTogglingLock(true);
+    setErrorMessage(null);
+
+    try {
+      const nextLocked = !sheet.isLocked;
+      const response = await fetch("/api/grades/term-lock", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          classroomId: selectedClassroomId,
+          term: selectedTerm,
+          locked: nextLocked,
+        }),
+      });
+
+      if (!response.ok) {
+        let message = "Não foi possível alterar o bloqueio do trimestre.";
+        try {
+          const payload = (await response.json()) as Partial<ApiErrorPayload>;
+          if (payload.error) message = payload.error;
+        } catch {
+          // Mantem mensagem padrao.
+        }
+        setErrorMessage(message);
+        toast.error(message);
+        return;
+      }
+
+      const payload = (await response.json()) as {
+        isLocked: boolean;
+        lockedAt: string | null;
+      };
+      setSheet((prev) =>
+        prev
+          ? {
+              ...prev,
+              isLocked: payload.isLocked,
+              lockedAt: payload.lockedAt,
+            }
+          : prev
+      );
+      toast.success(
+        payload.isLocked
+          ? `${TERM_LABELS[selectedTerm]} trancado para edição.`
+          : `${TERM_LABELS[selectedTerm]} destrancado para lançamento de notas.`
+      );
+    } catch {
+      const msg = "Falha de conexão com o servidor.";
+      setErrorMessage(msg);
+      toast.error(msg);
+    } finally {
+      setIsTogglingLock(false);
+    }
   }
 
   async function handleConfirmDeleteAssessment(): Promise<void> {
@@ -190,12 +282,17 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
   }
 
   async function handleSaveGrades(): Promise<void> {
-    if (!sheet || sheet.assessments.length === 0) return;
+    if (!sheet || sheet.students.length === 0 || sheet.isLocked) return;
 
     setErrorMessage(null);
 
-    const entries: Array<{
+    const gradeEntries: Array<{
       assessmentId: string;
+      studentId: string;
+      score: number | null;
+    }> = [];
+
+    const recoveryEntries: Array<{
       studentId: string;
       score: number | null;
     }> = [];
@@ -219,34 +316,71 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
           return;
         }
 
-        entries.push({
+        gradeEntries.push({
           assessmentId: assessment.id,
           studentId: student.studentId,
           score: parsed,
         });
       }
+
+      const rawRec = recoveryValues[student.studentId] ?? "";
+      const parsedRec = parseCellValue(rawRec);
+      if (parsedRec === "INVALID" || (parsedRec !== null && (parsedRec < 0 || parsedRec > 10))) {
+        const msg = `A nota de recuperação de ${student.name} deve estar entre 0 e 10.`;
+        setErrorMessage(msg);
+        toast.warning(msg);
+        return;
+      }
+
+      recoveryEntries.push({
+        studentId: student.studentId,
+        score: parsedRec,
+      });
     }
 
     setIsSaving(true);
 
     try {
-      const response = await fetch("/api/grades", {
+      if (sheet.assessments.length > 0) {
+        const gradesRes = await fetch("/api/grades", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            classroomId: selectedClassroomId,
+            term: selectedTerm,
+            entries: gradeEntries,
+          }),
+        });
+
+        if (!gradesRes.ok) {
+          let message = "Não foi possível salvar as notas.";
+          try {
+            const payload = (await gradesRes.json()) as Partial<ApiErrorPayload>;
+            if (payload.error) message = payload.error;
+          } catch {
+            // Mantem mensagem padrao.
+          }
+          setErrorMessage(message);
+          toast.error(message);
+          return;
+        }
+      }
+
+      const recoveryRes = await fetch("/api/grades/recovery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           classroomId: selectedClassroomId,
           term: selectedTerm,
-          entries,
+          entries: recoveryEntries,
         }),
       });
 
-      if (!response.ok) {
-        let message = "Não foi possível salvar as notas.";
+      if (!recoveryRes.ok) {
+        let message = "Não foi possível salvar as notas de recuperação.";
         try {
-          const payload = (await response.json()) as Partial<ApiErrorPayload>;
-          if (payload.error) {
-            message = payload.error;
-          }
+          const payload = (await recoveryRes.json()) as Partial<ApiErrorPayload>;
+          if (payload.error) message = payload.error;
         } catch {
           // Mantem mensagem padrao.
         }
@@ -255,10 +389,10 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
         return;
       }
 
-      const payload = (await response.json()) as { sheet: GradeSheetData };
+      const payload = (await recoveryRes.json()) as { sheet: GradeSheetData };
       hydrateSheet(payload.sheet);
       toast.success(
-        `Notas do ${TERM_LABELS[selectedTerm]} salvas com sucesso.`,
+        `Notas e recuperação do ${TERM_LABELS[selectedTerm]} salvas com sucesso.`,
         "Planilha atualizada"
       );
     } catch {
@@ -293,6 +427,8 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
       </section>
     );
   }
+
+  const isLocked = Boolean(sheet?.isLocked);
 
   return (
     <div className="space-y-6">
@@ -346,10 +482,33 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
+            {canLockTerms && sheet ? (
+              <button
+                type="button"
+                onClick={handleToggleLock}
+                disabled={isTogglingLock || isLoading}
+                className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border px-3.5 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60 ${
+                  isLocked
+                    ? "border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 dark:border-amber-500/40 dark:bg-amber-500/15 dark:text-amber-300 dark:hover:bg-amber-500/25"
+                    : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                }`}
+              >
+                {isTogglingLock ? (
+                  <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
+                ) : isLocked ? (
+                  <LockOpen className="h-4 w-4" strokeWidth={1.75} />
+                ) : (
+                  <Lock className="h-4 w-4" strokeWidth={1.75} />
+                )}
+                <span>{isLocked ? "Destrancar Trimestre" : "Trancar Trimestre"}</span>
+              </button>
+            ) : null}
+
             <button
               type="button"
               onClick={() => setIsCreateModalOpen(true)}
-              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              disabled={isLocked || isLoading}
+              className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
               <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
               <span>Nova Avaliação</span>
@@ -361,8 +520,8 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
               disabled={
                 isSaving ||
                 isLoading ||
+                isLocked ||
                 !sheet ||
-                sheet.assessments.length === 0 ||
                 sheet.students.length === 0
               }
               className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
@@ -381,7 +540,82 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
             </button>
           </div>
         </div>
+
+        {/* Sub-barra: abas + indicador de status do trimestre */}
+        <div className="mt-5 flex flex-col gap-3 border-t border-slate-200/80 pt-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
+          <div
+            className="inline-flex rounded-lg bg-slate-100 p-1 dark:bg-slate-800"
+            role="tablist"
+            aria-label="Visualização da planilha de notas"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "term"}
+              onClick={() => setActiveTab("term")}
+              className={`inline-flex cursor-pointer items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                activeTab === "term"
+                  ? "bg-white text-slate-900 shadow-xs dark:bg-slate-900 dark:text-slate-100"
+                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              }`}
+            >
+              <FileSpreadsheet className="h-3.5 w-3.5" strokeWidth={1.75} />
+              <span>Notas e Recuperação ({selectedTerm}º Trim.)</span>
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "annual"}
+              onClick={() => setActiveTab("annual")}
+              className={`inline-flex cursor-pointer items-center gap-2 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                activeTab === "annual"
+                  ? "bg-white text-slate-900 shadow-xs dark:bg-slate-900 dark:text-slate-100"
+                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              }`}
+            >
+              <Award className="h-3.5 w-3.5" strokeWidth={1.75} />
+              <span>Resumo Anual / Situação Final</span>
+            </button>
+          </div>
+
+          {sheet ? (
+            <span
+              className={`inline-flex w-fit items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold ${
+                isLocked
+                  ? "bg-amber-50 text-amber-900 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30"
+                  : "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
+              }`}
+            >
+              {isLocked ? (
+                <>
+                  <Lock className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                  <span>Trimestre Trancado</span>
+                </>
+              ) : (
+                <>
+                  <LockOpen className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                  <span>Trimestre Aberto</span>
+                </>
+              )}
+            </span>
+          ) : null}
+        </div>
       </section>
+
+      {isLocked ? (
+        <div
+          role="status"
+          className="flex items-start gap-2.5 rounded-xl bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-400/30"
+        >
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-300" strokeWidth={1.75} />
+          <span>
+            O {TERM_LABELS[selectedTerm]} está fechado para edições.{" "}
+            {canLockTerms
+              ? "Use o botão Destrancar Trimestre acima caso precise realizar correções."
+              : "Solicite à Coordenação ou Administração caso seja necessário destrancar."}
+          </span>
+        </div>
+      ) : null}
 
       {errorMessage ? (
         <div
@@ -405,7 +639,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
 
       <section className="overflow-hidden rounded-2xl bg-white shadow-[var(--shadow-ambient)] ring-1 ring-slate-900/[0.06] dark:bg-slate-900 dark:ring-slate-800">
         {isLoading ? (
-          <TableSkeleton rows={6} cols={3} />
+          <TableSkeleton rows={6} cols={4} />
         ) : !sheet || sheet.students.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
@@ -418,6 +652,117 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
               Cadastre alunos na turma para habilitar o lançamento de notas.
             </p>
           </div>
+        ) : activeTab === "annual" ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50/90 text-xs font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-300">
+                  <th scope="col" className="min-w-[230px] py-3.5 pr-4 pl-5">
+                    Estudante
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-center">
+                    1º Trim.
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-center">
+                    2º Trim.
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-center">
+                    3º Trim.
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-center">
+                    Média Anual
+                  </th>
+                  <th scope="col" className="px-3 py-3.5 text-center">
+                    Frequência
+                  </th>
+                  <th scope="col" className="py-3.5 pr-5 pl-3 text-right">
+                    Situação Final
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
+                {sheet.students.map((student, index) => {
+                  const isLowAtt =
+                    student.attendanceRate !== null &&
+                    student.attendanceRate < LOW_ATTENDANCE_THRESHOLD;
+                  const isLowAnnual =
+                    student.annualAverage !== null &&
+                    student.annualAverage < PASSING_GRADE_THRESHOLD;
+
+                  return (
+                    <tr
+                      key={student.studentId}
+                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
+                    >
+                      <td className="py-3 pr-4 pl-5">
+                        <div className="flex items-center gap-2.5">
+                          <span className="font-mono text-[11px] text-slate-400">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <Avatar name={student.name} size="xs" />
+                          <div className="min-w-0">
+                            <Link
+                              href={`/dashboard/alunos/${student.studentId}/ficha`}
+                              className="block truncate font-medium text-slate-900 hover:text-[var(--school-primary)] hover:underline dark:text-slate-100 dark:hover:text-blue-400"
+                            >
+                              {student.name}
+                            </Link>
+                            <p className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                              {student.registration}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      {ACADEMIC_TERMS.map((t) => {
+                        const val = student.termFinals[t];
+                        return (
+                          <td
+                            key={t}
+                            className="px-3 py-3 text-center font-mono text-xs font-semibold text-slate-800 dark:text-slate-200"
+                          >
+                            {formatScoreBr(val)}
+                          </td>
+                        );
+                      })}
+                      <td className="px-3 py-3 text-center">
+                        <span
+                          className={`inline-flex min-w-[48px] items-center justify-center rounded-md px-2 py-0.5 font-mono text-xs font-bold ${
+                            student.annualAverage === null
+                              ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                              : isLowAnnual
+                                ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
+                                : "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
+                          }`}
+                        >
+                          {formatScoreBr(student.annualAverage)}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3 text-center font-mono text-xs font-semibold">
+                        <span
+                          className={
+                            isLowAtt
+                              ? "text-red-700 dark:text-red-400"
+                              : "text-slate-700 dark:text-slate-300"
+                          }
+                        >
+                          {student.attendanceRate !== null
+                            ? `${student.attendanceRate}%`
+                            : "-"}
+                        </span>
+                      </td>
+                      <td className="py-3 pr-5 pl-3 text-right">
+                        <span
+                          className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ${FINAL_STATUS_STYLES[student.finalStatus]}`}
+                        >
+                          {FINAL_STATUS_LABELS[student.finalStatus]}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         ) : sheet.assessments.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-[var(--school-primary)] dark:bg-blue-500/15 dark:text-blue-300">
@@ -428,16 +773,18 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
             </h3>
             <p className="mx-auto mt-1.5 max-w-md text-sm text-slate-600 dark:text-slate-400">
               Crie provas, trabalhos ou atividades clicando em Nova Avaliação para liberar a
-              planilha de notas.
+              planilha de notas e recuperação paralela.
             </p>
-            <button
-              type="button"
-              onClick={() => setIsCreateModalOpen(true)}
-              className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)]"
-            >
-              <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-              <span>Criar primeira avaliação</span>
-            </button>
+            {!isLocked ? (
+              <button
+                type="button"
+                onClick={() => setIsCreateModalOpen(true)}
+                className="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)]"
+              >
+                <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+                <span>Criar primeira avaliação</span>
+              </button>
+            ) : null}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -454,7 +801,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                     <th
                       key={assessment.id}
                       scope="col"
-                      className="min-w-[145px] border-r border-slate-200/80 px-3 py-3 align-top dark:border-slate-800"
+                      className="min-w-[140px] border-r border-slate-200/80 px-3 py-3 align-top dark:border-slate-800"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
@@ -468,32 +815,46 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                             Máx {assessment.maxScore} · Peso {assessment.weight}
                           </p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setDeleteError(null);
-                            setAssessmentToDelete(assessment);
-                          }}
-                          aria-label={`Excluir avaliação ${assessment.title}`}
-                          title="Excluir avaliação"
-                          className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
-                        </button>
+                        {!isLocked ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDeleteError(null);
+                              setAssessmentToDelete(assessment);
+                            }}
+                            aria-label={`Excluir avaliação ${assessment.title}`}
+                            title="Excluir avaliação"
+                            className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/15 dark:hover:text-red-300"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+                          </button>
+                        ) : null}
                       </div>
                     </th>
                   ))}
                   <th
                     scope="col"
-                    className="min-w-[120px] bg-slate-100/90 px-4 py-3.5 text-center font-semibold text-slate-900 dark:bg-slate-800 dark:text-slate-100"
+                    className="min-w-[100px] border-r border-slate-200/80 bg-slate-100/70 px-3 py-3.5 text-center font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300"
                   >
-                    Média ({selectedTerm}º Trim.)
+                    Média Orig.
+                  </th>
+                  <th
+                    scope="col"
+                    className="min-w-[125px] border-r border-slate-200/80 bg-amber-50/60 px-3 py-3.5 text-center font-semibold text-amber-900 dark:border-slate-800 dark:bg-amber-500/10 dark:text-amber-300"
+                  >
+                    Recuperação
+                  </th>
+                  <th
+                    scope="col"
+                    className="min-w-[115px] bg-slate-100/90 px-4 py-3.5 text-center font-semibold text-slate-900 dark:bg-slate-800 dark:text-slate-100"
+                  >
+                    Média Final
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
                 {sheet.students.map((student, index) => {
-                  const liveAverage = calculateWeightedTermAverage(
+                  const liveOriginalAvg = calculateWeightedTermAverage(
                     sheet.assessments.map((assessment) => {
                       const raw =
                         cellValues[buildCellKey(student.studentId, assessment.id)] ?? "";
@@ -512,10 +873,29 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                     })
                   );
 
-                  const averageClass =
-                    liveAverage === null
+                  const rawRecovery = recoveryValues[student.studentId] ?? "";
+                  const parsedRecovery = parseCellValue(rawRecovery);
+                  const isRecoveryInvalid =
+                    parsedRecovery === "INVALID" ||
+                    (parsedRecovery !== null &&
+                      (parsedRecovery < 0 || parsedRecovery > 10));
+                  const validRecovery =
+                    parsedRecovery !== null &&
+                    parsedRecovery !== "INVALID" &&
+                    parsedRecovery >= 0 &&
+                    parsedRecovery <= 10
+                      ? parsedRecovery
+                      : null;
+
+                  const liveFinalAverage = calculateFinalTermAverage(
+                    liveOriginalAvg,
+                    validRecovery
+                  );
+
+                  const finalAvgClass =
+                    liveFinalAverage === null
                       ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
-                      : liveAverage >= PASSING_GRADE_THRESHOLD
+                      : liveFinalAverage >= PASSING_GRADE_THRESHOLD
                         ? "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/30"
                         : "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30";
 
@@ -564,7 +944,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                               min={0}
                               max={assessment.maxScore}
                               step="0.1"
-                              disabled={isSaving}
+                              disabled={isSaving || isLocked}
                               aria-label={`Nota de ${student.name} em ${assessment.title}`}
                               value={raw}
                               onChange={(event) =>
@@ -575,7 +955,7 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                                 )
                               }
                               placeholder="-"
-                              className={`block w-full rounded-lg border px-2.5 py-2 text-center font-mono text-sm transition-colors focus:ring-2 focus:outline-none disabled:bg-slate-50 dark:disabled:bg-slate-800/50 ${
+                              className={`block w-full rounded-lg border px-2.5 py-2 text-center font-mono text-sm transition-colors focus:ring-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:disabled:bg-slate-800/40 dark:disabled:text-slate-500 ${
                                 isOutOfRange
                                   ? "border-red-400 bg-red-50/60 text-red-900 focus:border-red-600 focus:ring-red-200 dark:border-red-500 dark:bg-red-500/15 dark:text-red-200"
                                   : "border-slate-300 bg-white text-slate-900 focus:border-[var(--school-primary)] focus:ring-[var(--school-primary-ring)] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
@@ -585,11 +965,37 @@ export function GradesView({ classrooms }: GradesViewProps): React.JSX.Element {
                         );
                       })}
 
+                      <td className="border-r border-slate-100 px-3 py-2.5 text-center font-mono text-xs font-semibold text-slate-600 dark:border-slate-800 dark:text-slate-400">
+                        {formatScoreBr(liveOriginalAvg)}
+                      </td>
+
+                      <td className="border-r border-slate-100 bg-amber-50/30 px-3 py-2.5 dark:border-slate-800 dark:bg-amber-500/5">
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          max={10}
+                          step="0.1"
+                          disabled={isSaving || isLocked}
+                          aria-label={`Recuperação de ${student.name}`}
+                          value={rawRecovery}
+                          onChange={(event) =>
+                            handleRecoveryChange(student.studentId, event.target.value)
+                          }
+                          placeholder="-"
+                          className={`block w-full rounded-lg border px-2.5 py-2 text-center font-mono text-sm transition-colors focus:ring-2 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:disabled:bg-slate-800/40 ${
+                            isRecoveryInvalid
+                              ? "border-red-400 bg-red-50/60 text-red-900 dark:border-red-500 dark:bg-red-500/15 dark:text-red-200"
+                              : "border-amber-300/80 bg-white text-slate-900 focus:border-amber-600 focus:ring-amber-500/20 dark:border-amber-500/40 dark:bg-slate-800 dark:text-slate-100"
+                          }`}
+                        />
+                      </td>
+
                       <td className="bg-slate-50/60 px-4 py-2.5 text-center dark:bg-slate-800/40">
                         <span
-                          className={`inline-flex min-w-[54px] items-center justify-center rounded-md px-2.5 py-1 font-mono text-xs font-bold ${averageClass}`}
+                          className={`inline-flex min-w-[54px] items-center justify-center rounded-md px-2.5 py-1 font-mono text-xs font-bold ${finalAvgClass}`}
                         >
-                          {formatScoreBr(liveAverage)}
+                          {formatScoreBr(liveFinalAverage)}
                         </span>
                       </td>
                     </tr>

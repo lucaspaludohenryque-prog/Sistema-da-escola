@@ -6,6 +6,7 @@ import {
 } from "@/features/classrooms";
 import {
   createAssessmentSchema,
+  isClassroomTermLocked,
   type AcademicTerm,
   type AssessmentItem,
 } from "@/features/grades";
@@ -66,6 +67,17 @@ export async function POST(
       return NextResponse.json<ApiErrorPayload>(
         {
           error: "Você não tem permissão para criar avaliações nesta turma.",
+          code: "FORBIDDEN",
+        },
+        { status: 403, headers: NO_STORE_HEADERS }
+      );
+    }
+
+    if (await isClassroomTermLocked(classroomId, term)) {
+      return NextResponse.json<ApiErrorPayload>(
+        {
+          error:
+            "Este trimestre está trancado. Destranque o trimestre antes de criar novas avaliações.",
           code: "FORBIDDEN",
         },
         { status: 403, headers: NO_STORE_HEADERS }

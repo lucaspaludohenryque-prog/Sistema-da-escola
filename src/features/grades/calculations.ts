@@ -1,3 +1,7 @@
+import { LOW_ATTENDANCE_THRESHOLD } from "@/features/attendance/constants";
+import { PASSING_GRADE_THRESHOLD } from "./constants";
+import type { StudentFinalStatus } from "./types";
+
 export interface WeightedScoreItem {
   score: number | null;
   maxScore: number;
@@ -37,7 +41,27 @@ export function calculateWeightedTermAverage(
   return Math.round((weightedSum / totalWeight) * 10) / 10;
 }
 
-/** Calcula a media geral anual a partir das medias trimestrais disponiveis. */
+/**
+ * Calcula a media final do trimestre considerando a nota de recuperacao paralela:
+ * prevalece a maior nota entre a media original e a recuperacao.
+ */
+export function calculateFinalTermAverage(
+  termAverage: number | null,
+  recoveryScore: number | null
+): number | null {
+  if (termAverage !== null && recoveryScore !== null) {
+    return Math.round(Math.max(termAverage, recoveryScore) * 10) / 10;
+  }
+  if (termAverage !== null) {
+    return Math.round(termAverage * 10) / 10;
+  }
+  if (recoveryScore !== null) {
+    return Math.round(recoveryScore * 10) / 10;
+  }
+  return null;
+}
+
+/** Calcula a media geral anual a partir das medias finais trimestrais disponiveis. */
 export function calculateAnnualAverage(
   termAverages: Array<number | null>
 ): number | null {
@@ -48,4 +72,35 @@ export function calculateAnnualAverage(
 
   const sum = valid.reduce((acc, current) => acc + current, 0);
   return Math.round((sum / valid.length) * 10) / 10;
+}
+
+/**
+ * Determina a situacao final do estudante com base na media anual e frequencia:
+ * - RETIDO se frequencia < 75% (reprovacao por falta) ou media anual < 4.0 ou 3 trimestres fechados com media < 6.0;
+ * - APROVADO se media anual >= 6.0 e frequencia >= 75% (ou sem aulas registradas);
+ * - EM_RECUPERACAO se media anual < 6.0 com ano em curso;
+ * - EM_ANDAMENTO quando ainda nao ha notas lancadas.
+ */
+export function determineStudentFinalStatus(
+  annualAverage: number | null,
+  attendanceRate: number | null,
+  gradedTermsCount: number
+): StudentFinalStatus {
+  if (attendanceRate !== null && attendanceRate < LOW_ATTENDANCE_THRESHOLD) {
+    return "RETIDO";
+  }
+
+  if (annualAverage === null) {
+    return "EM_ANDAMENTO";
+  }
+
+  if (annualAverage >= PASSING_GRADE_THRESHOLD) {
+    return "APROVADO";
+  }
+
+  if (annualAverage < 4.0 || gradedTermsCount >= 3) {
+    return "RETIDO";
+  }
+
+  return "EM_RECUPERACAO";
 }

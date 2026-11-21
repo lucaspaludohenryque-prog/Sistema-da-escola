@@ -9,14 +9,39 @@ export const metadata: Metadata = {
   description: "Registro diário de frequência, diário de conteúdo e histórico de chamadas.",
 };
 
-export default async function ChamadaPage(): Promise<React.JSX.Element> {
-  const user = await getAuthenticatedUser();
+interface ChamadaPageProps {
+  searchParams: Promise<{
+    classroomId?: string;
+    lessonNumber?: string;
+    content?: string;
+  }>;
+}
+
+export default async function ChamadaPage({
+  searchParams,
+}: ChamadaPageProps): Promise<React.JSX.Element> {
+  const [user, params] = await Promise.all([
+    getAuthenticatedUser(),
+    searchParams,
+  ]);
 
   if (!user) {
     redirect("/login");
   }
 
   const classrooms = await listClassroomsForUser(user);
+  const parsedLesson = Number(params.lessonNumber);
+  const initialLessonNumber =
+    Number.isInteger(parsedLesson) && parsedLesson >= 1 && parsedLesson <= 6
+      ? parsedLesson
+      : undefined;
 
-  return <AttendanceView classrooms={classrooms} />;
+  return (
+    <AttendanceView
+      classrooms={classrooms}
+      initialClassroomId={params.classroomId}
+      initialLessonNumber={initialLessonNumber}
+      initialPrefillContent={params.content}
+    />
+  );
 }

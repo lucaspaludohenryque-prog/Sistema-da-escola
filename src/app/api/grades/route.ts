@@ -7,6 +7,7 @@ import {
 import {
   getGradeSheetForUser,
   gradeQuerySchema,
+  isClassroomTermLocked,
   saveGradesBatchSchema,
   type GradeSheetData,
 } from "@/features/grades";
@@ -149,6 +150,17 @@ export async function POST(
       return NextResponse.json<ApiErrorPayload>(
         {
           error: "Você não tem permissão para lançar notas nesta turma.",
+          code: "FORBIDDEN",
+        },
+        { status: 403, headers: NO_STORE_HEADERS }
+      );
+    }
+
+    if (await isClassroomTermLocked(classroomId, term)) {
+      return NextResponse.json<ApiErrorPayload>(
+        {
+          error:
+            "Este trimestre está trancado. Destranque o trimestre antes de alterar notas.",
           code: "FORBIDDEN",
         },
         { status: 403, headers: NO_STORE_HEADERS }

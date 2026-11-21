@@ -54,20 +54,35 @@ enum NotificationType {
   COMUNICADO
 }
 
+enum SchoolEventType {
+  PROVA
+  TRABALHO
+  FERIADO
+  REUNIAO
+  EVENTO
+}
+
+enum LessonPlanStatus {
+  PLANEJADO
+  MINISTRADO
+}
+
 model User {
-  id             String            @id @default(cuid())
+  id             String               @id @default(cuid())
   name           String
-  email          String            @unique
+  email          String               @unique
   password       String
-  role           UserRole          @default(PROFESSOR)
-  active         Boolean           @default(true)
+  role           UserRole             @default(PROFESSOR)
+  active         Boolean              @default(true)
   classrooms     Classroom[]
   occurrences    Occurrence[]
   guardianLinks  GuardianStudent[]
   studentProfile Student?
   notifications  Notification[]
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  schoolEvents   SchoolEvent[]
+  councilMinutes ClassCouncilMinute[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 
   @@index([role])
   @@index([active])
@@ -89,19 +104,25 @@ model SchoolConfig {
 }
 
 model Classroom {
-  id          String       @id @default(cuid())
-  name        String
-  subject     String
-  year        Int
-  shift       Shift
-  teacherId   String
-  teacher     User         @relation(fields: [teacherId], references: [id], onDelete: Restrict)
-  students    Student[]
-  lessons     Lesson[]
-  occurrences Occurrence[]
-  assessments Assessment[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id             String               @id @default(cuid())
+  name           String
+  subject        String
+  year           Int
+  shift          Shift
+  teacherId      String
+  teacher        User                 @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  students       Student[]
+  lessons        Lesson[]
+  occurrences    Occurrence[]
+  assessments    Assessment[]
+  scheduleSlots  ScheduleSlot[]
+  schoolEvents   SchoolEvent[]
+  termRecoveries TermRecovery[]
+  termLocks      TermLock[]
+  lessonPlans    LessonPlan[]
+  councilMinutes ClassCouncilMinute[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 
   @@index([teacherId])
   @@index([year, shift])
@@ -109,23 +130,24 @@ model Classroom {
 }
 
 model Student {
-  id            String            @id @default(cuid())
-  name          String
-  registration  String            @unique
-  guardianName  String
-  guardianPhone String
-  active        Boolean           @default(true)
-  classroomId   String
-  classroom     Classroom         @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  userId        String?           @unique
-  user          User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
-  attendances   Attendance[]
-  occurrences   Occurrence[]
-  grades        Grade[]
-  guardianLinks GuardianStudent[]
-  notifications Notification[]
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  id             String            @id @default(cuid())
+  name           String
+  registration   String            @unique
+  guardianName   String
+  guardianPhone  String
+  active         Boolean           @default(true)
+  classroomId    String
+  classroom      Classroom         @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  userId         String?           @unique
+  user           User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  attendances    Attendance[]
+  occurrences    Occurrence[]
+  grades         Grade[]
+  guardianLinks  GuardianStudent[]
+  notifications  Notification[]
+  termRecoveries TermRecovery[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 
   @@index([classroomId, name])
   @@index([active])
@@ -250,4 +272,100 @@ model Grade {
   @@unique([assessmentId, studentId])
   @@index([studentId])
   @@map("grades")
+}
+
+model ScheduleSlot {
+  id           String    @id @default(cuid())
+  classroomId  String
+  classroom    Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  dayOfWeek    Int
+  lessonNumber Int
+  startTime    String
+  endTime      String
+  room         String?
+  createdAt    DateTime  @default(now())
+
+  @@unique([classroomId, dayOfWeek, lessonNumber])
+  @@index([dayOfWeek, lessonNumber])
+  @@map("schedule_slots")
+}
+
+model SchoolEvent {
+  id          String          @id @default(cuid())
+  title       String
+  description String?
+  date        String
+  type        SchoolEventType
+  classroomId String?
+  classroom   Classroom?      @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User            @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  createdAt   DateTime        @default(now())
+
+  @@index([date])
+  @@index([classroomId, date])
+  @@map("school_events")
+}
+
+model TermRecovery {
+  id          String    @id @default(cuid())
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  studentId   String
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  term        Int
+  score       Float
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([classroomId, studentId, term])
+  @@index([classroomId, term])
+  @@index([studentId])
+  @@map("term_recoveries")
+}
+
+model TermLock {
+  id          String    @id @default(cuid())
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  term        Int
+  locked      Boolean   @default(false)
+  lockedAt    DateTime?
+  lockedById  String?
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([classroomId, term])
+  @@map("term_locks")
+}
+
+model LessonPlan {
+  id          String           @id @default(cuid())
+  classroomId String
+  classroom   Classroom        @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  term        Int
+  plannedDate String?
+  topic       String
+  objectives  String?
+  status      LessonPlanStatus @default(PLANEJADO)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([classroomId, term])
+  @@map("lesson_plans")
+}
+
+model ClassCouncilMinute {
+  id          String    @id @default(cuid())
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  term        Int
+  date        String
+  summary     String
+  decisions   String
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([classroomId, term])
+  @@map("class_council_minutes")
 }
