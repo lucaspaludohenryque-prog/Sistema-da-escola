@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { ROLE_BADGE_STYLES, ROLE_LABELS } from "@/features/auth/constants";
 import type { PublicUser } from "@/features/auth/types";
+import { JUSTIFICATIONS_UPDATED_EVENT } from "@/features/justifications/types";
 import { NOTIFICATIONS_UPDATED_EVENT } from "@/features/notifications/constants";
 import { buildSchoolThemeStyle } from "@/features/school-config/constants";
 import type { SchoolConfigData } from "@/features/school-config/types";
@@ -27,6 +28,7 @@ interface DashboardShellProps {
   user: PublicUser;
   schoolConfig: SchoolConfigData;
   initialUnacknowledgedCount: number;
+  initialPendingJustificationsCount?: number;
   children: React.ReactNode;
 }
 
@@ -34,6 +36,7 @@ export function DashboardShell({
   user,
   schoolConfig,
   initialUnacknowledgedCount,
+  initialPendingJustificationsCount = 0,
   children,
 }: DashboardShellProps): React.JSX.Element {
   const pathname = usePathname();
@@ -44,6 +47,9 @@ export function DashboardShell({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [unacknowledgedCount, setUnacknowledgedCount] = useState(
     initialUnacknowledgedCount
+  );
+  const [pendingJustificationsCount, setPendingJustificationsCount] = useState(
+    initialPendingJustificationsCount
   );
 
   const sectionTitle = resolveDashboardSectionTitle(pathname);
@@ -58,6 +64,29 @@ export function DashboardShell({
   useEffect(() => {
     setUnacknowledgedCount(initialUnacknowledgedCount);
   }, [initialUnacknowledgedCount]);
+
+  useEffect(() => {
+    setPendingJustificationsCount(initialPendingJustificationsCount);
+  }, [initialPendingJustificationsCount]);
+
+  useEffect(() => {
+    function handleJustificationsUpdated(event: Event): void {
+      const customEvent = event as CustomEvent<{ pendingCount: number }>;
+      if (typeof customEvent.detail?.pendingCount === "number") {
+        setPendingJustificationsCount(customEvent.detail.pendingCount);
+      }
+    }
+
+    window.addEventListener(
+      JUSTIFICATIONS_UPDATED_EVENT,
+      handleJustificationsUpdated
+    );
+    return () =>
+      window.removeEventListener(
+        JUSTIFICATIONS_UPDATED_EVENT,
+        handleJustificationsUpdated
+      );
+  }, []);
 
   useEffect(() => {
     if (!showNotificationBell) {
@@ -143,6 +172,7 @@ export function DashboardShell({
           userRole={user.role}
           schoolConfig={schoolConfig}
           unacknowledgedCount={unacknowledgedCount}
+          pendingJustificationsCount={pendingJustificationsCount}
         />
       </aside>
 
@@ -164,6 +194,7 @@ export function DashboardShell({
               userRole={user.role}
               schoolConfig={schoolConfig}
               unacknowledgedCount={unacknowledgedCount}
+              pendingJustificationsCount={pendingJustificationsCount}
               onNavigate={() => setIsMobileMenuOpen(false)}
               onCloseMobile={() => setIsMobileMenuOpen(false)}
             />

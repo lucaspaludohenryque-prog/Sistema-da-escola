@@ -67,22 +67,36 @@ enum LessonPlanStatus {
   MINISTRADO
 }
 
+enum AnnouncementPriority {
+  NORMAL
+  IMPORTANTE
+  URGENTE
+}
+
+enum JustificationStatus {
+  PENDENTE
+  APROVADA
+  RECUSADA
+}
+
 model User {
-  id             String               @id @default(cuid())
-  name           String
-  email          String               @unique
-  password       String
-  role           UserRole             @default(PROFESSOR)
-  active         Boolean              @default(true)
-  classrooms     Classroom[]
-  occurrences    Occurrence[]
-  guardianLinks  GuardianStudent[]
-  studentProfile Student?
-  notifications  Notification[]
-  schoolEvents   SchoolEvent[]
-  councilMinutes ClassCouncilMinute[]
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
+  id                      String                 @id @default(cuid())
+  name                    String
+  email                   String                 @unique
+  password                String
+  role                    UserRole               @default(PROFESSOR)
+  active                  Boolean                @default(true)
+  classrooms              Classroom[]
+  occurrences             Occurrence[]
+  guardianLinks           GuardianStudent[]
+  studentProfile          Student?
+  notifications           Notification[]
+  schoolEvents            SchoolEvent[]
+  councilMinutes          ClassCouncilMinute[]
+  announcements           Announcement[]
+  submittedJustifications AbsenceJustification[]
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
 
   @@index([role])
   @@index([active])
@@ -121,6 +135,7 @@ model Classroom {
   termLocks      TermLock[]
   lessonPlans    LessonPlan[]
   councilMinutes ClassCouncilMinute[]
+  announcements  Announcement[]
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
@@ -130,24 +145,25 @@ model Classroom {
 }
 
 model Student {
-  id             String            @id @default(cuid())
-  name           String
-  registration   String            @unique
-  guardianName   String
-  guardianPhone  String
-  active         Boolean           @default(true)
-  classroomId    String
-  classroom      Classroom         @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  userId         String?           @unique
-  user           User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
-  attendances    Attendance[]
-  occurrences    Occurrence[]
-  grades         Grade[]
-  guardianLinks  GuardianStudent[]
-  notifications  Notification[]
-  termRecoveries TermRecovery[]
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id                    String                 @id @default(cuid())
+  name                  String
+  registration          String                 @unique
+  guardianName          String
+  guardianPhone         String
+  active                Boolean                @default(true)
+  classroomId           String
+  classroom             Classroom              @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  userId                String?                @unique
+  user                  User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  attendances           Attendance[]
+  occurrences           Occurrence[]
+  grades                Grade[]
+  guardianLinks         GuardianStudent[]
+  notifications         Notification[]
+  termRecoveries        TermRecovery[]
+  absenceJustifications AbsenceJustification[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
 
   @@index([classroomId, name])
   @@index([active])
@@ -207,13 +223,14 @@ model Lesson {
 }
 
 model Attendance {
-  id        String           @id @default(cuid())
-  lessonId  String
-  lesson    Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  studentId String
-  student   Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  status    AttendanceStatus @default(PRESENTE)
-  updatedAt DateTime         @updatedAt
+  id            String                @id @default(cuid())
+  lessonId      String
+  lesson        Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student               @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status        AttendanceStatus      @default(PRESENTE)
+  justification AbsenceJustification?
+  updatedAt     DateTime              @updatedAt
 
   @@unique([lessonId, studentId])
   @@index([studentId])
@@ -368,4 +385,42 @@ model ClassCouncilMinute {
 
   @@unique([classroomId, term])
   @@map("class_council_minutes")
+}
+
+model Announcement {
+  id          String               @id @default(cuid())
+  title       String
+  content     String
+  priority    AnnouncementPriority @default(NORMAL)
+  pinned      Boolean              @default(false)
+  classroomId String?
+  classroom   Classroom?           @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User                 @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  createdAt   DateTime             @default(now())
+
+  @@index([pinned, createdAt])
+  @@index([classroomId, createdAt])
+  @@map("announcements")
+}
+
+model AbsenceJustification {
+  id           String              @id @default(cuid())
+  attendanceId String              @unique
+  attendance   Attendance          @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      Student             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  guardianId   String
+  guardian     User                @relation(fields: [guardianId], references: [id], onDelete: Cascade)
+  reason       String
+  status       JustificationStatus @default(PENDENTE)
+  reviewNote   String?
+  reviewedById String?
+  reviewedAt   DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([status, createdAt])
+  @@index([guardianId, createdAt])
+  @@map("absence_justifications")
 }

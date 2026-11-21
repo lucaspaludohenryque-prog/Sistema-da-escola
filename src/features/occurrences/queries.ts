@@ -135,6 +135,7 @@ export async function listOccurrencesForUser(
           id: true,
           name: true,
           registration: true,
+          guardianPhone: true,
         },
       },
       classroom: {

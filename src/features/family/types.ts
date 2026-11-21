@@ -1,11 +1,13 @@
 import type { AttendanceStatus } from "@/features/attendance/types";
 import type { ClassroomShift } from "@/features/classrooms/types";
+import type { JustificationStatus } from "@/features/justifications/types";
 import type {
   ReportOccurrenceEntry,
   ReportTermSummary,
 } from "@/features/reports/types";
 
 export interface FamilyAbsenceEntry {
+  attendanceId: string;
   lessonId: string;
   date: string;
   lessonNumber: number;
@@ -13,6 +15,12 @@ export interface FamilyAbsenceEntry {
   classroomName: string;
   content: string;
   status: AttendanceStatus;
+  justification: {
+    id: string;
+    status: JustificationStatus;
+    reason: string;
+    reviewNote: string | null;
+  } | null;
 }
 
 export interface FamilyStudentOverview {

@@ -12,6 +12,7 @@ interface SidebarNavProps {
   userRole: UserRole;
   schoolConfig: SchoolConfigData;
   unacknowledgedCount: number;
+  pendingJustificationsCount?: number;
   onNavigate?: () => void;
   onCloseMobile?: () => void;
 }
@@ -20,6 +21,7 @@ export function SidebarNav({
   userRole,
   schoolConfig,
   unacknowledgedCount,
+  pendingJustificationsCount = 0,
   onNavigate,
   onCloseMobile,
 }: SidebarNavProps): React.JSX.Element {
@@ -115,6 +117,12 @@ export function SidebarNav({
                   {item.showNotificationBadge && unacknowledgedCount > 0 ? (
                     <span className="ml-auto inline-flex min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1.5 py-0.5 font-mono text-[11px] font-bold text-white">
                       {unacknowledgedCount > 99 ? "99+" : unacknowledgedCount}
+                    </span>
+                  ) : item.showJustificationsBadge && pendingJustificationsCount > 0 ? (
+                    <span className="ml-auto inline-flex min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1.5 py-0.5 font-mono text-[11px] font-bold text-white">
+                      {pendingJustificationsCount > 99
+                        ? "99+"
+                        : pendingJustificationsCount}
                     </span>
                   ) : isActive ? (
                     <span

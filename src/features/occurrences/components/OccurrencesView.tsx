@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   Clock,
   FileWarning,
+  MessageCircle,
   Plus,
   Search,
   Trash2,
@@ -21,6 +22,7 @@ import type { ApiErrorPayload, ClassroomSummary } from "@/features/classrooms/ty
 import { Avatar } from "@/shared/components/Avatar";
 import { CardsStackSkeleton } from "@/shared/components/Skeleton";
 import { useToast } from "@/shared/components/ToastProvider";
+import { buildWhatsAppUrl } from "@/shared/utils/whatsapp";
 import {
   OCCURRENCE_PRAISE_STYLE,
   OCCURRENCE_SEVERITY_LABELS,
@@ -42,11 +44,13 @@ import { ResolveOccurrenceModal } from "./ResolveOccurrenceModal";
 interface OccurrencesViewProps {
   classrooms: ClassroomSummary[];
   initialOccurrences: OccurrenceItem[];
+  schoolName?: string;
 }
 
 export function OccurrencesView({
   classrooms,
   initialOccurrences,
+  schoolName = "RCO La Salle",
 }: OccurrencesViewProps): React.JSX.Element {
   const toast = useToast();
   const [occurrences, setOccurrences] = useState<OccurrenceItem[]>(initialOccurrences);
@@ -447,6 +451,40 @@ export function OccurrencesView({
                   </div>
 
                   <div className="flex shrink-0 flex-wrap items-center gap-2 sm:flex-col sm:items-end">
+                    {(() => {
+                      const waText = `Olá! Contato oficial da escola ${schoolName}.\nInformamos o registro de ${OCCURRENCE_TYPE_LABELS[item.type]}${
+                        item.type !== "ELOGIO"
+                          ? ` (${OCCURRENCE_SEVERITY_LABELS[item.severity]})`
+                          : ""
+                      } referente ao estudante ${item.student.name} (${item.classroom.name} - ${item.classroom.subject}), em ${formatIsoDateBr(item.date)}:\n"${item.description}"`;
+                      const waUrl = buildWhatsAppUrl(
+                        item.student.guardianPhone,
+                        waText
+                      );
+
+                      return waUrl ? (
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                          <span>WhatsApp</span>
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled
+                          title="Telefone do responsável não cadastrado"
+                          className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-400 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-500"
+                        >
+                          <MessageCircle className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                          <span>WhatsApp</span>
+                        </button>
+                      );
+                    })()}
+
                     <button
                       type="button"
                       onClick={() => setOccurrenceToResolve(item)}

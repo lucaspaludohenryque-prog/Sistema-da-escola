@@ -95,7 +95,16 @@ export async function getFamilyOverviewForUser(
       },
       attendances: {
         select: {
+          id: true,
           status: true,
+          justification: {
+            select: {
+              id: true,
+              status: true,
+              reason: true,
+              reviewNote: true,
+            },
+          },
           lesson: {
             select: {
               id: true,
@@ -145,6 +154,7 @@ export async function getFamilyOverviewForUser(
         } else if (att.status === AttendanceStatus.FALTA) {
           absentCount += 1;
           absences.push({
+            attendanceId: att.id,
             lessonId: att.lesson.id,
             date: att.lesson.date,
             lessonNumber: att.lesson.lessonNumber,
@@ -152,10 +162,12 @@ export async function getFamilyOverviewForUser(
             classroomName: student.classroom.name,
             content: att.lesson.content,
             status: att.status,
+            justification: att.justification,
           });
         } else {
           justifiedCount += 1;
           absences.push({
+            attendanceId: att.id,
             lessonId: att.lesson.id,
             date: att.lesson.date,
             lessonNumber: att.lesson.lessonNumber,
@@ -163,6 +175,7 @@ export async function getFamilyOverviewForUser(
             classroomName: student.classroom.name,
             content: att.lesson.content,
             status: att.status,
+            justification: att.justification,
           });
         }
       }

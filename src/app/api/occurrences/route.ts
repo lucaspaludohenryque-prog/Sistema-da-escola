@@ -209,6 +209,7 @@ export async function POST(
               id: true,
               name: true,
               registration: true,
+              guardianPhone: true,
             },
           },
           classroom: {

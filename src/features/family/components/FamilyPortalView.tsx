@@ -1,29 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   Bell,
   BookOpen,
   Calendar,
   ClipboardCheck,
+  FileCheck2,
   FileText,
   FileWarning,
   GraduationCap,
+  Loader2,
   Printer,
   UserCheck,
   Users,
+  X,
 } from "lucide-react";
 import {
   LOW_ATTENDANCE_THRESHOLD,
   formatIsoDateBr,
 } from "@/features/attendance/constants";
 import { SHIFT_LABELS } from "@/features/classrooms/constants";
+import type { ApiErrorPayload } from "@/features/classrooms/types";
 import {
   PASSING_GRADE_THRESHOLD,
   TERM_LABELS,
   formatScoreBr,
 } from "@/features/grades/constants";
+import {
+  JUSTIFICATION_STATUS_LABELS,
+  JUSTIFICATION_STATUS_STYLES,
+} from "@/features/justifications/types";
 import {
   OCCURRENCE_PRAISE_STYLE,
   OCCURRENCE_SEVERITY_LABELS,
@@ -33,7 +41,8 @@ import {
   OCCURRENCE_TYPE_LABELS,
 } from "@/features/occurrences/constants";
 import { Avatar } from "@/shared/components/Avatar";
-import type { FamilyOverviewData } from "../types";
+import { useToast } from "@/shared/components/ToastProvider";
+import type { FamilyAbsenceEntry, FamilyOverviewData } from "../types";
 import { TermEvolutionChart } from "./TermEvolutionChart";
 
 interface FamilyPortalViewProps {
@@ -45,10 +54,18 @@ export function FamilyPortalView({
   overview,
   userName,
 }: FamilyPortalViewProps): React.JSX.Element {
+  const toast = useToast();
+  const [studentsData, setStudentsData] = useState(overview.students);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const isGuardian = overview.role === "RESPONSAVEL";
 
-  const activeStudent = overview.students[selectedIndex] ?? overview.students[0];
+  const [absenceToJustify, setAbsenceToJustify] =
+    useState<FamilyAbsenceEntry | null>(null);
+  const [reason, setReason] = useState("");
+  const [isSubmittingJustification, setIsSubmittingJustification] =
+    useState(false);
+
+  const activeStudent = studentsData[selectedIndex] ?? studentsData[0];
 
   if (!activeStudent) {
     return (
@@ -78,6 +95,80 @@ export function FamilyPortalView({
   const isLowAverage =
     annualAverage !== null && annualAverage < PASSING_GRADE_THRESHOLD;
 
+  async function handleSubmitJustification(
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> {
+    event.preventDefault();
+    if (!absenceToJustify) return;
+
+    if (reason.trim().length < 5) {
+      toast.warning("Informe o motivo da falta com ao menos 5 caracteres.");
+      return;
+    }
+
+    setIsSubmittingJustification(true);
+    try {
+      const response = await fetch("/api/justifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attendanceId: absenceToJustify.attendanceId,
+          reason: reason.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        let message = "Não foi possível enviar a justificativa.";
+        try {
+          const payload = (await response.json()) as Partial<ApiErrorPayload>;
+          if (payload.error) message = payload.error;
+        } catch {}
+        toast.error(message);
+        return;
+      }
+
+      const payload = (await response.json()) as {
+        justification: { id: string; status: "PENDENTE"; reason: string };
+      };
+
+      setStudentsData((prev) =>
+        prev.map((entry, idx) => {
+          if (idx !== selectedIndex) return entry;
+          return {
+            ...entry,
+            attendance: {
+              ...entry.attendance,
+              absences: entry.attendance.absences.map((a) =>
+                a.attendanceId === absenceToJustify.attendanceId
+                  ? {
+                      ...a,
+                      justification: {
+                        id: payload.justification.id,
+                        status: "PENDENTE",
+                        reason: payload.justification.reason,
+                        reviewNote: null,
+                      },
+                    }
+                  : a
+              ),
+            },
+          };
+        })
+      );
+
+      setAbsenceToJustify(null);
+      setReason("");
+      toast.success(
+        "Justificativa enviada para análise da Coordenação.",
+        "Pedido registrado"
+      );
+    } catch {
+      toast.error("Falha de conexão com o servidor.");
+    } finally {
+      setIsSubmittingJustification(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Alerta de avisos pendentes */}
@@ -93,8 +184,8 @@ export function FamilyPortalView({
                   : "avisos escolares aguardando confirmação"}
               </p>
               <p className="text-xs text-amber-800 dark:text-amber-200/90">
-                Acesse a Central de Avisos para visualizar faltas ou ocorrências e registrar sua
-                ciência.
+                Acesse a Central de Avisos para visualizar faltas, comunicados ou ocorrências e
+                registrar sua ciência.
               </p>
             </div>
           </div>
@@ -146,13 +237,13 @@ export function FamilyPortalView({
           </Link>
         </div>
 
-        {isGuardian && overview.students.length > 1 ? (
+        {isGuardian && studentsData.length > 1 ? (
           <div className="mt-5 border-t border-slate-200/80 pt-4 dark:border-slate-800">
             <p className="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
               Selecionar estudante acompanhado:
             </p>
             <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filhos vinculados">
-              {overview.students.map((entry, idx) => {
+              {studentsData.map((entry, idx) => {
                 const isSelected = idx === selectedIndex;
                 return (
                   <button
@@ -411,7 +502,9 @@ export function FamilyPortalView({
               Histórico de Faltas e Justificativas
             </h3>
             <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              Aulas em que o estudante teve ausência registrada
+              {isGuardian
+                ? "Envie justificativas diretamente à coordenação para faltas ainda não justificadas"
+                : "Aulas em que o estudante teve ausência registrada"}
             </p>
           </div>
 
@@ -421,33 +514,78 @@ export function FamilyPortalView({
             </p>
           ) : (
             <ul className="divide-y divide-slate-100 dark:divide-slate-800">
-              {attendance.absences.map((item) => (
-                <li
-                  key={`${item.lessonId}-${item.date}`}
-                  className="space-y-1.5 px-5 py-3.5 sm:px-6"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-medium text-slate-700 dark:text-slate-300">
-                      {formatIsoDateBr(item.date)} · {item.lessonNumber}ª aula
-                    </span>
-                    <span
-                      className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
-                        item.status === "FALTA"
-                          ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
-                          : "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30"
-                      }`}
-                    >
-                      {item.status === "FALTA" ? "Falta" : "Falta Justificada"}
-                    </span>
-                  </div>
-                  <p className="text-xs font-medium text-slate-800 dark:text-slate-200">
-                    {item.subject} ({item.classroomName})
-                  </p>
-                  <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
-                    Conteúdo: {item.content}
-                  </p>
-                </li>
-              ))}
+              {attendance.absences.map((item) => {
+                const canRequestJustification =
+                  isGuardian &&
+                  item.status === "FALTA" &&
+                  (!item.justification || item.justification.status === "RECUSADA");
+
+                return (
+                  <li
+                    key={item.attendanceId}
+                    className="space-y-2 px-5 py-4 sm:px-6"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="font-mono text-xs font-medium text-slate-700 dark:text-slate-300">
+                        {formatIsoDateBr(item.date)} · {item.lessonNumber}ª aula
+                      </span>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span
+                          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+                            item.status === "FALTA"
+                              ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/15 dark:text-red-300 dark:ring-red-400/30"
+                              : "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/30"
+                          }`}
+                        >
+                          {item.status === "FALTA" ? "Falta" : "Falta Justificada"}
+                        </span>
+
+                        {item.justification ? (
+                          <span
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${JUSTIFICATION_STATUS_STYLES[item.justification.status]}`}
+                          >
+                            {JUSTIFICATION_STATUS_LABELS[item.justification.status]}
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    <p className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                      {item.subject} ({item.classroomName})
+                    </p>
+                    <p className="line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                      Conteúdo: {item.content}
+                    </p>
+
+                    {item.justification?.reviewNote ? (
+                      <p className="rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11px] text-slate-700 ring-1 ring-inset ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700">
+                        <span className="font-semibold">Parecer: </span>
+                        {item.justification.reviewNote}
+                      </p>
+                    ) : null}
+
+                    {canRequestJustification ? (
+                      <div className="pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAbsenceToJustify(item);
+                            setReason(item.justification?.reason ?? "");
+                          }}
+                          className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:border-[var(--school-primary-soft-border)] hover:bg-slate-50 hover:text-[var(--school-primary)] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                        >
+                          <FileCheck2 className="h-3.5 w-3.5" strokeWidth={1.75} />
+                          <span>
+                            {item.justification?.status === "RECUSADA"
+                              ? "Reenviar Justificativa"
+                              : "Justificar Falta"}
+                          </span>
+                        </button>
+                      </div>
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>
@@ -528,6 +666,89 @@ export function FamilyPortalView({
           )}
         </section>
       </div>
+
+      {/* Modal Justificar Falta */}
+      {absenceToJustify ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="justify-modal-title"
+        >
+          <div
+            className="fixed inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            onClick={() => {
+              if (!isSubmittingJustification) setAbsenceToJustify(null);
+            }}
+            aria-hidden="true"
+          />
+          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-900/10 dark:bg-slate-900 dark:ring-slate-700">
+            <div className="flex items-start justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
+              <div>
+                <h3
+                  id="justify-modal-title"
+                  className="text-lg font-semibold text-slate-900 dark:text-slate-100"
+                >
+                  Justificar Falta
+                </h3>
+                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  {formatIsoDateBr(absenceToJustify.date)} ·{" "}
+                  {absenceToJustify.lessonNumber}ª aula ({absenceToJustify.subject})
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAbsenceToJustify(null)}
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitJustification} className="mt-4 space-y-4">
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="justification-reason"
+                  className="block text-sm font-medium text-slate-800 dark:text-slate-200"
+                >
+                  Motivo da ausência
+                </label>
+                <textarea
+                  id="justification-reason"
+                  rows={4}
+                  required
+                  disabled={isSubmittingJustification}
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="Ex: Consulta médica com atestado entregue na secretaria..."
+                  className="block w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--school-primary)] focus:ring-2 focus:ring-[var(--school-primary-ring)] focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 border-t border-slate-200/80 pt-4 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setAbsenceToJustify(null)}
+                  disabled={isSubmittingJustification}
+                  className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingJustification}
+                  className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--school-primary-hover)] disabled:opacity-70"
+                >
+                  {isSubmittingJustification ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : null}
+                  <span>Enviar Justificativa</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

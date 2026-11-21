@@ -10,8 +10,10 @@ import {
   CalendarDays,
   ClipboardCheck,
   Clock,
+  FileCheck2,
   FileWarning,
   GraduationCap,
+  Megaphone,
   ScrollText,
   Search,
   Users,
@@ -68,6 +70,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         icon: CalendarDays,
       },
       {
+        label: "Mural de Comunicados",
+        description: "Avisos oficiais da escola e das turmas",
+        href: "/dashboard/comunicados",
+        icon: Megaphone,
+      },
+      {
         label: "Central de Avisos",
         description: "Confirmar ciência de faltas e ocorrências",
         href: "/dashboard/avisos",
@@ -83,6 +91,12 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
         description: "Consultar boletim, média e frequência",
         href: "/dashboard/aluno",
         icon: GraduationCap,
+      },
+      {
+        label: "Mural de Comunicados",
+        description: "Avisos oficiais da escola e das turmas",
+        href: "/dashboard/comunicados",
+        icon: Megaphone,
       },
       {
         label: "Grade de Horários",
@@ -105,13 +119,29 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
     ];
   }
 
-  return [
+  const staffShortcuts: QuickShortcut[] = [
     {
       label: "Fazer Chamada",
       description: "Registrar frequência e diário de conteúdo",
       href: "/dashboard/chamada",
       icon: ClipboardCheck,
     },
+    {
+      label: "Mural de Comunicados",
+      description: "Publicar e acompanhar comunicados oficiais",
+      href: "/dashboard/comunicados",
+      icon: Megaphone,
+    },
+    ...(role === "ADMIN" || role === "COORDENACAO"
+      ? [
+          {
+            label: "Justificativas de Falta",
+            description: "Analisar pedidos de abono enviados pelas famílias",
+            href: "/dashboard/justificativas",
+            icon: FileCheck2,
+          },
+        ]
+      : []),
     {
       label: "Grade de Horários",
       description: "Horários semanais e acesso rápido à chamada",
@@ -155,6 +185,8 @@ function getQuickShortcuts(role: UserRole): QuickShortcut[] {
       icon: Users,
     },
   ];
+
+  return staffShortcuts;
 }
 
 export function CommandPalette({

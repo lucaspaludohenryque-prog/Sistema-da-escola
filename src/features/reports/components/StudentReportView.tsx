@@ -1,8 +1,10 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Exibe brasao da escola em Base64 com suporte direto a impressao A4. */
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BookOpenCheck, Printer } from "lucide-react";
+import QRCode from "qrcode";
+import { ArrowLeft, BookOpenCheck, MessageCircle, Printer } from "lucide-react";
 import {
   LOW_ATTENDANCE_THRESHOLD,
   formatIsoDateBr,
@@ -22,6 +24,7 @@ import type {
   OccurrenceSeverity,
   OccurrenceStatus,
 } from "@/features/occurrences/types";
+import { buildWhatsAppUrl } from "@/shared/utils/whatsapp";
 import type { StudentReportData } from "../types";
 
 interface StudentReportViewProps {
@@ -77,6 +80,37 @@ export function StudentReportView({
   const isLowAnnualAverage =
     annualAverage !== null && annualAverage < PASSING_GRADE_THRESHOLD;
 
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const targetUrl =
+      typeof window !== "undefined"
+        ? window.location.href
+        : `https://rcolasalle.vercel.app/dashboard/alunos/${student.id}/ficha`;
+
+    QRCode.toDataURL(targetUrl, {
+      width: 152,
+      margin: 1,
+      color: { dark: "#0f172a", light: "#ffffff" },
+    })
+      .then((url) => {
+        if (active) setQrCodeDataUrl(url);
+      })
+      .catch(() => {
+        // Ignora erro de geracao de QR em ambientes restritos.
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [student.id]);
+
+  const waSummaryText = `Olá, ${student.guardianName}! Resumo escolar enviado por ${school.name}:\nEstudante: ${student.name} (${classroom.name} - ${classroom.subject})\nFrequência Geral: ${
+    attendance.attendanceRate !== null ? `${attendance.attendanceRate}%` : "Sem registros"
+  } (${attendance.absentCount} faltas)\nMédia Geral: ${formatScoreBr(annualAverage)}\nOcorrências registradas: ${occurrences.length}`;
+  const whatsAppUrl = buildWhatsAppUrl(student.guardianPhone, waSummaryText);
+
   return (
     <div className="space-y-5">
       {/* Barra de acoes oculta na impressao */}
@@ -89,14 +123,38 @@ export function StudentReportView({
           <span>{backLabel ?? `Voltar para ${classroom.name}`}</span>
         </Link>
 
-        <button
-          type="button"
-          onClick={() => window.print()}
-          className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
-        >
-          <Printer className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-          <span>Imprimir / Salvar PDF</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {whatsAppUrl ? (
+            <a
+              href={whatsAppUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              <span>WhatsApp</span>
+            </a>
+          ) : (
+            <button
+              type="button"
+              disabled
+              title="Telefone do responsável não cadastrado"
+              className="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-400 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-500"
+            >
+              <MessageCircle className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              <span>WhatsApp</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+          >
+            <Printer className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            <span>Imprimir / Salvar PDF</span>
+          </button>
+        </div>
       </div>
 
       {/* Documento A4 imprimivel (sempre folha branca e tinta escura para fidelidade de impressao/PDF) */}
@@ -133,11 +191,27 @@ export function StudentReportView({
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-left sm:text-right">
-            <p className="text-[11px] font-medium text-slate-500">Matrícula / CGM</p>
-            <p className="font-mono text-sm font-bold text-slate-900">
-              {student.registration}
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-left sm:text-right">
+              <p className="text-[11px] font-medium text-slate-500">Matrícula / CGM</p>
+              <p className="font-mono text-sm font-bold text-slate-900">
+                {student.registration}
+              </p>
+            </div>
+            {qrCodeDataUrl ? (
+              <div className="flex flex-col items-center rounded-lg border border-slate-200 bg-white p-1.5 text-center">
+                <img
+                  src={qrCodeDataUrl}
+                  alt={`QR Code de consulta digital de ${student.name}`}
+                  width={76}
+                  height={76}
+                  className="h-[76px] w-[76px]"
+                />
+                <span className="mt-1 max-w-[82px] text-[9px] leading-tight text-slate-500">
+                  Consulta digital do documento
+                </span>
+              </div>
+            ) : null}
           </div>
         </header>
 

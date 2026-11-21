@@ -6,12 +6,14 @@ import {
   ArrowLeft,
   BookOpen,
   Calendar,
+  Download,
   FileText,
   Pencil,
   Phone,
   Plus,
   Search,
   Trash2,
+  Upload,
   UserCheck,
   Users,
 } from "lucide-react";
@@ -20,10 +22,12 @@ import { useToast } from "@/shared/components/ToastProvider";
 import { SHIFT_BADGE_STYLES, SHIFT_LABELS } from "../constants";
 import type { ApiErrorPayload, ClassroomDetail, StudentRecord } from "../types";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
+import { ImportStudentsCsvModal } from "./ImportStudentsCsvModal";
 import { StudentFormModal } from "./StudentFormModal";
 
 interface ClassroomDetailViewProps {
   initialClassroom: ClassroomDetail;
+  canManage?: boolean;
 }
 
 const ptBrCollator = new Intl.Collator("pt-BR", {
@@ -37,6 +41,7 @@ function sortAlphabetically(items: StudentRecord[]): StudentRecord[] {
 
 export function ClassroomDetailView({
   initialClassroom,
+  canManage = false,
 }: ClassroomDetailViewProps): React.JSX.Element {
   const toast = useToast();
   const [students, setStudents] = useState<StudentRecord[]>(() =>
@@ -44,6 +49,7 @@ export function ClassroomDetailView({
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState<StudentRecord | null>(null);
   const [studentToDelete, setStudentToDelete] = useState<StudentRecord | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -219,14 +225,36 @@ export function ClassroomDetailView({
             />
           </div>
 
-          <button
-            type="button"
-            onClick={openCreateModal}
-            className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
-          >
-            <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
-            <span>Adicionar Aluno</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href={`/api/classrooms/${initialClassroom.id}/export-csv`}
+              download
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            >
+              <Download className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+              <span>Exportar Planilha (CSV)</span>
+            </a>
+
+            {canManage ? (
+              <button
+                type="button"
+                onClick={() => setIsImportModalOpen(true)}
+                className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              >
+                <Upload className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                <span>Importar CSV</span>
+              </button>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--school-primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-[background-color,transform] duration-150 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[var(--school-primary-hover)] active:scale-[0.98]"
+            >
+              <Plus className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
+              <span>Adicionar Aluno</span>
+            </button>
+          </div>
         </div>
 
         {filteredStudents.length === 0 ? (
@@ -421,6 +449,17 @@ export function ClassroomDetailView({
           setStudentToEdit(null);
         }}
         onSaved={handleStudentSaved}
+      />
+
+      <ImportStudentsCsvModal
+        isOpen={isImportModalOpen}
+        classroomId={initialClassroom.id}
+        onClose={() => setIsImportModalOpen(false)}
+        onImported={(imported) => {
+          if (imported.length > 0) {
+            setStudents((prev) => sortAlphabetically([...prev, ...imported]));
+          }
+        }}
       />
 
       <DeleteConfirmModal

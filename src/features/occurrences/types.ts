@@ -49,6 +49,7 @@ export interface OccurrenceItem {
     id: string;
     name: string;
     registration: string;
+    guardianPhone?: string;
   };
   classroom: {
     id: string;

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getAuthenticatedUser } from "@/features/auth";
-import { getClassroomDetailForUser } from "@/features/classrooms";
+import {
+  canManageClassrooms,
+  getClassroomDetailForUser,
+} from "@/features/classrooms";
 import { ClassroomDetailView } from "@/features/classrooms/components/ClassroomDetailView";
 
 interface ClassroomDetailPageProps {
@@ -33,5 +36,10 @@ export default async function ClassroomDetailPage({
     redirect("/dashboard/turmas");
   }
 
-  return <ClassroomDetailView initialClassroom={result.classroom} />;
+  return (
+    <ClassroomDetailView
+      initialClassroom={result.classroom}
+      canManage={canManageClassrooms(user.role)}
+    />
+  );
 }

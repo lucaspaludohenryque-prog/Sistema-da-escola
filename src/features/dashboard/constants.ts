@@ -4,12 +4,14 @@ import {
   CalendarDays,
   ClipboardCheck,
   Clock,
+  FileCheck2,
   FileText,
   FileWarning,
   GraduationCap,
   HeartHandshake,
   Home,
   LayoutDashboard,
+  Megaphone,
   ScrollText,
   Settings,
   UserCog,
@@ -25,6 +27,7 @@ export interface DashboardNavItem {
   icon: LucideIcon;
   exact?: boolean;
   showNotificationBadge?: boolean;
+  showJustificationsBadge?: boolean;
 }
 
 const STAFF_BASE_ITEMS: DashboardNavItem[] = [
@@ -34,6 +37,12 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     description: "Visão geral do ambiente pedagógico",
     icon: LayoutDashboard,
     exact: true,
+  },
+  {
+    label: "Comunicados",
+    href: "/dashboard/comunicados",
+    description: "Mural oficial de comunicados da escola e turmas",
+    icon: Megaphone,
   },
   {
     label: "Turmas",
@@ -87,6 +96,13 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
 
 const MANAGER_EXTRA_ITEMS: DashboardNavItem[] = [
   {
+    label: "Justificativas",
+    href: "/dashboard/justificativas",
+    description: "Aprovação de justificativas de falta enviadas pela família",
+    icon: FileCheck2,
+    showJustificationsBadge: true,
+  },
+  {
     label: "Vínculos Família",
     href: "/dashboard/familia-vinculos",
     description: "Vincular responsáveis e contas de alunos",
@@ -118,9 +134,15 @@ const GUARDIAN_NAV_ITEMS: DashboardNavItem[] = [
     exact: true,
   },
   {
+    label: "Comunicados",
+    href: "/dashboard/comunicados",
+    description: "Mural oficial de comunicados da escola",
+    icon: Megaphone,
+  },
+  {
     label: "Avisos",
     href: "/dashboard/avisos",
-    description: "Notificações de faltas e ocorrências para ciência",
+    description: "Notificações de faltas, comunicados e ocorrências para ciência",
     icon: Bell,
     showNotificationBadge: true,
   },
@@ -152,6 +174,12 @@ const STUDENT_NAV_ITEMS: DashboardNavItem[] = [
     description: "Resumo do meu desempenho escolar",
     icon: LayoutDashboard,
     exact: true,
+  },
+  {
+    label: "Comunicados",
+    href: "/dashboard/comunicados",
+    description: "Mural oficial de comunicados da escola",
+    icon: Megaphone,
   },
   {
     label: "Horários",
@@ -213,6 +241,12 @@ export function getDashboardNavItems(role: UserRole): DashboardNavItem[] {
 export function resolveDashboardSectionTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/alunos/")) {
     return "Ficha do Aluno";
+  }
+  if (pathname.startsWith("/dashboard/comunicados")) {
+    return "Mural de Comunicados";
+  }
+  if (pathname.startsWith("/dashboard/justificativas")) {
+    return "Justificativas de Falta";
   }
   if (pathname.startsWith("/dashboard/horarios")) {
     return "Grade de Horários";

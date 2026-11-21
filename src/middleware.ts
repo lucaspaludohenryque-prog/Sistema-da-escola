@@ -17,6 +17,7 @@ const STAFF_ONLY_PREFIXES = [
   "/dashboard/notas",
   "/dashboard/planejamento",
   "/dashboard/conselho",
+  "/dashboard/justificativas",
   "/dashboard/usuarios",
   "/dashboard/configuracoes",
   "/dashboard/familia-vinculos",
@@ -45,7 +46,8 @@ function resolveRoleRedirect(pathname: string, role: UserRole): string | null {
       return "/dashboard";
     }
     if (
-      pathname.startsWith("/dashboard/familia-vinculos") &&
+      (pathname.startsWith("/dashboard/familia-vinculos") ||
+        pathname.startsWith("/dashboard/justificativas")) &&
       role !== "ADMIN" &&
       role !== "COORDENACAO"
     ) {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   AlertCircle,
   Award,
+  Download,
   FileSpreadsheet,
   GraduationCap,
   Loader2,
@@ -482,6 +483,17 @@ export function GradesView({
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
+            {selectedClassroomId ? (
+              <a
+                href={`/api/classrooms/${selectedClassroomId}/export-csv`}
+                download
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              >
+                <Download className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                <span>Exportar Planilha (CSV)</span>
+              </a>
+            ) : null}
+
             {canLockTerms && sheet ? (
               <button
                 type="button"
