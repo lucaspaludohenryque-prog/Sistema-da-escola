@@ -26,6 +26,7 @@ function resolveSafeNextPath(nextPath: string | undefined, role: UserRole): stri
     if (
       nextPath.startsWith("/dashboard/avisos") ||
       nextPath.startsWith("/dashboard/comunicados") ||
+      nextPath.startsWith("/dashboard/tarefas") ||
       nextPath.startsWith("/dashboard/horarios") ||
       nextPath.startsWith("/dashboard/calendario") ||
       nextPath.startsWith("/dashboard/alunos/") ||

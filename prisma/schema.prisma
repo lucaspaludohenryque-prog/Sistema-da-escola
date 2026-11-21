@@ -79,6 +79,20 @@ enum JustificationStatus {
   RECUSADA
 }
 
+enum HomeworkType {
+  TAREFA
+  TRABALHO
+  MATERIAL
+  LEITURA
+}
+
+enum HomeworkSubmissionStatus {
+  PENDENTE
+  ENTREGUE
+  ATRASADO
+  CONFERIDO
+}
+
 model User {
   id                      String                 @id @default(cuid())
   name                    String
@@ -95,6 +109,7 @@ model User {
   councilMinutes          ClassCouncilMinute[]
   announcements           Announcement[]
   submittedJustifications AbsenceJustification[]
+  homeworks               Homework[]
   createdAt               DateTime               @default(now())
   updatedAt               DateTime               @updatedAt
 
@@ -122,21 +137,25 @@ model Classroom {
   name           String
   subject        String
   year           Int
-  shift          Shift
-  teacherId      String
-  teacher        User                 @relation(fields: [teacherId], references: [id], onDelete: Restrict)
-  students       Student[]
-  lessons        Lesson[]
-  occurrences    Occurrence[]
-  assessments    Assessment[]
-  scheduleSlots  ScheduleSlot[]
-  schoolEvents   SchoolEvent[]
-  termRecoveries TermRecovery[]
-  termLocks      TermLock[]
-  lessonPlans    LessonPlan[]
-  councilMinutes ClassCouncilMinute[]
-  announcements  Announcement[]
-  createdAt      DateTime             @default(now())
+  shift           Shift
+  seatRows        Int                  @default(5)
+  seatCols        Int                  @default(6)
+  teacherId       String
+  teacher         User                 @relation(fields: [teacherId], references: [id], onDelete: Restrict)
+  students        Student[]
+  lessons         Lesson[]
+  occurrences     Occurrence[]
+  assessments     Assessment[]
+  scheduleSlots   ScheduleSlot[]
+  schoolEvents    SchoolEvent[]
+  termRecoveries  TermRecovery[]
+  termLocks       TermLock[]
+  lessonPlans     LessonPlan[]
+  councilMinutes  ClassCouncilMinute[]
+  announcements   Announcement[]
+  seatAssignments SeatAssignment[]
+  homeworks       Homework[]
+  createdAt       DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
   @@index([teacherId])
@@ -162,6 +181,8 @@ model Student {
   notifications         Notification[]
   termRecoveries        TermRecovery[]
   absenceJustifications AbsenceJustification[]
+  seatAssignments       SeatAssignment[]
+  homeworkSubmissions   HomeworkSubmission[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
 
@@ -423,4 +444,57 @@ model AbsenceJustification {
   @@index([status, createdAt])
   @@index([guardianId, createdAt])
   @@map("absence_justifications")
+}
+
+model SeatAssignment {
+  id          String    @id @default(cuid())
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  studentId   String
+  student     Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  row         Int
+  col         Int
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([classroomId, row, col])
+  @@unique([classroomId, studentId])
+  @@index([classroomId])
+  @@map("seat_assignments")
+}
+
+model Homework {
+  id          String               @id @default(cuid())
+  classroomId String
+  classroom   Classroom            @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User                 @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  title       String
+  description String
+  dueDate     String
+  resourceUrl String?
+  type        HomeworkType         @default(TAREFA)
+  submissions HomeworkSubmission[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([classroomId, dueDate])
+  @@index([dueDate])
+  @@map("homeworks")
+}
+
+model HomeworkSubmission {
+  id              String                   @id @default(cuid())
+  homeworkId      String
+  homework        Homework                 @relation(fields: [homeworkId], references: [id], onDelete: Cascade)
+  studentId       String
+  student         Student                  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status          HomeworkSubmissionStatus @default(PENDENTE)
+  studentNote     String?
+  teacherFeedback String?
+  submittedAt     DateTime?
+  updatedAt       DateTime                 @updatedAt
+
+  @@unique([homeworkId, studentId])
+  @@index([studentId, status])
+  @@map("homework_submissions")
 }

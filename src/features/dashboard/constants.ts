@@ -1,6 +1,7 @@
 import {
   Bell,
   BookMarked,
+  BookOpenText,
   CalendarDays,
   ClipboardCheck,
   Clock,
@@ -11,6 +12,7 @@ import {
   HeartHandshake,
   Home,
   LayoutDashboard,
+  LayoutGrid,
   Megaphone,
   ScrollText,
   Settings,
@@ -92,6 +94,20 @@ const STAFF_BASE_ITEMS: DashboardNavItem[] = [
     href: "/dashboard/chamada",
     description: "Registro diário de frequência e justificativas",
     icon: ClipboardCheck,
+    section: "ROTINA PEDAGÓGICA",
+  },
+  {
+    label: "Mapa de Sala",
+    href: "/dashboard/mapa-sala",
+    description: "Espelho de classe interativo e chamada visual por carteira",
+    icon: LayoutGrid,
+    section: "ROTINA PEDAGÓGICA",
+  },
+  {
+    label: "Tarefas & Materiais",
+    href: "/dashboard/tarefas",
+    description: "Mural de tarefas, trabalhos, materiais e controle de entregas",
+    icon: BookOpenText,
     section: "ROTINA PEDAGÓGICA",
   },
   {
@@ -198,6 +214,13 @@ const GUARDIAN_NAV_ITEMS: DashboardNavItem[] = [
     section: "ROTINA PEDAGÓGICA",
   },
   {
+    label: "Tarefas & Materiais",
+    href: "/dashboard/tarefas",
+    description: "Acompanhar tarefas, prazos e materiais das turmas",
+    icon: BookOpenText,
+    section: "ROTINA PEDAGÓGICA",
+  },
+  {
     label: "Comunicados",
     href: "/dashboard/comunicados",
     description: "Mural oficial de comunicados da escola",
@@ -251,6 +274,13 @@ const STUDENT_NAV_ITEMS: DashboardNavItem[] = [
     href: "/dashboard/calendario",
     description: "Datas de provas, trabalhos e eventos escolares",
     icon: CalendarDays,
+    section: "ROTINA PEDAGÓGICA",
+  },
+  {
+    label: "Tarefas & Materiais",
+    href: "/dashboard/tarefas",
+    description: "Minhas tarefas, trabalhos, leituras e materiais de aula",
+    icon: BookOpenText,
     section: "ROTINA PEDAGÓGICA",
   },
   {
@@ -335,6 +365,12 @@ export function getMobileBottomNavItems(role: UserRole): MobileBottomNavItem[] {
 export function resolveDashboardSectionTitle(pathname: string): string {
   if (pathname.startsWith("/dashboard/alunos/")) {
     return "Ficha do Aluno";
+  }
+  if (pathname.startsWith("/dashboard/mapa-sala")) {
+    return "Mapa de Sala";
+  }
+  if (pathname.startsWith("/dashboard/tarefas")) {
+    return "Tarefas & Materiais";
   }
   if (pathname.startsWith("/dashboard/comunicados")) {
     return "Mural de Comunicados";
